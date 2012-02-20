@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+<<<<<<< HEAD
+    <string name="hello">Hello World, FirstActivity!</string>
+    <string name="app_name">First</string>
+=======
     <string name="hello">Loading.</string>
     <string name="app_name">Utzon</string>
     <string name="maps_apikey_debug">0fMYQWA7ahuZ_tS6tvDLZEzZyJOfYAwyAtPRJtQ</string>
+>>>>>>> CommunicationLayer
 
 </resources>
