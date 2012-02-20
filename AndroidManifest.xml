@@ -23,6 +23,7 @@
         </activity>
         <activity 
 
+
             android:name=".OutdoorActivity" 
 			android:label="@+id/OutdoorActivity" >
 		</activity>
