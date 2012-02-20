@@ -25,7 +25,7 @@
             android:name=".OutdoorActivity" 
 			android:label="@+id/OutdoorActivity" >
 		</activity>
-		        <activity 
+		<activity 
             android:name=".WebserviceActivity" 
 			android:label="@+id/WebserviceActivity" >
 		</activity>
