@@ -6,7 +6,9 @@ import edu.aau.utzon.webservice.PointModel;
 import edu.aau.utzon.webservice.ProviderContract;
 import edu.aau.utzon.webservice.RestMethod;
 import android.app.Activity;
+import android.content.ContentValues;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 
 public class WebserviceActivity extends Activity{
@@ -18,19 +20,25 @@ public class WebserviceActivity extends Activity{
         
         
         // DEBUGGING content provider
-     // Queries the user dictionary and returns results
-        String[] mProjection = {ProviderContract.Points.TABLE_NAME};
+        String[] mProjection = {ProviderContract.Points.ATTRIBUTE_ID, ProviderContract.Points.ATTRIBUTE_X, ProviderContract.Points.ATTRIBUTE_Y, ProviderContract.Points.ATTRIBUTE_DESCRIPTION};
+	
+		// Query / Get
+        Cursor mCursor = getContentResolver().query(
+            ProviderContract.Points.CONTENT_URI,   	// The content URI of the points table
+            mProjection,                        	// The columns to return for each row
+            null,                    				// Selection criteria
+            null,                     				// Selection criteria
+            null);                        			// The sort order for the returned rows
+
+        // Insert
+		ContentValues values = new ContentValues();
+		values.put(ProviderContract.Points.ATTRIBUTE_X, 0.5);
+		values.put(ProviderContract.Points.ATTRIBUTE_Y, 1.5);
+		values.put(ProviderContract.Points.ATTRIBUTE_DESCRIPTION, "HEjsaDescription");
 		
-		Cursor mCursor = getContentResolver().query(
-            ProviderContract.Points.CONTENT_URI,   // The content URI of the points table
-            mProjection,                        // The columns to return for each row
-            null,                    // Selection criteria
-            null,                     // Selection criteria
-            null);                        // The sort order for the returned rows
-		
-		
-		//getContentResolver().insert(ProviderContract.Points.CONTENT_URI, values)
+		Uri mNewUri = getContentResolver().insert(ProviderContract.Points.CONTENT_URI, values);
 		
 		int everythingwentbetterthanexpected = 5+5+5+5+5;
+		everythingwentbetterthanexpected++;
     }
 }

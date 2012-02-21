@@ -17,15 +17,15 @@ public class RestContentProvider extends ContentProvider{
 
 	// SQL "backend" for the content provider
 	static class RestDB extends SQLiteOpenHelper{
-		private static final String DATABASE_NAME = "utzon";
-		private static final int DATABASE_VERSION = 2;
+		private static final String DATABASE_NAME = "utzon.db";
+		private static final int DATABASE_VERSION = 4;
 
 	    private static final String POINT_TABLE_CREATE =
 	                "CREATE TABLE " + ProviderContract.Points.TABLE_NAME + " (" +
 	                ProviderContract.Points.ATTRIBUTE_ID + " INTEGER PRIMARY KEY, " +
-	                ProviderContract.Points.ATTRIBUTE_X + "REAL, " +
-	                ProviderContract.Points.ATTRIBUTE_Y + "REAL, " +
-	                ProviderContract.Points.ATTRIBUTE_DESC + "TEXT, );";
+	                ProviderContract.Points.ATTRIBUTE_X + " REAL, " +
+	                ProviderContract.Points.ATTRIBUTE_Y + " REAL, " +
+	                ProviderContract.Points.ATTRIBUTE_DESCRIPTION + " TEXT);";
 		  
 		public RestDB(Context context) {
 			super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -135,7 +135,7 @@ public class RestContentProvider extends ContentProvider{
         if (values.containsKey(ProviderContract.Points.ATTRIBUTE_Y) == false) {
             throw new IllegalArgumentException("Invalid insertion values " + values);
         }
-        if (values.containsKey(ProviderContract.Points.ATTRIBUTE_DESC) == false) {
+        if (values.containsKey(ProviderContract.Points.ATTRIBUTE_DESCRIPTION) == false) {
             throw new IllegalArgumentException("Invalid insertion values " + values);
         }
         
@@ -143,7 +143,7 @@ public class RestContentProvider extends ContentProvider{
         SQLiteDatabase db = mDBHelper.getWritableDatabase();
         
         long rowId = db.insert(ProviderContract.Points.TABLE_NAME, 
-        		ProviderContract.Points.ATTRIBUTE_DESC, // "A hack, SQLite sets this column value to null if values is empty." (c) Google <- What the fuck?
+        		ProviderContract.Points.ATTRIBUTE_DESCRIPTION, // "A hack, SQLite sets this column value to null if values is empty." (c) Google <- What the fuck?
         		values);
         
         // If the insert succeeded, the row ID exists.
@@ -195,6 +195,7 @@ public class RestContentProvider extends ContentProvider{
 
 		// Open DB in read-mode
 		SQLiteDatabase db = mDBHelper.getReadableDatabase();
+		
 		// Do the query
 		Cursor c = qb.query(
 		           db,            // The database to query
@@ -240,5 +241,4 @@ public class RestContentProvider extends ContentProvider{
         // Returns the number of rows updated.
         return count;
 	}
-
 }
