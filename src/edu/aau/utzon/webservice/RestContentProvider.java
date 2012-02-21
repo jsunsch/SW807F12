@@ -17,7 +17,7 @@ public class RestContentProvider extends ContentProvider{
 
 	// SQL "backend" for the content provider
 	static class RestDB extends SQLiteOpenHelper{
-		private static final String DATABASE_NAME = "utzon.db";
+		private static final String DATABASE_NAME = "utzon";
 		private static final int DATABASE_VERSION = 2;
 
 	    private static final String POINT_TABLE_CREATE =
