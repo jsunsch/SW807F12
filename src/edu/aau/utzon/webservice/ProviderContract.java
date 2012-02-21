@@ -49,6 +49,9 @@ public final class ProviderContract {
          */
         public static final Uri CONTENT_ID_URI_PATTERN = Uri.parse(SCHEME + AUTHORITY + PATH_POINT_ID + "/#");
         
+        public static final String CONTENT_TYPE = "vnd.android.cursor.dir/vnd.aau.point";
+        public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/vnd.aau.point";
+        
         public static final String DEFAULT_SORT_ORDER = ATTRIBUTE_ID + " ASC";
     }
 }

@@ -95,8 +95,18 @@ public class RestContentProvider extends ContentProvider{
 
 	@Override
 	public String getType(Uri uri) {
-		// TODO Auto-generated method stub
-		return null;
+       /**
+        * Chooses the MIME type based on the incoming URI pattern
+        */
+       switch (sUriMatcher.match(uri)) {
+           case URI_POINT:
+        	   return ProviderContract.Points.CONTENT_TYPE;
+           case URI_POINT_ID:
+               return ProviderContract.Points.CONTENT_ITEM_TYPE;
+           // If the URI pattern doesn't match any permitted patterns, throws an exception.
+           default:
+               throw new IllegalArgumentException("Unknown URI " + uri);
+       }
 	}
 
 	@Override
@@ -198,8 +208,7 @@ public class RestContentProvider extends ContentProvider{
 		
 		// Tells the Cursor what URI to watch, so it knows when its source data changes
 	    c.setNotificationUri(getContext().getContentResolver(), uri);
-		
-		return null;
+		return c;
 	}
 
 	@Override
