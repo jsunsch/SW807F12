@@ -31,6 +31,7 @@
             android:name=".WebserviceActivity" 
 			android:label="@+id/WebserviceActivity" >
 		</activity>
+		
     </application>
 
 </manifest>
