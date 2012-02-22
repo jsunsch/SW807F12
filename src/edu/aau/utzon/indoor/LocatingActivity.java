@@ -40,7 +40,7 @@ public class LocatingActivity extends Activity {
 
 			String text = "";
 			if (p == null) {
-				text = "You are not close to any points. This is bad!";
+				text = "You are not close to any points.!";
 			}
 			else {
 				text += p.getName() + "\n";
