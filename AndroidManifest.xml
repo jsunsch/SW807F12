@@ -31,6 +31,10 @@
             android:name=".WebserviceActivity" 
 			android:label="@+id/WebserviceActivity" >
 		</activity>
+
+		 <services  android:name=".RestService" android:enabled="true">
+
+		 </services>
     </application>
 
 </manifest>
