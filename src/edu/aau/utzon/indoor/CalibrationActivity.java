@@ -37,80 +37,24 @@ public class CalibrationActivity extends Activity  {
 	}
 
 	public void addPoint(View view) throws InterruptedException {
-		if (_wifi.startScan() == true)
-		{
-			Hashtable<String, Integer> measures = new Hashtable<String, Integer>();
-			Hashtable<String, Integer> wifiCounts = new Hashtable<String, Integer> ();
-			
-			for (int i = 0; i < 4*5; i++) {
 
-				List<ScanResult> scanResults =  _wifi.getScanResults();
+		ArrayList<WifiMeasure> realMeasures = WifiHelper.getWifiMeasures(this, _wifi, 5);
+		
+		if (realMeasures == null)
+			return;
+		
+		PointData.addPoint(new Point(realMeasures, _editText.getText().toString()));
 
-				for (ScanResult res : scanResults) {
-					if (-res.level < 80) {
+		new AlertDialog.Builder(this)
+		.setTitle("Done")
+		.setMessage("Point added!")
+		.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) { 
 
-						if (measures.containsKey(res.BSSID) == false) {
-							measures.put(res.BSSID, new Integer(-res.level));
-						}
-						else {
-							int newValue = (Integer)measures.get(res.BSSID);
-							newValue += -res.level;
-							measures.remove(res.BSSID);
-							measures.put(res.BSSID, new Integer(newValue));
-						}
-
-						if (wifiCounts.containsKey(res.BSSID) == false) {
-							wifiCounts.put(res.BSSID, new Integer(1));
-						}
-						else {
-							int newValue = (Integer)wifiCounts.get(res.BSSID);
-							newValue++;
-							wifiCounts.remove(res.BSSID);
-							wifiCounts.put(res.BSSID, new Integer(newValue));
-						}
-					}
-				}
-
-				Thread.sleep(250);
-				_wifi.startScan();
 			}
-			
-			ArrayList<WifiMeasure> realMeasures = new ArrayList<WifiMeasure>(); 
-
-		    Enumeration<String> keys = measures.keys();
-		    
-		    while(keys.hasMoreElements()) {
-		       String key = keys.nextElement();
-		       int value = (Integer)measures.get(key);
-		       
-		       WifiMeasure wm = new WifiMeasure(key, value / wifiCounts.get(key));
-		       realMeasures.add(wm);
-		    }
-		  
-			PointData.addPoint(new Point(realMeasures, _editText.getText().toString()));
-
-			new AlertDialog.Builder(this)
-			.setTitle("Done")
-			.setMessage("Point added!")
-			.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int which) { 
-
-				}
-			})
-			.show();
-		}
-		else
-		{
-			new AlertDialog.Builder(this)
-			.setTitle("Error")
-			.setMessage("Could not scan for WIFI networks!")
-			.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int which) { 
-
-				}
-			})
-			.show();
-		}
+		})
+		.show();
+		
 		//PointData.AddPoint(new Point())
 
 		_textView.setText("Number of points: " + PointData.getPoints().size());

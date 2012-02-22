@@ -28,20 +28,15 @@ public class LocatingActivity extends Activity {
 		_wifi = (WifiManager)getSystemService(connectivity_context);
 	}
 
-	public void findLocation(View view) {
+	public void findLocation(View view) throws InterruptedException {
 		_textView.setText("");
 		if (_wifi.startScan() == true)
 		{
 			List<ScanResult> scanResults =  _wifi.getScanResults();
 
-			ArrayList<WifiMeasure> measures = new ArrayList<WifiMeasure>();
-
-			for (ScanResult res : scanResults) {
-				if (-res.level < 80)
-					measures.add(new WifiMeasure(res.BSSID, -res.level));
-			}
-
+			ArrayList<WifiMeasure> measures = WifiHelper.getWifiMeasures(this, _wifi, 3);
 			Point p = PointData.FindPosition(measures);
+
 
 			String text = "";
 			if (p == null) {
