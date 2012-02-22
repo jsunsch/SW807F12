@@ -1,5 +1,6 @@
 package edu.aau.utzon;
 
+import edu.aau.utzon.indoor.IndoorActivity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,6 +15,6 @@ public class UtzonActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         //startActivity(new Intent(getApplicationContext(), OutdoorActivity.class));
-        startActivity(new Intent(getApplicationContext(), WebserviceActivity.class));
+        startActivity(new Intent(getApplicationContext(), IndoorActivity.class));
     }
 }
