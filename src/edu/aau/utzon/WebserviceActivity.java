@@ -7,9 +7,11 @@ import edu.aau.utzon.webservice.ProviderContract;
 import edu.aau.utzon.webservice.RestMethod;
 import android.app.Activity;
 import android.content.ContentValues;
+import android.database.ContentObserver;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 
 public class WebserviceActivity extends Activity{
     @Override
@@ -17,7 +19,6 @@ public class WebserviceActivity extends Activity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         List<PointModel> lulz = RestMethod.getAllPoints();
-        
         
         // DEBUGGING content provider
         String[] mProjection = {ProviderContract.Points.ATTRIBUTE_ID, ProviderContract.Points.ATTRIBUTE_X, ProviderContract.Points.ATTRIBUTE_Y, ProviderContract.Points.ATTRIBUTE_DESCRIPTION};
@@ -41,4 +42,26 @@ public class WebserviceActivity extends Activity{
 		int everythingwentbetterthanexpected = 5+5+5+5+5;
 		everythingwentbetterthanexpected++;
     }
+}
+
+class RestContentObserver extends ContentObserver{
+
+	public RestContentObserver(Handler handler) 
+	{
+		super(handler);
+		// TODO Auto-generated constructor stub
+	}
+	
+	@Override
+	public boolean deliverSelfNotifications()
+	{
+		return true;
+	}
+	
+	@Override
+	public void onChange(boolean selfChange)
+	{
+		super.onChange(selfChange);
+		
+	}
 }
