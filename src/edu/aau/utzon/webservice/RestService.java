@@ -15,7 +15,9 @@ import android.widget.Toast;
 public class RestService extends IntentService {
 
 	public static final String COMMAND = "COMMAND";
+	public static final String LOCATION_ID = "id";
 	public static final int COMMAND_GET_LOCATION_POINTS = 0;
+	public static final int COMMAND_GET_LOCATION_POINT = 1;
 
 	public RestService() {
 		super("RestService");
