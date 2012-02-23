@@ -39,7 +39,7 @@ public class RestMethod {
 	
 	private static final String BASE_URL = "http://utzon.apphb.com";
 	
-	public static void getPoint(int id)
+	public static void getPoint(Context context, int id)
 	{
 		HttpGet request = new HttpGet(BASE_URL + "/Point/" + id);
 		PointModel result = new PointModel();
@@ -102,7 +102,7 @@ public class RestMethod {
 			e.printStackTrace();
 		}
 		
-		RestProcessor.insertLocationPoint(result);
+		RestProcessor.insertLocationPoint(result, context);
 	}
 	
 	public static void getAllPoints(Context context)
