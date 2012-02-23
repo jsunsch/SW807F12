@@ -20,6 +20,13 @@ public class RestServiceHelper {
           ref = new RestServiceHelper();
       return ref;
     }
+    
+    public void getLocationPoint(Context context, int id) {
+    	Intent intent = new Intent(context, RestService.class);
+    	intent.putExtra(RestService.COMMAND, RestService.COMMAND_GET_LOCATION_POINT);
+    	intent.putExtra(RestService.LOCATION_ID, id);
+    	context.startService(intent);
+    }
 	
 	public void getLocationPoints(Context context) {
 		Log.e("Service Example", "Niggar niggar niggar niggar niggar niggar niggar! Why you call them hoes bitches?"); 
