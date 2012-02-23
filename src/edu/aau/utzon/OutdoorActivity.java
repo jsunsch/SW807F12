@@ -193,14 +193,17 @@ public class OutdoorActivity extends MapActivity {
 	protected List<Location> getPOIs()
     {
     	ArrayList<Location> pois = new ArrayList<Location>();
-    	// Query webservice?
-    	// FIXME: Dummy POIs
-    	Location dummy = new Location(mCurrentLoc);
-    	// pois.add(dummy);
-    	dummy.setLatitude(dummy.getLatitude()+10);
-    	pois.add(dummy);
-    	dummy.setLongitude(dummy.getLongitude()+20);
-    	pois.add(dummy);
+    	if(mCurrentLoc != null)
+    	{
+	    	// Query webservice?
+	    	// FIXME: Dummy POIs
+	    	Location dummy = new Location(mCurrentLoc);
+	    	// pois.add(dummy);
+	    	dummy.setLatitude(dummy.getLatitude()+10);
+	    	pois.add(dummy);
+	    	dummy.setLongitude(dummy.getLongitude()+20);
+	    	pois.add(dummy);
+    	}
     	
     	
     	return pois;
