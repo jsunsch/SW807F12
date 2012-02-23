@@ -25,7 +25,14 @@ public final class ProviderContract {
     	public static final String ATTRIBUTE_ID = "_ID";
     	public static final String ATTRIBUTE_X = "X";
     	public static final String ATTRIBUTE_Y = "Y";
+    	public static final String ATTRIBUTE_STATE = "STATE";
+    	public static final String ATTRIBUTE_LAST_MODIFIED = "LAST_MODIFIED";
     	public static final String ATTRIBUTE_DESCRIPTION = "DESCRIPTION";
+    	
+    	// Attribute states
+    	public static final int STATE_POSTING = 1;
+    	public static final int STATE_UPDATING = 2;
+    	public static final int STATE_DELETING = 3;
     	
     	// URI Paths
     	public static final String PATH_POINTS = "/points";

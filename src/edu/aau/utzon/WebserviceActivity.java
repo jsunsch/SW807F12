@@ -17,11 +17,19 @@ public class WebserviceActivity extends Activity{
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+		// Register content observer
+		this.getApplicationContext()
+		.getContentResolver()
+		.registerContentObserver(ProviderContract.Points.CONTENT_URI, true, new RestContentObserver(new Handler()));
+        
         setContentView(R.layout.main);
-        List<PointModel> lulz = RestMethod.getAllPoints();
         
         // DEBUGGING content provider
-        String[] mProjection = {ProviderContract.Points.ATTRIBUTE_ID, ProviderContract.Points.ATTRIBUTE_X, ProviderContract.Points.ATTRIBUTE_Y, ProviderContract.Points.ATTRIBUTE_DESCRIPTION};
+        String[] mProjection = {ProviderContract.Points.ATTRIBUTE_ID, 
+        		ProviderContract.Points.ATTRIBUTE_X, 
+        		ProviderContract.Points.ATTRIBUTE_Y, 
+        		ProviderContract.Points.ATTRIBUTE_DESCRIPTION};
 	
 		// Query / Get
         Cursor mCursor = getContentResolver().query(
@@ -41,27 +49,25 @@ public class WebserviceActivity extends Activity{
 		
 		int everythingwentbetterthanexpected = 5+5+5+5+5;
 		everythingwentbetterthanexpected++;
+		
     }
 }
 
 class RestContentObserver extends ContentObserver{
 
-	public RestContentObserver(Handler handler) 
-	{
+	public RestContentObserver(Handler handler) {
 		super(handler);
-		// TODO Auto-generated constructor stub
 	}
 	
 	@Override
-	public boolean deliverSelfNotifications()
-	{
+	public boolean deliverSelfNotifications() {
 		return true;
 	}
 	
 	@Override
-	public void onChange(boolean selfChange)
-	{
+	public void onChange(boolean selfChange) {
 		super.onChange(selfChange);
-		
+		int everythingwentbetterthanexpected = 5+5+5+5+5;
+		everythingwentbetterthanexpected++;
 	}
 }

@@ -9,6 +9,7 @@ import java.util.List;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
+import android.content.Context;
 import android.util.Xml;
 
 import org.apache.http.HttpResponse;
@@ -104,7 +105,7 @@ public class RestMethod {
 		return result;
 	}
 	
-	public static void getAllPoints()
+	public static void getAllPoints(Context context)
 	{
 		HttpGet request = new HttpGet(BASE_URL + "/Point");
 		ArrayList<PointModel> result = new ArrayList<PointModel>();
@@ -176,6 +177,6 @@ public class RestMethod {
 			e.printStackTrace();
 		}
 		
-        RestProcessor.insertLocationPoints(result);
+        RestProcessor.insertLocationPoints(result, context);
 	}
 }
