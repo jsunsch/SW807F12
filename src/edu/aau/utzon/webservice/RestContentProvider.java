@@ -23,6 +23,8 @@ public class RestContentProvider extends ContentProvider{
 	    private static final String POINT_TABLE_CREATE =
 	                "CREATE TABLE " + ProviderContract.Points.TABLE_NAME + " (" +
 	                ProviderContract.Points.ATTRIBUTE_ID + " INTEGER PRIMARY KEY, " +
+	                ProviderContract.Points.ATTRIBUTE_STATE + " INTEGER, " +
+	                ProviderContract.Points.ATTRIBUTE_LAST_MODIFIED + " INTEGER, " +
 	                ProviderContract.Points.ATTRIBUTE_X + " REAL, " +
 	                ProviderContract.Points.ATTRIBUTE_Y + " REAL, " +
 	                ProviderContract.Points.ATTRIBUTE_DESCRIPTION + " TEXT);";
@@ -139,6 +141,9 @@ public class RestContentProvider extends ContentProvider{
             throw new IllegalArgumentException("Invalid insertion values " + values);
         }
         
+        // Set timestamp
+        values.put(ProviderContract.Points.ATTRIBUTE_LAST_MODIFIED, System.currentTimeMillis());
+        
         // Opens the database object in "write" mode.
         SQLiteDatabase db = mDBHelper.getWritableDatabase();
         
@@ -148,7 +153,7 @@ public class RestContentProvider extends ContentProvider{
         
         // If the insert succeeded, the row ID exists.
         if (rowId > 0) {
-            // Creates a URI with the note ID pattern and the new row ID appended to it.
+            // Creates a URI with the point ID pattern and the new row ID appended to it.
             Uri noteUri = ContentUris.withAppendedId(ProviderContract.Points.CONTENT_ID_URI_BASE, rowId);
 
             // Notifies observers registered against this provider that the data changed.
@@ -206,6 +211,9 @@ public class RestContentProvider extends ContentProvider{
 		           null,          // don't filter by row groups
 		           sortOrder        // The sort order
 		       );
+		
+		// We have the local data, check if new data exists in the central db
+		RestProcessor.getNewLocationPoints(getContext());
 		
 		// Tells the Cursor what URI to watch, so it knows when its source data changes
 	    c.setNotificationUri(getContext().getContentResolver(), uri);
