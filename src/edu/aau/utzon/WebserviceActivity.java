@@ -1,10 +1,6 @@
 package edu.aau.utzon;
 
-import java.util.List;
-
-import edu.aau.utzon.webservice.PointModel;
 import edu.aau.utzon.webservice.ProviderContract;
-import edu.aau.utzon.webservice.RestMethod;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.database.ContentObserver;
@@ -49,11 +45,6 @@ public class WebserviceActivity extends Activity{
 		values.put(ProviderContract.Points.ATTRIBUTE_DESCRIPTION, "HEjsaDescription");
 		
 		Uri mNewUri = getContentResolver().insert(ProviderContract.Points.CONTENT_URI, values);
-		
-		int everythingwentbetterthanexpected = 5+5+5+5+5;
-		
-		everythingwentbetterthanexpected++;
-		
     }
 }
 
@@ -71,10 +62,6 @@ class RestContentObserver extends ContentObserver{
 	@Override
 	public void onChange(boolean selfChange) {
 		super.onChange(selfChange);
-		
 		Log.e("Utzon", "Cos them hoes is bitches!");
-		
-		int everythingwentbetterthanexpected = 5+5+5+5+5;
-		everythingwentbetterthanexpected++;
 	}
 }
