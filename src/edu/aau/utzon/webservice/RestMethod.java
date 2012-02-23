@@ -104,7 +104,7 @@ public class RestMethod {
 		return result;
 	}
 	
-	public static List<PointModel> getAllPoints()
+	public static void getAllPoints()
 	{
 		HttpGet request = new HttpGet(BASE_URL + "/Point");
 		ArrayList<PointModel> result = new ArrayList<PointModel>();
@@ -176,6 +176,6 @@ public class RestMethod {
 			e.printStackTrace();
 		}
 		
-        return result;
+        RestProcessor.insertLocationPoints(result);
 	}
 }
