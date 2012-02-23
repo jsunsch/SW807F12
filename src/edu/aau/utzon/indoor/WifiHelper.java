@@ -24,7 +24,6 @@ public class WifiHelper {
 
 				for (ScanResult res : scanResults) {
 
-					if (-res.level < 80) {
 					if (measures.containsKey(res.BSSID) == false) {
 						measures.put(res.BSSID, new Integer(-res.level));
 					}
@@ -44,7 +43,7 @@ public class WifiHelper {
 						wifiCounts.remove(res.BSSID);
 						wifiCounts.put(res.BSSID, new Integer(newValue));
 					}
-					}
+
 				}
 
 				Thread.sleep(500);
