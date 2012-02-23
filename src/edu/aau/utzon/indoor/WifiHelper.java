@@ -24,26 +24,27 @@ public class WifiHelper {
 
 				for (ScanResult res : scanResults) {
 
-					if (measures.containsKey(res.BSSID) == false) {
-						measures.put(res.BSSID, new Integer(-res.level));
-					}
-					else {
-						int newValue = (Integer)measures.get(res.BSSID);
-						newValue += -res.level;
-						measures.remove(res.BSSID);
-						measures.put(res.BSSID, new Integer(newValue));
-					}
+					if (-res.level < 80) {
+						if (measures.containsKey(res.BSSID) == false) {
+							measures.put(res.BSSID, new Integer(-res.level));
+						}
+						else {
+							int newValue = (Integer)measures.get(res.BSSID);
+							newValue += -res.level;
+							measures.remove(res.BSSID);
+							measures.put(res.BSSID, new Integer(newValue));
+						}
 
-					if (wifiCounts.containsKey(res.BSSID) == false) {
-						wifiCounts.put(res.BSSID, new Integer(1));
+						if (wifiCounts.containsKey(res.BSSID) == false) {
+							wifiCounts.put(res.BSSID, new Integer(1));
+						}
+						else {
+							int newValue = (Integer)wifiCounts.get(res.BSSID);
+							newValue++;
+							wifiCounts.remove(res.BSSID);
+							wifiCounts.put(res.BSSID, new Integer(newValue));
+						}
 					}
-					else {
-						int newValue = (Integer)wifiCounts.get(res.BSSID);
-						newValue++;
-						wifiCounts.remove(res.BSSID);
-						wifiCounts.put(res.BSSID, new Integer(newValue));
-					}
-
 				}
 
 				Thread.sleep(500);
