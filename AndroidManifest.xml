@@ -31,7 +31,7 @@
             android:name=".WebserviceActivity" 
 			android:label="@+id/WebserviceActivity" >
 		</activity>
-		
+		<service android:name="edu.aau.utzon.webservice.RestService"/>
     </application>
 
 </manifest>
