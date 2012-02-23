@@ -12,6 +12,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 
 public class WebserviceActivity extends Activity{
     @Override
@@ -24,6 +25,8 @@ public class WebserviceActivity extends Activity{
 		.registerContentObserver(ProviderContract.Points.CONTENT_URI, true, new RestContentObserver(new Handler()));
         
         setContentView(R.layout.main);
+        
+        Log.e("Utzon", "Why you call them hoes bitches?");
         
         // DEBUGGING content provider
         String[] mProjection = {ProviderContract.Points.ATTRIBUTE_ID, 
@@ -48,6 +51,7 @@ public class WebserviceActivity extends Activity{
 		Uri mNewUri = getContentResolver().insert(ProviderContract.Points.CONTENT_URI, values);
 		
 		int everythingwentbetterthanexpected = 5+5+5+5+5;
+		
 		everythingwentbetterthanexpected++;
 		
     }
@@ -67,6 +71,9 @@ class RestContentObserver extends ContentObserver{
 	@Override
 	public void onChange(boolean selfChange) {
 		super.onChange(selfChange);
+		
+		Log.e("Utzon", "Cos them hoes is bitches!");
+		
 		int everythingwentbetterthanexpected = 5+5+5+5+5;
 		everythingwentbetterthanexpected++;
 	}
