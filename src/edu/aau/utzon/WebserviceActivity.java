@@ -22,7 +22,7 @@ public class WebserviceActivity extends Activity{
         
         setContentView(R.layout.main);
         
-        Log.e("Utzon", "Why you call them hoes bitches?");
+        
         
         // DEBUGGING content provider
         String[] mProjection = {ProviderContract.Points.ATTRIBUTE_ID, 
@@ -31,20 +31,23 @@ public class WebserviceActivity extends Activity{
         		ProviderContract.Points.ATTRIBUTE_DESCRIPTION};
 	
 		// Query / Get
-        Cursor mCursor = getContentResolver().query(
+        getContentResolver().query(
             ProviderContract.Points.CONTENT_URI,   	// The content URI of the points table
             mProjection,                        	// The columns to return for each row
             null,                    				// Selection criteria
             null,                     				// Selection criteria
             null);                        			// The sort order for the returned rows
 
-        // Insert
+        /* Insert
 		ContentValues values = new ContentValues();
 		values.put(ProviderContract.Points.ATTRIBUTE_X, 0.5);
 		values.put(ProviderContract.Points.ATTRIBUTE_Y, 1.5);
 		values.put(ProviderContract.Points.ATTRIBUTE_DESCRIPTION, "HEjsaDescription");
 		
 		Uri mNewUri = getContentResolver().insert(ProviderContract.Points.CONTENT_URI, values);
+		*/
+        
+        Log.e("Utzon", "Why you call them hoes bitches?");
     }
 }
 
