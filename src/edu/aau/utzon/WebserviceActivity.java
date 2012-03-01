@@ -19,8 +19,6 @@ public class WebserviceActivity extends Activity{
         
         setContentView(R.layout.main);
         
-        
-        
         // DEBUGGING content provider
         String[] mProjection = {ProviderContract.Points.ATTRIBUTE_ID, 
         		ProviderContract.Points.ATTRIBUTE_X, 

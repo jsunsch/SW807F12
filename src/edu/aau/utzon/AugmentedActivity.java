@@ -3,20 +3,25 @@ package edu.aau.utzon;
 import java.io.IOException;
 import java.util.List;
 
-import android.app.Activity;
-import android.content.Context;
+import android.app.Activity; 
+import android.content.Context; 
+import android.graphics.Canvas; 
+import android.graphics.Color; 
+import android.graphics.Paint; 
 import android.graphics.PixelFormat;
-import android.hardware.Camera;
+import android.hardware.Camera; 
 import android.hardware.Camera.Size;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.os.Bundle;
+import android.os.Bundle; 
 import android.util.Log;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
-import android.view.Window;
+import android.view.SurfaceHolder; 
+import android.view.SurfaceView; 
+import android.view.View; 
+import android.view.Window; 
+import android.view.ViewGroup.LayoutParams; 
 import android.view.WindowManager;
 import android.widget.TextView;
 
@@ -25,7 +30,6 @@ public class AugmentedActivity extends Activity implements SensorEventListener {
 	private Sensor mOrientationSensor;
 
 	private Preview mPreview;
-	//Camera mCamera;
 	int numberOfCameras;
 	int cameraCurrentlyLocked;
 
@@ -53,10 +57,29 @@ public class AugmentedActivity extends Activity implements SensorEventListener {
 		
 		// Create a RelativeLayout container that will hold a SurfaceView
 		mPreview = new Preview(this);
+		// Create layout for the overlay
+        DrawOnTop mDraw = new DrawOnTop(this); 
+        addContentView(mDraw, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)); 
 
 		mSurfaceHolder = mSurfaceView.getHolder();
 		mSurfaceHolder.addCallback(mPreview);
 	}
+	
+	class DrawOnTop extends View { 
+        public DrawOnTop(Context context) { 
+                super(context); 
+                // TODO Auto-generated constructor stub 
+        } 
+        @Override 
+        protected void onDraw(Canvas canvas) { 
+                // TODO Auto-generated method stub 
+                Paint paint = new Paint(); 
+                paint.setStyle(Paint.Style.FILL); 
+                paint.setColor(Color.GREEN); 
+                canvas.drawText("Test Text", 10, 10, paint); 
+                super.onDraw(canvas); 
+        } 
+}
 
 	@Override
 	protected void onResume() { 
@@ -88,9 +111,12 @@ public class AugmentedActivity extends Activity implements SensorEventListener {
 	private void updateUI(SensorEvent e)
 	{
 		TextView tv = (TextView)findViewById(R.id.textViewDebug);
+		if(tv != null)
+		{
 		tv.setText("Azimuth: " + (int)e.values[0] + "\n" +
 				"Pitch: " + (int)e.values[1] + "\n" +
 				"Roll: " + (int)e.values[2]);
+		}
 	}
 
 

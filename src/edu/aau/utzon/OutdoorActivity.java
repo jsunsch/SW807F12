@@ -57,7 +57,7 @@ public class OutdoorActivity extends MapActivity {
     	// Draw POIs
     	drawPOI();
     	
-    	// Make fancy fancy animation to our current position :P
+    	// Do fancy fancy animation to our current position :P
     	animateToLocation(mLocTool.getCurrentLocation());
     }
     
@@ -78,7 +78,7 @@ public class OutdoorActivity extends MapActivity {
         // Setup overlays
     	List<Overlay> mapOverlays = mapView.getOverlays();
     	Drawable drawable = this.getResources().getDrawable(R.drawable.androidmarker);
-    	PoiOverlay itemizedoverlay = new PoiOverlay(drawable, this);
+    	GMapsOverlay itemizedoverlay = new GMapsOverlay(drawable, this);
     	
     	// Add POI to the overlay
     	GeoPoint point = new GeoPoint(19240000,-99120000);
