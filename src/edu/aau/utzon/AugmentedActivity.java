@@ -56,8 +56,6 @@ public class AugmentedActivity extends Activity implements SensorEventListener {
 
 		mSurfaceHolder = mSurfaceView.getHolder();
 		mSurfaceHolder.addCallback(mPreview);
-
-
 	}
 
 	@Override
