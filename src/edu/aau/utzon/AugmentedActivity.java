@@ -39,7 +39,7 @@ public class AugmentedActivity extends Activity implements SensorEventListener {
 
 	public void onCreate(Bundle saved) {
 		super.onCreate(saved);
-		
+
 		// Fullscreen
 		getWindow().setFormat(PixelFormat.TRANSLUCENT);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -47,39 +47,39 @@ public class AugmentedActivity extends Activity implements SensorEventListener {
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
 		setContentView(R.layout.augmented);
-		
+
 		// Sensor
 		mSensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
 		mOrientationSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION);
 
 		// Camera
 		mSurfaceView = (SurfaceView) findViewById(R.id.surface_camera);
-		
+
 		// Create a RelativeLayout container that will hold a SurfaceView
 		mPreview = new Preview(this);
 		// Create layout for the overlay
-        DrawOnTop mDraw = new DrawOnTop(this); 
-        addContentView(mDraw, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)); 
+		DrawOnTop mDraw = new DrawOnTop(this); 
+		addContentView(mDraw, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)); 
 
 		mSurfaceHolder = mSurfaceView.getHolder();
 		mSurfaceHolder.addCallback(mPreview);
 	}
-	
+
 	class DrawOnTop extends View { 
-        public DrawOnTop(Context context) { 
-                super(context); 
-                // TODO Auto-generated constructor stub 
-        } 
-        @Override 
-        protected void onDraw(Canvas canvas) { 
-                // TODO Auto-generated method stub 
-                Paint paint = new Paint(); 
-                paint.setStyle(Paint.Style.FILL); 
-                paint.setColor(Color.GREEN); 
-                canvas.drawText("Test Text", 10, 10, paint); 
-                super.onDraw(canvas); 
-        } 
-}
+		public DrawOnTop(Context context) { 
+			super(context); 
+			// TODO Auto-generated constructor stub 
+		} 
+		@Override 
+		protected void onDraw(Canvas canvas) { 
+			// TODO Auto-generated method stub 
+			Paint paint = new Paint(); 
+			paint.setStyle(Paint.Style.FILL); 
+			paint.setColor(Color.GREEN); 
+			canvas.drawText("Test Text", 10, 10, paint); 
+			super.onDraw(canvas); 
+		} 
+	}
 
 	@Override
 	protected void onResume() { 
@@ -113,9 +113,9 @@ public class AugmentedActivity extends Activity implements SensorEventListener {
 		TextView tv = (TextView)findViewById(R.id.textViewDebug);
 		if(tv != null)
 		{
-		tv.setText("Azimuth: " + (int)e.values[0] + "\n" +
-				"Pitch: " + (int)e.values[1] + "\n" +
-				"Roll: " + (int)e.values[2]);
+			tv.setText("Azimuth: " + (int)e.values[0] + "\n" +
+					"Pitch: " + (int)e.values[1] + "\n" +
+					"Roll: " + (int)e.values[2]);
 		}
 	}
 
@@ -183,7 +183,7 @@ public class AugmentedActivity extends Activity implements SensorEventListener {
 
 			camera.setParameters(parameters);
 		}
-		
+
 		public void surfaceCreated(SurfaceHolder holder) {
 			// The Surface has been created, acquire the camera and tell it where
 			// to draw.
