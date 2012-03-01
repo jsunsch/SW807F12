@@ -5,6 +5,7 @@ import java.util.List;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.PixelFormat;
 import android.hardware.Camera;
 import android.hardware.Camera.Size;
 import android.hardware.Sensor;
@@ -15,6 +16,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 public class AugmentedActivity extends Activity implements SensorEventListener {
@@ -32,19 +35,28 @@ public class AugmentedActivity extends Activity implements SensorEventListener {
 
 	public void onCreate(Bundle saved) {
 		super.onCreate(saved);
-		setContentView(R.layout.augmented);
+		
+		// Fullscreen
+		getWindow().setFormat(PixelFormat.TRANSLUCENT);
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
+		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+				WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
+		setContentView(R.layout.augmented);
+		
 		// Sensor
 		mSensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
 		mOrientationSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION);
 
 		// Camera
 		mSurfaceView = (SurfaceView) findViewById(R.id.surface_camera);
+		
 		// Create a RelativeLayout container that will hold a SurfaceView
 		mPreview = new Preview(this);
 
 		mSurfaceHolder = mSurfaceView.getHolder();
 		mSurfaceHolder.addCallback(mPreview);
+
 
 	}
 
@@ -147,53 +159,7 @@ public class AugmentedActivity extends Activity implements SensorEventListener {
 
 			camera.setParameters(parameters);
 		}
-
-		/*
- @Override
- protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-     // We purposely disregard child measurements because act as a
-     // wrapper to a SurfaceView that centers the camera preview instead
-     // of stretching it.
-     final int width = resolveSize(getSuggestedMinimumWidth(), widthMeasureSpec);
-     final int height = resolveSize(getSuggestedMinimumHeight(), heightMeasureSpec);
-     setMeasuredDimension(width, height);
-
-     if (mSupportedPreviewSizes != null) {
-         mPreviewSize = getOptimalPreviewSize(mSupportedPreviewSizes, width, height);
-     }
- }
-		 */
-
-		/*
- @Override
- protected void onLayout(boolean changed, int l, int t, int r, int b) {
-     if (changed && getChildCount() > 0) {
-         final View child = getChildAt(0);
-
-         final int width = r - l;
-         final int height = b - t;
-
-         int previewWidth = width;
-         int previewHeight = height;
-         if (mPreviewSize != null) {
-             previewWidth = mPreviewSize.width;
-             previewHeight = mPreviewSize.height;
-         }
-
-         // Center the child SurfaceView within the parent.
-         if (width * previewHeight > height * previewWidth) {
-             final int scaledChildWidth = previewWidth * height / previewHeight;
-             child.layout((width - scaledChildWidth) / 2, 0,
-                     (width + scaledChildWidth) / 2, height);
-         } else {
-             final int scaledChildHeight = previewHeight * width / previewWidth;
-             child.layout(0, (height - scaledChildHeight) / 2,
-                     width, (height + scaledChildHeight) / 2);
-         }
-     }
- }
-		 */
-
+		
 		public void surfaceCreated(SurfaceHolder holder) {
 			// The Surface has been created, acquire the camera and tell it where
 			// to draw.
