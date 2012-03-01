@@ -11,8 +11,8 @@ public class UtzonActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-        //startActivity(new Intent(getApplicationContext(), OutdoorActivity.class));
+        startActivity(new Intent(getApplicationContext(), OutdoorActivity.class));
         //startActivity(new Intent(getApplicationContext(), WebserviceActivity.class));
-        startActivity(new Intent(getApplicationContext(), AugmentedActivity.class));
+        //startActivity(new Intent(getApplicationContext(), AugmentedActivity.class));
     }
 }

@@ -111,7 +111,7 @@ public class RestContentProvider extends ContentProvider{
 
 	@Override
 	public Uri insert(Uri uri, ContentValues initialValues) {
-		// Validates the incoming URI. Only the full provider URI is allowed for inserts.
+		// Validates the incoming URI. Only the full provider URI(whole table) is allowed for inserts.
         if (sUriMatcher.match(uri) != URI_POINT) {
             throw new IllegalArgumentException("Unknown URI " + uri);
         }
@@ -129,6 +129,7 @@ public class RestContentProvider extends ContentProvider{
         }
         
         // Check that all required attributes are set
+        // Include _ID?        
         if (values.containsKey(ProviderContract.Points.ATTRIBUTE_X) == false) {
             throw new IllegalArgumentException("Invalid insertion values " + values);
         }
@@ -143,7 +144,7 @@ public class RestContentProvider extends ContentProvider{
         SQLiteDatabase db = mDBHelper.getWritableDatabase();
         
         long rowId = db.insert(ProviderContract.Points.TABLE_NAME, 
-        		ProviderContract.Points.ATTRIBUTE_DESCRIPTION, // "A hack, SQLite sets this column value to null if values is empty." (c) Google <- What the fuck?
+        		ProviderContract.Points.ATTRIBUTE_DESCRIPTION, // "A hack, SQLite sets this column value to null if values is empty." (c) Google <- What?
         		values);
         
         // If the insert succeeded, the row ID exists.
