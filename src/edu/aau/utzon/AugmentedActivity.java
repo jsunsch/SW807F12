@@ -5,6 +5,7 @@ import java.util.List;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.hardware.Camera;
 import android.hardware.Camera.Size;
 import android.hardware.Sensor;
@@ -81,9 +82,9 @@ public class AugmentedActivity extends Activity implements SensorEventListener {
     private void updateUI(SensorEvent e)
     {
     	TextView tv = (TextView)findViewById(R.id.textViewDebug);
-    	tv.setText("Azimuth: " + e.values[0] + "\n" +
-    				"Pitch: " + e.values[1] + "\n" +
-    				"Roll: " + e.values[2]);
+    	tv.setText("Azimuth: " + (int)e.values[0] + "\n" +
+    				"Pitch: " + (int)e.values[1] + "\n" +
+    				"Roll: " + (int)e.values[2]);
     }
     
 
@@ -121,6 +122,11 @@ class Preview implements SurfaceHolder.Callback {
      
      // Set preview size
      mPreviewSize = getOptimalPreviewSize(mSupportedPreviewSizes, mSurfaceView.getWidth(), mSurfaceView.getHeight());
+     
+     // Android sucks, must force the orientation manually if phone is not in landscape
+     Camera.Parameters parameters = mCamera.getParameters();
+     parameters.set("orientation", "portrait");
+     mCamera.setParameters(parameters);
  }
 
  public void setCamera(Camera camera) {
