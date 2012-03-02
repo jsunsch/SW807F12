@@ -31,12 +31,10 @@ public class AugmentedOnDraw extends View {
 	protected void onDraw(Canvas canvas) {	
 		LocTool mLocTool = LocTool.getLocTool(getContext());
 
-		// TODO Auto-generated method stub 
 		Paint paint = new Paint(); 
 		paint.setStyle(Paint.Style.FILL); 
 		paint.setColor(Color.GREEN); 
 		
-
 		BitmapDrawable d = (BitmapDrawable) this.getResources().getDrawable(R.drawable.androidmarker);
 		Bitmap bitmap = ((BitmapDrawable)d).getBitmap();
 
@@ -83,7 +81,7 @@ public class AugmentedOnDraw extends View {
 		double brng = Math.toDegrees(Math.atan2(y, x));
 		
 		// Distance to POI (Haversine)
-		double R = 6371; // km
+		double R = 6371; // earth’s radius in km
 		double dLat = Math.toRadians(poiLat-userLat);
 		double dLon = Math.toRadians(poiLong-userLong);
 		double lat1 = Math.toRadians(userLat);
@@ -106,10 +104,10 @@ public class AugmentedOnDraw extends View {
 			
 			canvas.drawBitmap(bitmap, 
 					realx,
-					20,		// Do something more intelligent about the height / Y-axis.
+					20,		// TODO: Do something more intelligent about the height / Y-axis.
 					paint);
 			
-			canvas.drawText(Integer.toString((int)distance), realx, 15, paint); 
+			canvas.drawText(Integer.toString((int)distance) + " km.", realx, 15, paint); 
 		}
 	} 
 }
