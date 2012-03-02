@@ -37,7 +37,7 @@ public class LocTool {
 	public LocTool(Context context) {
 		this.mContext = context;
 	}
-	
+
 	public Location getCurrentLocation(){
 		return mCurrentLoc;
 	}
@@ -87,10 +87,15 @@ public class LocTool {
 		// Set the current position to the last known position, until we have a better fixpoint
 		Location latestGPS = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 		Location latestNetwork = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-		if(isBetterLocation(latestGPS, latestNetwork)) {
-			mCurrentLoc = latestGPS;
-		} else {
-			mCurrentLoc = latestNetwork;
+		
+		if(latestGPS == null && latestNetwork != null) { this.mCurrentLoc = latestNetwork; }
+		else if(latestGPS != null && latestNetwork == null) { this.mCurrentLoc = latestGPS; }
+		else if(latestGPS != null && latestNetwork != null) {
+			if(isBetterLocation(latestGPS, latestNetwork)) {
+				this.mCurrentLoc = latestGPS;
+			} else {
+				this.mCurrentLoc = latestNetwork;
+			}
 		}
 	}
 
