@@ -5,6 +5,8 @@ import java.util.List;
 
 import com.google.android.maps.GeoPoint;
 
+import edu.aau.utzon.webservice.RestServiceHelper;
+
 import android.content.Context;
 import android.location.Location;
 import android.location.LocationListener;
@@ -34,9 +36,18 @@ public class LocTool {
 	private LocationListener mLocationListenerGPS;
 	private LocationListener mLocationListenerNetwork;
 
-	public LocTool(Context context) {
+	private static LocTool ref;
+
+	private LocTool(Context context) {
 		this.mContext = context;
-	}
+    }
+
+    public static LocTool getLocTool(Context context) {
+      if (ref == null)
+          ref = new LocTool(context);
+      return ref;
+    }
+    
 
 	public Location getCurrentLocation(){
 		return mCurrentLoc;

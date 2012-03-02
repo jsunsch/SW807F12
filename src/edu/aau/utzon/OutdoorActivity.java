@@ -39,7 +39,7 @@ public class OutdoorActivity extends MapActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Initialize location tool with the context of this context
-        mLocTool = new LocTool(getApplicationContext());
+        mLocTool = LocTool.getLocTool(this);
         mLocTool.onCreate();
         
         // Display Google maps to the user

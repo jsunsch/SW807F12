@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.google.android.maps.GeoPoint;
 
-import edu.aau.utzon.AugmentedActivity.DrawOnTop;
+
 import edu.aau.utzon.location.LocTool;
 
 import android.app.Activity; 
@@ -44,13 +44,13 @@ public class AugmentedActivity extends Activity implements SensorEventListener {
 	// The first rear facing camera
 	private SurfaceView mSurfaceView;
 	private SurfaceHolder mSurfaceHolder;
-	private DrawOnTop mDraw;
+	private AugmentedOnDraw mDraw;
 	
 	private LocTool mLocTool;
 
 	public void onCreate(Bundle saved) {
 		super.onCreate(saved);
-		mLocTool = new LocTool(getApplicationContext());
+		mLocTool = LocTool.getLocTool(this);
 		mLocTool.onCreate();
 		
 		// Fullscreen
@@ -72,92 +72,15 @@ public class AugmentedActivity extends Activity implements SensorEventListener {
 		mPreview = new Preview(this);
 		
 		// Create layout for the overlay
-		mDraw = new DrawOnTop(this); 
+		mDraw = new AugmentedOnDraw(this); 
 		addContentView(mDraw, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)); 
 
 		mSurfaceHolder = mSurfaceView.getHolder();
 		mSurfaceHolder.addCallback(mPreview);
 	}
 
-	class DrawOnTop extends View { 
-		private SensorEvent mSensor;
-		private float[] mSensorValues;
-		
-		public void updateOverlay(SensorEvent e)
-		{
-			mDraw.invalidate();
-			mSensorValues = e.values;
-		}
-		
-		public DrawOnTop(Context context) { 
-			super(context); 
-			// TODO Auto-generated constructor stub 
-		}
-		
-		@Override 
-		protected void onDraw(Canvas canvas) { 
-			
-			// TODO Auto-generated method stub 
-			Paint paint = new Paint(); 
-			paint.setStyle(Paint.Style.FILL); 
-			paint.setColor(Color.GREEN); 
-			canvas.drawText("Test Text", 10, 10, paint); 
-			
-			BitmapDrawable d = (BitmapDrawable) this.getResources().getDrawable(R.drawable.androidmarker);
-			Bitmap bitmap = ((BitmapDrawable)d).getBitmap();
-			
-
-			// Trigonometry to find angle between 2 points
-			// double widthPosition = widthMax - ((widthMax / azimuthMax) * mSensorValues[0]);
-			GeoPoint poi = new GeoPoint(17000000,-90000000);
-			GeoPoint userLoc = mLocTool.locToGeo(mLocTool.getCurrentLocation());
-			
-			
-			/**
-			 *  
-			 *  B
-			 * 	|\
-			 * 	|  \
-			 * 	|    \
-			 * 	|      \
-			 * 	|________\A
-			 *  C
-			 */
 	
-			double Ax = userLoc.getLatitudeE6();
-			double Ay = userLoc.getLongitudeE6();
-			
-			double Bx = poi.getLatitudeE6();
-			double By = poi.getLongitudeE6();
-			
-			double Cx = Bx;
-			double Cy = Ay;
-			
-			double BC = Bx - Cx;
-			double a = Math.abs(Bx - Ax);
-			double b = Math.abs(Ay - By);
-			
-			double tan = a/b;
-			double angle = Math.toDegrees(Math.atan(tan));
-			
-			// Normalize sensor values to display size
-			// SensorValues[0] : 0-360
-			// SensorValues[1] : -180 - 180
-			// SensorValues[2] : -90 - 90
-			double azimuthMax = 360;
-			double widthMax = (double)canvas.getWidth();
-			
-			
-			double rollMax = 180;
-			double heightMax = (double)canvas.getHeight();
-			double sensorValue = mSensorValues[2];
-			sensorValue += 90;
-			double heightPosition = (heightMax / rollMax ) * sensorValue;
-				
-			canvas.drawBitmap(bitmap, 50, (int)heightPosition, paint);
-			super.onDraw(canvas); 
-		} 
-	}
+	
 
 	@Override
 	protected void onResume() { 
