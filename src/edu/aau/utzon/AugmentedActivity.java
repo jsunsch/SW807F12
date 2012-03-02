@@ -3,20 +3,11 @@ package edu.aau.utzon;
 import java.io.IOException;
 import java.util.List;
 
-import com.google.android.maps.GeoPoint;
-
-
 import edu.aau.utzon.location.LocTool;
 
 import android.app.Activity; 
 import android.content.Context; 
-import android.graphics.Bitmap;
-import android.graphics.Canvas; 
-import android.graphics.Color; 
-import android.graphics.Paint; 
 import android.graphics.PixelFormat;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.hardware.Camera; 
 import android.hardware.Camera.Size;
 import android.hardware.Sensor;
@@ -27,7 +18,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.SurfaceHolder; 
 import android.view.SurfaceView; 
-import android.view.View; 
 import android.view.Window; 
 import android.view.ViewGroup.LayoutParams; 
 import android.view.WindowManager;
