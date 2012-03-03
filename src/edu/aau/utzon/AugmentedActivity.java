@@ -34,13 +34,13 @@ public class AugmentedActivity extends Activity implements SensorEventListener {
 	// The first rear facing camera
 	private SurfaceView mSurfaceView;
 	private SurfaceHolder mSurfaceHolder;
-	private AugmentedOnDraw mDraw;
+	private AugmentedOverlay mDraw;
 	
 	private LocTool mLocTool;
 
 	public void onCreate(Bundle saved) {
 		super.onCreate(saved);
-		mLocTool = LocTool.getLocTool(this);
+		mLocTool = new LocTool(this);
 		mLocTool.onCreate();
 		
 		// Fullscreen
@@ -62,7 +62,7 @@ public class AugmentedActivity extends Activity implements SensorEventListener {
 		mPreview = new Preview(this);
 		
 		// Create layout for the overlay
-		mDraw = new AugmentedOnDraw(this); 
+		mDraw = new AugmentedOverlay(this); 
 		addContentView(mDraw, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)); 
 
 		mSurfaceHolder = mSurfaceView.getHolder();
@@ -104,7 +104,7 @@ public class AugmentedActivity extends Activity implements SensorEventListener {
 	private void updateUI(SensorEvent e)
 	{
 		TextView tv = (TextView)findViewById(R.id.textViewDebug);
-		mDraw.updateOverlay(e);
+		mDraw.updateOverlay(e, mLocTool);
 		if(tv != null)
 		{
 			tv.setText("Azimuth: " + (int)e.values[0] + "\n" +

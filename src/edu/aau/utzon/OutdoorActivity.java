@@ -39,7 +39,7 @@ public class OutdoorActivity extends MapActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Initialize location tool with the context of this context
-        mLocTool = LocTool.getLocTool(this);
+        mLocTool = new LocTool(this);
         mLocTool.onCreate();
         
         // Display Google maps to the user
@@ -67,7 +67,7 @@ public class OutdoorActivity extends MapActivity {
     	MapView mapView = (MapView) findViewById(R.id.mapview);
     	MapController mc = mapView.getController();
     	
-    	GeoPoint point =  mLocTool.locToGeo(loc);
+    	GeoPoint point =  LocTool.locToGeo(loc);
     	mc.animateTo(point);
     }
     

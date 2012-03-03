@@ -18,13 +18,14 @@ public class RestContentProvider extends ContentProvider{
 	// SQL "backend" for the content provider
 	static class RestDB extends SQLiteOpenHelper{
 		private static final String DATABASE_NAME = "utzon.db";
-		private static final int DATABASE_VERSION = 4;
+		private static final int DATABASE_VERSION = 10;
 
 	    private static final String POINT_TABLE_CREATE =
 	                "CREATE TABLE " + ProviderContract.Points.TABLE_NAME + " (" +
-	                ProviderContract.Points.ATTRIBUTE_ID + " INTEGER PRIMARY KEY, " +
+	                ProviderContract.Points.ATTRIBUTE_ID + " INTEGER UNIQUE, " +
 	                ProviderContract.Points.ATTRIBUTE_X + " REAL, " +
 	                ProviderContract.Points.ATTRIBUTE_Y + " REAL, " +
+	                ProviderContract.Points.ATTRIBUTE_STATE + " INTEGER, " +
 	                ProviderContract.Points.ATTRIBUTE_DESCRIPTION + " TEXT);";
 		  
 		public RestDB(Context context) {
@@ -129,7 +130,9 @@ public class RestContentProvider extends ContentProvider{
         }
         
         // Check that all required attributes are set
-        // Include _ID?        
+        if (values.containsKey(ProviderContract.Points.ATTRIBUTE_ID) == false) {
+            throw new IllegalArgumentException("Invalid insertion values " + values);
+        }
         if (values.containsKey(ProviderContract.Points.ATTRIBUTE_X) == false) {
             throw new IllegalArgumentException("Invalid insertion values " + values);
         }
@@ -142,6 +145,8 @@ public class RestContentProvider extends ContentProvider{
         
         // Opens the database object in "write" mode.
         SQLiteDatabase db = mDBHelper.getWritableDatabase();
+        
+       
         
         long rowId = db.insert(ProviderContract.Points.TABLE_NAME, 
         		ProviderContract.Points.ATTRIBUTE_DESCRIPTION, // "A hack, SQLite sets this column value to null if values is empty." (c) Google <- What?
@@ -157,8 +162,9 @@ public class RestContentProvider extends ContentProvider{
             return noteUri;
         }
 
+        return uri;
         // If the insert didn't succeed, then the rowID is <= 0. Throws an exception.
-        throw new SQLException("Failed to insert row into " + uri);
+        // throw new SQLException("Failed to insert row into " + uri);
 	}
 
 	@Override

@@ -1,7 +1,10 @@
 package edu.aau.utzon.webservice;
 
 import android.app.IntentService;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -29,7 +32,7 @@ public class RestService extends IntentService {
 
 	private void GetLocationPoints() {
 		
-		// Simulates long respons by waiting
+		/* Simulates long respons by waiting
 		long endTime = System.currentTimeMillis() + 5*1000;
 		while (System.currentTimeMillis() < endTime) {
 			synchronized (this) {
@@ -40,8 +43,36 @@ public class RestService extends IntentService {
 			}
 		}
 		
+		
+		while(!haveInternet())
+		{
+			// Wait for internet...
+			synchronized (this) {
+				try {
+					wait(System.currentTimeMillis() - System.currentTimeMillis() + 5*1000);
+				} catch (Exception e) {
+				}
+			}
+		}
+		*/
 		RestMethod.getAllPoints(getBaseContext());
 		
 		Log.e("Service Example", "Niggar niggar niggar niggar niggar niggar niggar! Cos them hoes is bitches!"); 
 	}
+	
+	/*
+	* @return boolean return true if the application can access the internet
+	*/
+	private boolean haveInternet(){
+		NetworkInfo info = ((ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo();
+		if (info==null || !info.isConnected()) {
+			return false;
+		}
+		if (info.isRoaming()) {
+			// here is the roaming option you can change it if you want to disable internet while roaming, just return false
+			return true;
+		}
+		return true;
+	}
+	// see http://androidsnippets.com/have-internet
 }

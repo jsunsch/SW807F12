@@ -5,8 +5,6 @@ import java.util.List;
 
 import com.google.android.maps.GeoPoint;
 
-import edu.aau.utzon.webservice.RestServiceHelper;
-
 import android.content.Context;
 import android.location.Location;
 import android.location.LocationListener;
@@ -36,18 +34,9 @@ public class LocTool {
 	private LocationListener mLocationListenerGPS;
 	private LocationListener mLocationListenerNetwork;
 
-	private static LocTool ref;
-
-	private LocTool(Context context) {
+	public LocTool(Context context) {
 		this.mContext = context;
     }
-
-    public static LocTool getLocTool(Context context) {
-      if (ref == null)
-          ref = new LocTool(context);
-      return ref;
-    }
-    
 
 	public Location getCurrentLocation(){
 		return mCurrentLoc;
@@ -135,7 +124,7 @@ public class LocTool {
 			{
 				if(p.getLongitude() <= mCurrentLoc.getLongitude()+1 && p.getLongitude() >= mCurrentLoc.getLongitude()-1)
 				{
-					// "Near" : A few thousand km.... move to webservice?
+					// "Near" : A few hundred km.... move to webservice?
 					result = true;
 				}
 			}
@@ -164,7 +153,6 @@ public class LocTool {
 	}
 
 	protected Location nearestPOI(List<Location> query) {
-		// Hmm... NPE incoming :<
 		Location result = null;
 
 		float closestDist = 1000000;
@@ -201,7 +189,7 @@ public class LocTool {
 		return pois;
 	}
 
-	public GeoPoint locToGeo(Location loc)
+	static public GeoPoint locToGeo(Location loc)
 	{
 		// Location -> GeoPoint conversion
 		return new GeoPoint((int)(loc.getLatitude()*1e6),(int)(loc.getLongitude()*1e6));
