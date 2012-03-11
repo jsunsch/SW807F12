@@ -3,16 +3,15 @@ package edu.aau.utzon;
 import java.io.IOException;
 import java.util.List;
 
-import edu.aau.utzon.location.LocTool;
+import edu.aau.utzon.location.LocationAwareActivity;
 
-import android.app.Activity; 
 import android.content.Context; 
 import android.graphics.PixelFormat;
 import android.hardware.Camera; 
-import android.hardware.Camera.Size;
 import android.hardware.Sensor;
-import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
+import android.hardware.Camera.Size;
+import android.hardware.SensorEvent;
 import android.hardware.SensorManager;
 import android.os.Bundle; 
 import android.util.Log;
@@ -23,26 +22,24 @@ import android.view.ViewGroup.LayoutParams;
 import android.view.WindowManager;
 import android.widget.TextView;
 
-public class AugmentedActivity extends Activity implements SensorEventListener {
-	private SensorManager mSensorManager;
-	private Sensor mOrientationSensor;
-
+public class AugmentedActivity extends LocationAwareActivity implements SensorEventListener {
 	private Preview mPreview;
 	int numberOfCameras;
 	int cameraCurrentlyLocked;
+	
+	private SensorManager mSensorManager;
+    private Sensor mGyro;
 
 	// The first rear facing camera
 	private SurfaceView mSurfaceView;
 	private SurfaceHolder mSurfaceHolder;
 	private AugmentedOverlay mDraw;
-	
-	private LocTool mLocTool;
+
+	//private LocationAwareActivity mLocTool;
 
 	public void onCreate(Bundle saved) {
 		super.onCreate(saved);
-		mLocTool = new LocTool(this);
-		mLocTool.onCreate();
-		
+
 		// Fullscreen
 		getWindow().setFormat(PixelFormat.TRANSLUCENT);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -51,16 +48,17 @@ public class AugmentedActivity extends Activity implements SensorEventListener {
 
 		setContentView(R.layout.augmented);
 
-		// Sensor
+		// Gyro
 		mSensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
-		mOrientationSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION);
-
+        mGyro = mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION);
+        mSensorManager.registerListener(this, mGyro, SensorManager.SENSOR_DELAY_NORMAL);
+		
 		// Camera
 		mSurfaceView = (SurfaceView) findViewById(R.id.surface_camera);
 
 		// Create a RelativeLayout container that will hold a SurfaceView
 		mPreview = new Preview(this);
-		
+
 		// Create layout for the overlay
 		mDraw = new AugmentedOverlay(this); 
 		addContentView(mDraw, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)); 
@@ -69,42 +67,31 @@ public class AugmentedActivity extends Activity implements SensorEventListener {
 		mSurfaceHolder.addCallback(mPreview);
 	}
 
-	
-	
-
 	@Override
-	protected void onResume() { 
+	public void onResume() { 
 		super.onResume();
-		mLocTool.onResume();
-		mSensorManager.registerListener(this, mOrientationSensor, SensorManager.SENSOR_DELAY_NORMAL);
+		mSensorManager.registerListener(this, mGyro, SensorManager.SENSOR_DELAY_NORMAL);
 	}
 
 
 	@Override
-	protected void onPause() {
+	public void onPause() {
 		super.onPause();
-		mLocTool.onPause();
 		mSensorManager.unregisterListener(this);
+
 	}
 
 	@Override
-	public void onAccuracyChanged(Sensor sensor, int accuracy) {
-		int watizthis = 5;
-		watizthis++;
+	protected void locationUpdateEvent() {
+		// TODO: this.mCurrentLoc
 	}
 
+	/** GURO SENSOR CALLBACKS **/
 	@Override
-	public void onSensorChanged(SensorEvent event) {
-		updateUI(event);
-
-		int everythingwentbetterthanexpected = 5;
-		everythingwentbetterthanexpected++;
-	}
-
-	private void updateUI(SensorEvent e)
-	{
+	public void onSensorChanged(SensorEvent e) {
+		// New data from gyro available
 		TextView tv = (TextView)findViewById(R.id.textViewDebug);
-		mDraw.updateOverlay(e, mLocTool);
+		mDraw.updateOverlay(e, this.mCurrentLoc);
 		if(tv != null)
 		{
 			tv.setText("Azimuth: " + (int)e.values[0] + "\n" +
@@ -113,6 +100,11 @@ public class AugmentedActivity extends Activity implements SensorEventListener {
 		}
 	}
 
+	@Override
+	public void onAccuracyChanged(Sensor sensor, int accuracy) {
+		int watizthis = 5;
+		watizthis++;
+	}
 
 
 	//----------------------------------------------------------------------

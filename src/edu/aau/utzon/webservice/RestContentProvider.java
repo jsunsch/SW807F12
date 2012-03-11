@@ -6,7 +6,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.UriMatcher;
 import android.database.Cursor;
-import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteQueryBuilder;
@@ -18,7 +17,7 @@ public class RestContentProvider extends ContentProvider{
 	// SQL "backend" for the content provider
 	static class RestDB extends SQLiteOpenHelper{
 		private static final String DATABASE_NAME = "utzon.db";
-		private static final int DATABASE_VERSION = 12;
+		private static final int DATABASE_VERSION = 13;
 
 	    private static final String POINT_TABLE_CREATE =
 	                "CREATE TABLE " + ProviderContract.Points.TABLE_NAME + " (" +

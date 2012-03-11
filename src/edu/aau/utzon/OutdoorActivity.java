@@ -1,5 +1,6 @@
 package edu.aau.utzon;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import android.graphics.drawable.Drawable;
@@ -14,33 +15,29 @@ import com.google.android.maps.MyLocationOverlay;
 import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
 
-import edu.aau.utzon.location.LocTool;
+import edu.aau.utzon.location.LocationAwareActivity;
 
 public class OutdoorActivity extends MapActivity {
 	
-	// Tool for handling most location oriented operations
-	private LocTool mLocTool;
+	//private LocationAwareActivity mLocTool;
 
 	@Override
 	public void onResume()
 	{
 		super.onResume();
-		mLocTool.onResume();
+		//mLocTool.onResume();
 	}
 	
 	@Override
 	public void onPause()
 	{
 		super.onPause();
-		mLocTool.onPause();
+		//mLocTool.onPause();
 	}
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Initialize location tool with the context of this context
-        mLocTool = new LocTool(this);
-        mLocTool.onCreate();
         
         // Display Google maps to the user
         setContentView(R.layout.mapview);
@@ -58,7 +55,7 @@ public class OutdoorActivity extends MapActivity {
     	drawPOI();
     	
     	// Do fancy fancy animation to our current position :P
-    	animateToLocation(mLocTool.getCurrentLocation());
+    	//animateToLocation(mLocTool.getCurrentLocation());
     }
     
     protected void animateToLocation(Location loc)
@@ -67,7 +64,7 @@ public class OutdoorActivity extends MapActivity {
     	MapView mapView = (MapView) findViewById(R.id.mapview);
     	MapController mc = mapView.getController();
     	
-    	GeoPoint point =  LocTool.locToGeo(loc);
+    	GeoPoint point =  LocationAwareActivity.locToGeo(loc);
     	mc.animateTo(point);
     }
     
@@ -81,21 +78,33 @@ public class OutdoorActivity extends MapActivity {
     	GMapsOverlay itemizedoverlay = new GMapsOverlay(drawable, this);
     	
     	// Add POI to the overlay
-    	GeoPoint point = new GeoPoint(19240000,-99120000);
-    	OverlayItem overlayitem = new OverlayItem(point, "Hola, Mundo!", "I'm in Mexico City!");
-    	itemizedoverlay.addOverlay(overlayitem);
-    	
-    	GeoPoint point2 = new GeoPoint(17000000,-90000000);
-    	OverlayItem overlayitem2 = new OverlayItem(point2, "Hola, Mundo!", "I'm in Mexico City!");
-    	itemizedoverlay.addOverlay(overlayitem2);
-    	
-    	List<Location> pois = mLocTool.getPOIs();
-    	for(Location l : pois)
+    	List<GeoPoint> pois = getPOIs();
+    	for(GeoPoint l : pois)
     	{
-    		// TODO: Draw the real POI's, not just dummies
+    		// TODO: Draw real items instead of dummies
+    		itemizedoverlay.addOverlay(new OverlayItem(l, "Hi, title", "This is longer..."));
     	}
     	mapOverlays.add(itemizedoverlay);
     }
+    
+	public List<GeoPoint> getPOIs()
+	{
+		ArrayList<GeoPoint> pois = new ArrayList<GeoPoint>();
+
+			// Query webservice?
+			// FIXME: Dummy POIs
+			GeoPoint dummy = new GeoPoint(19240000,-99120000);
+			GeoPoint dummy2 = new GeoPoint(29240000,-89120000);
+			GeoPoint dummy3 = new GeoPoint(39240000,-79120000);
+			GeoPoint dummy4 = new GeoPoint(2240000,-2120000);
+			
+			pois.add(dummy);
+			pois.add(dummy2);
+			pois.add(dummy3);
+			pois.add(dummy4);
+
+		return pois;
+	}
 
 	@Override
 	protected boolean isRouteDisplayed() {
