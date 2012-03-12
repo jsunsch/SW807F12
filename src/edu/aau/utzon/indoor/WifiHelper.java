@@ -17,14 +17,14 @@ public class WifiHelper {
 		{
 			Hashtable<String, Integer> measures = new Hashtable<String, Integer>();
 			Hashtable<String, Integer> wifiCounts = new Hashtable<String, Integer> ();
-
+			
 			for (int i = 0; i < 2*seconds; i++) {
 
 				List<ScanResult> scanResults =  wifi.getScanResults();
 
 				for (ScanResult res : scanResults) {
-
 					if (-res.level < 80) {
+
 						if (measures.containsKey(res.BSSID) == false) {
 							measures.put(res.BSSID, new Integer(-res.level));
 						}
@@ -50,19 +50,19 @@ public class WifiHelper {
 				Thread.sleep(500);
 				wifi.startScan();
 			}
-
+			
 			ArrayList<WifiMeasure> realMeasures = new ArrayList<WifiMeasure>(); 
 
-			Enumeration<String> keys = measures.keys();
-
-			while(keys.hasMoreElements()) {
-				String key = keys.nextElement();
-				int value = (Integer)measures.get(key);
-
-				WifiMeasure wm = new WifiMeasure(key, value / wifiCounts.get(key));
-				realMeasures.add(wm);
-			}
-
+		    Enumeration<String> keys = measures.keys();
+		    
+		    while(keys.hasMoreElements()) {
+		       String key = keys.nextElement();
+		       int value = (Integer)measures.get(key);
+		       
+		       WifiMeasure wm = new WifiMeasure(key, value / wifiCounts.get(key));
+		       realMeasures.add(wm);
+		    }
+		  
 			return realMeasures;
 		}
 		else
@@ -76,7 +76,7 @@ public class WifiHelper {
 				}
 			})
 			.show();
-
+			
 			return null;
 		}
 	}
