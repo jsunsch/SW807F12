@@ -38,14 +38,11 @@
 		<activity android:name="edu.aau.utzon.indoor.CalibrationActivity" />
         <activity android:name="edu.aau.utzon.indoor.LocatingActivity" />
 		
-<<<<<<< HEAD
 		<service android:name="edu.aau.utzon.webservice.RestService"/>
-=======
 		<activity android:name="edu.aau.utzon.indoor.IndoorActivity" />
 		<activity android:name="edu.aau.utzon.indoor.CalibrationActivity" />
         <activity android:name="edu.aau.utzon.indoor.LocatingActivity" />
 		
->>>>>>> a190f5f72f8abbcb49a5766ed57d9cce640de940
     </application>
 
 </manifest>
