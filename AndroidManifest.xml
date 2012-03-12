@@ -8,6 +8,8 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
 
     <application
         android:icon="@drawable/ic_launcher"
@@ -32,6 +34,18 @@
 			android:label="@+id/WebserviceActivity" >
 		</activity>
 		<service android:name="edu.aau.utzon.webservice.RestService"/>
+		<activity android:name="edu.aau.utzon.indoor.IndoorActivity" />
+		<activity android:name="edu.aau.utzon.indoor.CalibrationActivity" />
+        <activity android:name="edu.aau.utzon.indoor.LocatingActivity" />
+		
+<<<<<<< HEAD
+		<service android:name="edu.aau.utzon.webservice.RestService"/>
+=======
+		<activity android:name="edu.aau.utzon.indoor.IndoorActivity" />
+		<activity android:name="edu.aau.utzon.indoor.CalibrationActivity" />
+        <activity android:name="edu.aau.utzon.indoor.LocatingActivity" />
+		
+>>>>>>> a190f5f72f8abbcb49a5766ed57d9cce640de940
     </application>
 
 </manifest>
