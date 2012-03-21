@@ -23,18 +23,16 @@ public class RestProcessor {
 		
 		// Returns an URI with the ID of the newly inserted resource's ID
 		public static Uri insertLocationPoint(PointModel point, Context context) {
-			//TODO: Add logic for sending this point to the ContenProvider
-			// Insert
+
 			ContentValues values = new ContentValues();
+			values.put(ProviderContract.Points.ATTRIBUTE_ID, point.id);
 			values.put(ProviderContract.Points.ATTRIBUTE_X, point.x);
 			values.put(ProviderContract.Points.ATTRIBUTE_Y, point.y);
 			values.put(ProviderContract.Points.ATTRIBUTE_DESCRIPTION, point.description);
 			
-			return context.getContentResolver().insert(ProviderContract.Points.CONTENT_URI, values);
-		}
+			Uri inserted = context.getContentResolver()
+					.insert(ProviderContract.Points.CONTENT_URI, values);
 
-		public static void getNewLocationPoints(Context context) {
-			// TODO: Only get the resources needed
-			RestServiceHelper.getServiceHelper().getLocationPoints(context);
+			return inserted;
 		}
 }

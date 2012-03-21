@@ -6,7 +6,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.UriMatcher;
 import android.database.Cursor;
-import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteQueryBuilder;
@@ -18,13 +17,15 @@ public class RestContentProvider extends ContentProvider{
 	// SQL "backend" for the content provider
 	static class RestDB extends SQLiteOpenHelper{
 		private static final String DATABASE_NAME = "utzon.db";
-		private static final int DATABASE_VERSION = 4;
+		private static final int DATABASE_VERSION = 13;
 
 	    private static final String POINT_TABLE_CREATE =
 	                "CREATE TABLE " + ProviderContract.Points.TABLE_NAME + " (" +
-	                ProviderContract.Points.ATTRIBUTE_ID + " INTEGER PRIMARY KEY, " +
+	                ProviderContract.Points.ATTRIBUTE_ID + " INTEGER UNIQUE, " +
 	                ProviderContract.Points.ATTRIBUTE_X + " REAL, " +
 	                ProviderContract.Points.ATTRIBUTE_Y + " REAL, " +
+	                ProviderContract.Points.ATTRIBUTE_STATE + " INTEGER, " +
+	                ProviderContract.Points.ATTRIBUTE_LAST_MODIFIED + " INTEGER, " +
 	                ProviderContract.Points.ATTRIBUTE_DESCRIPTION + " TEXT);";
 		  
 		public RestDB(Context context) {
@@ -111,7 +112,7 @@ public class RestContentProvider extends ContentProvider{
 
 	@Override
 	public Uri insert(Uri uri, ContentValues initialValues) {
-		// Validates the incoming URI. Only the full provider URI is allowed for inserts.
+		// Validates the incoming URI. Only the full provider URI(whole table) is allowed for inserts.
         if (sUriMatcher.match(uri) != URI_POINT) {
             throw new IllegalArgumentException("Unknown URI " + uri);
         }
@@ -129,6 +130,9 @@ public class RestContentProvider extends ContentProvider{
         }
         
         // Check that all required attributes are set
+        if (values.containsKey(ProviderContract.Points.ATTRIBUTE_ID) == false) {
+            throw new IllegalArgumentException("Invalid insertion values " + values);
+        }
         if (values.containsKey(ProviderContract.Points.ATTRIBUTE_X) == false) {
             throw new IllegalArgumentException("Invalid insertion values " + values);
         }
@@ -139,11 +143,14 @@ public class RestContentProvider extends ContentProvider{
             throw new IllegalArgumentException("Invalid insertion values " + values);
         }
         
+        // set modified attribute
+        values.put(ProviderContract.Points.ATTRIBUTE_LAST_MODIFIED, System.currentTimeMillis());
+        
         // Opens the database object in "write" mode.
         SQLiteDatabase db = mDBHelper.getWritableDatabase();
         
         long rowId = db.insert(ProviderContract.Points.TABLE_NAME, 
-        		ProviderContract.Points.ATTRIBUTE_DESCRIPTION, // "A hack, SQLite sets this column value to null if values is empty." (c) Google <- What the fuck?
+        		ProviderContract.Points.ATTRIBUTE_DESCRIPTION, // "A hack, SQLite sets this column value to null if values is empty." (c) Google <- What?
         		values);
         
         // If the insert succeeded, the row ID exists.
@@ -156,8 +163,9 @@ public class RestContentProvider extends ContentProvider{
             return noteUri;
         }
 
+        return uri;
         // If the insert didn't succeed, then the rowID is <= 0. Throws an exception.
-        throw new SQLException("Failed to insert row into " + uri);
+        // throw new SQLException("Failed to insert row into " + uri);
 	}
 
 	@Override

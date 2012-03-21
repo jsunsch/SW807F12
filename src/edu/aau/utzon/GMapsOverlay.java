@@ -9,15 +9,15 @@ import android.graphics.drawable.Drawable;
 import com.google.android.maps.ItemizedOverlay;
 import com.google.android.maps.OverlayItem;
 
-public class PoiOverlay extends ItemizedOverlay {
+public class GMapsOverlay extends ItemizedOverlay {
 	private ArrayList<OverlayItem> mOverlays = new ArrayList<OverlayItem>();
 	private Context mContext;
 	
-	public PoiOverlay(Drawable defaultMarker) {
+	public GMapsOverlay(Drawable defaultMarker) {
 		  super(boundCenterBottom(defaultMarker));
 		}
 	
-	public PoiOverlay(Drawable defaultMarker, Context context) {
+	public GMapsOverlay(Drawable defaultMarker, Context context) {
 		  super(boundCenterBottom(defaultMarker));
 		  mContext = context;
 	}
