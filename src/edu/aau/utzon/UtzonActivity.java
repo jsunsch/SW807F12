@@ -15,6 +15,9 @@ public class UtzonActivity extends Activity implements OnClickListener {
 
 		setContentView(R.layout.main);
 
+		Intent intent = new Intent(this, PoiListActivity.class);
+		startActivity(intent);
+		
 	}
 
 	@Override
