@@ -49,6 +49,9 @@
 		<activity android:name="edu.aau.utzon.indoor.IndoorActivity" />
 		<activity android:name="edu.aau.utzon.indoor.CalibrationActivity" />
         <activity android:name="edu.aau.utzon.indoor.LocatingActivity" />
+        <activity android:name="edu.aau.utzon.PoiListActivity" />
     </application>
 
+    
+    
 </manifest>
