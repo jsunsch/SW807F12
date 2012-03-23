@@ -30,14 +30,4 @@ public class PointOfInterest implements Serializable {
 		mLocationName = locationName;
 		mProximity = proximity;
 	}
-	
-	public ByteArrayOutputStream Serialize() throws IOException {
-		ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
-		ObjectOutputStream objStream = new ObjectOutputStream(byteStream);
-		objStream.writeObject(this);
-		objStream.close();
-		byteStream.close();
-		
-		return byteStream;
-	}
 }
