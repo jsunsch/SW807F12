@@ -1,6 +1,12 @@
 package edu.aau.utzon.location;
 
-public class PointOfInterest {
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+
+// Note that this is a temporary class. A better class will propably be created later
+public class PointOfInterest implements Serializable {
 	String mLocationName;
 	int mProximity; // Proximity in meters
 
@@ -18,5 +24,20 @@ public class PointOfInterest {
 
 	public void setmLocationName(String mLocationName) {
 		this.mLocationName = mLocationName;
+	}
+	
+	public PointOfInterest(String locationName, int proximity) {
+		mLocationName = locationName;
+		mProximity = proximity;
+	}
+	
+	public ByteArrayOutputStream Serialize() throws IOException {
+		ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+		ObjectOutputStream objStream = new ObjectOutputStream(byteStream);
+		objStream.writeObject(this);
+		objStream.close();
+		byteStream.close();
+		
+		return byteStream;
 	}
 }
