@@ -15,7 +15,7 @@
         android:id="@+id/OutdoorButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Outdoor"
+        android:text="Outdoor Map"
         android:onClick="onClick"/>
     
     <Button
@@ -23,6 +23,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Webservice"
+        android:onClick="onClick"/>
+
+    <Button
+        android:id="@+id/PoiListButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="POI List"
         android:onClick="onClick"/>
 
 </LinearLayout>

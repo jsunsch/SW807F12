@@ -18,16 +18,6 @@ public class UtzonActivity extends Activity implements OnClickListener {
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.main);
-
-		ArrayList<PointOfInterest> pois = new ArrayList<PointOfInterest>();
-		pois.add(new PointOfInterest("Tyren ved vejen", 500));
-		pois.add(new PointOfInterest("Limfjordbroen", 2000));
-		
-		Intent intent = new Intent(this, PoiListActivity.class);
-		intent.putExtra("pois", pois);
-		
-		startActivity(intent);
-		
 	}
 
 	@Override
@@ -43,8 +33,21 @@ public class UtzonActivity extends Activity implements OnClickListener {
 		case R.id.WebserviceButton:
 			startActivity(new Intent(getApplicationContext(), WebserviceActivity.class));
 			break;
+		case R.id.PoiListButton:
+			ArrayList<PointOfInterest> pois = new ArrayList<PointOfInterest>();
+			pois.add(new PointOfInterest("Tyren ved vejen", 500));
+			pois.add(new PointOfInterest("Limfjordbroen", 2000));
+			
+			Intent intent = new Intent(this, PoiListActivity.class);
+			intent.putExtra("pois", pois);
+			
+			startActivity(intent);
+			break;
+		
 		default:
 			throw new RuntimeException("Unknown button ID");
 		}
+		
+
 	}
 }
