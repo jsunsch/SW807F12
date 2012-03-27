@@ -21,7 +21,7 @@
         <activity
             android:name="UtzonActivity"
             android:label="@string/app_name" >
-            <intent-filter>
+            			<intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
@@ -29,6 +29,7 @@
         <activity 
             android:name=".OutdoorActivity" 
 			android:label="@+id/OutdoorActivity" >
+
 		</activity>
 		<activity 
             android:name=".WebserviceActivity" 
@@ -38,20 +39,15 @@
             android:name=".AugmentedActivity" 
 			android:label="@+id/AugmentedActivity" 
 			android:screenOrientation="landscape">
+			
 		</activity>
-		<service android:name="edu.aau.utzon.webservice.RestService"/>
 		<activity android:name="edu.aau.utzon.indoor.IndoorActivity" />
+		<activity android:name="edu.aau.utzon.indoor.CalibrationActivity" />
+        <activity android:name="edu.aau.utzon.PoiListActivity" />
+        <activity android:name="edu.aau.utzon.indoor.LocatingActivity" />
+        
 		<provider android:name=".webservice.RestContentProvider"
             android:authorities="edu.aau.utzon"/>
-		<activity android:name="edu.aau.utzon.indoor.CalibrationActivity" />
-        <activity android:name="edu.aau.utzon.indoor.LocatingActivity" />
 		<service android:name="edu.aau.utzon.webservice.RestService"/>
-		<activity android:name="edu.aau.utzon.indoor.IndoorActivity" />
-		<activity android:name="edu.aau.utzon.indoor.CalibrationActivity" />
-        <activity android:name="edu.aau.utzon.indoor.LocatingActivity" />
-        <activity android:name="edu.aau.utzon.PoiListActivity" />
     </application>
-
-    
-    
 </manifest>

@@ -15,29 +15,34 @@ import com.google.android.maps.MyLocationOverlay;
 import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
 
-import edu.aau.utzon.location.LocationAwareActivity;
+
+import edu.aau.utzon.location.LocationHelper;
 
 public class OutdoorActivity extends MapActivity {
 	
-	//private LocationAwareActivity mLocTool;
+	private LocationHelper mLocationHelper;
 
 	@Override
 	public void onResume()
 	{
 		super.onResume();
-		//mLocTool.onResume();
+		mLocationHelper.onResume();
 	}
 	
 	@Override
 	public void onPause()
 	{
 		super.onPause();
-		//mLocTool.onPause();
+		mLocationHelper.onPause();
 	}
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+        // Init locationHelper
+        this.mLocationHelper = new LocationHelper(getApplicationContext());
+        mLocationHelper.onCreate(savedInstanceState);
         
         // Display Google maps to the user
         setContentView(R.layout.mapview);
@@ -64,7 +69,7 @@ public class OutdoorActivity extends MapActivity {
     	MapView mapView = (MapView) findViewById(R.id.mapview);
     	MapController mc = mapView.getController();
     	
-    	GeoPoint point =  LocationAwareActivity.locToGeo(loc);
+    	GeoPoint point =  LocationHelper.locToGeo(loc);
     	mc.animateTo(point);
     }
     
