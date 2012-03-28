@@ -14,13 +14,14 @@ import android.view.View;
 
 import com.google.android.maps.GeoPoint;
 
-import edu.aau.utzon.location.LocationAwareActivity;
+
+import edu.aau.utzon.location.LocationHelper;
 
 public class AugmentedOverlay extends View { 
 	private float[] mSensorValues;
 	//private LocationAwareActivity mLocTool;
 	private Location mCurrentLocation;
-
+	
 	public void updateOverlay(SensorEvent e, Location l)
 	{
 		this.mSensorValues = e.values;
@@ -68,7 +69,7 @@ public class AugmentedOverlay extends View {
 		//TODO: Dummy POI
 		ArrayList<GeoPoint> pois = getPOIs();
 
-		GeoPoint userLoc = LocationAwareActivity.locToGeo(this.mCurrentLocation);
+		GeoPoint userLoc = LocationHelper.locToGeo(this.mCurrentLocation);
 
 
 		float userLong = (float) (userLoc.getLongitudeE6()/1e6 +180);

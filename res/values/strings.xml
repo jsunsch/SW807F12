@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <string name="hello">Loading.</string>
     <string name="app_name">Utzon</string>
     <string name="maps_apikey_debug">0fMYQWA7ahuZ_tS6tvDLZEzZyJOfYAwyAtPRJtQ</string>
-
+	<string name="menu_search">Search</string>
 </resources>

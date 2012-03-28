@@ -4,7 +4,7 @@
     android:versionCode="1"
     android:versionName="1.0" >
 
-    <uses-sdk android:minSdkVersion="7" />
+    <uses-sdk android:minSdkVersion="7" android:targetSdkVersion="15"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -15,21 +15,21 @@
  	<uses-feature android:name="android.hardware.camera.autofocus" />
 
     <application
+        android:theme="@style/Theme.Sherlock.Light"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name" >
         <uses-library android:name="com.google.android.maps" />
         <activity
             android:name="UtzonActivity"
             android:label="@string/app_name" >
+
+        </activity>
+        <activity android:name=".OutdoorActivity" android:uiOptions="splitActionBarWhenNarrow" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-        <activity 
-            android:name=".OutdoorActivity" 
-			android:label="@+id/OutdoorActivity" >
-		</activity>
+        </activity> 
 		<activity 
             android:name=".WebserviceActivity" 
 			android:label="@+id/WebserviceActivity" >
@@ -38,20 +38,15 @@
             android:name=".AugmentedActivity" 
 			android:label="@+id/AugmentedActivity" 
 			android:screenOrientation="landscape">
+			
 		</activity>
-		<service android:name="edu.aau.utzon.webservice.RestService"/>
 		<activity android:name="edu.aau.utzon.indoor.IndoorActivity" />
+		<activity android:name="edu.aau.utzon.indoor.CalibrationActivity" />
+        <activity android:name="edu.aau.utzon.PoiListActivity" />
+        <activity android:name="edu.aau.utzon.indoor.LocatingActivity" />
+        
 		<provider android:name=".webservice.RestContentProvider"
             android:authorities="edu.aau.utzon"/>
-		<activity android:name="edu.aau.utzon.indoor.CalibrationActivity" />
-        <activity android:name="edu.aau.utzon.indoor.LocatingActivity" />
 		<service android:name="edu.aau.utzon.webservice.RestService"/>
-		<activity android:name="edu.aau.utzon.indoor.IndoorActivity" />
-		<activity android:name="edu.aau.utzon.indoor.CalibrationActivity" />
-        <activity android:name="edu.aau.utzon.indoor.LocatingActivity" />
-        <activity android:name="edu.aau.utzon.PoiListActivity" />
     </application>
-
-    
-    
 </manifest>

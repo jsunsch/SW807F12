@@ -3,8 +3,10 @@ package edu.aau.utzon;
 import java.io.IOException;
 import java.util.List;
 
-import edu.aau.utzon.location.LocationAwareActivity;
 
+import edu.aau.utzon.location.LocationHelper;
+
+import android.app.Activity;
 import android.content.Context; 
 import android.graphics.PixelFormat;
 import android.hardware.Camera; 
@@ -22,7 +24,7 @@ import android.view.ViewGroup.LayoutParams;
 import android.view.WindowManager;
 import android.widget.TextView;
 
-public class AugmentedActivity extends LocationAwareActivity implements SensorEventListener {
+public class AugmentedActivity extends Activity implements SensorEventListener {
 	private Preview mPreview;
 	int numberOfCameras;
 	int cameraCurrentlyLocked;
@@ -35,11 +37,16 @@ public class AugmentedActivity extends LocationAwareActivity implements SensorEv
 	private SurfaceHolder mSurfaceHolder;
 	private AugmentedOverlay mDraw;
 
-	//private LocationAwareActivity mLocTool;
+	private LocationHelper mLocationHelper;
 
+	@Override
 	public void onCreate(Bundle saved) {
 		super.onCreate(saved);
 
+		// Initialize location helper
+		this.mLocationHelper = new LocationHelper(getApplicationContext());
+		this.mLocationHelper.onCreate(saved);
+		
 		// Fullscreen
 		getWindow().setFormat(PixelFormat.TRANSLUCENT);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -70,6 +77,7 @@ public class AugmentedActivity extends LocationAwareActivity implements SensorEv
 	@Override
 	public void onResume() { 
 		super.onResume();
+		mLocationHelper.onResume();
 		mSensorManager.registerListener(this, mGyro, SensorManager.SENSOR_DELAY_NORMAL);
 	}
 
@@ -77,13 +85,9 @@ public class AugmentedActivity extends LocationAwareActivity implements SensorEv
 	@Override
 	public void onPause() {
 		super.onPause();
+		mLocationHelper.onPause();
 		mSensorManager.unregisterListener(this);
 
-	}
-
-	@Override
-	protected void locationUpdateEvent() {
-		// TODO: this.mCurrentLoc
 	}
 
 	/** GURO SENSOR CALLBACKS **/
@@ -91,7 +95,7 @@ public class AugmentedActivity extends LocationAwareActivity implements SensorEv
 	public void onSensorChanged(SensorEvent e) {
 		// New data from gyro available
 		TextView tv = (TextView)findViewById(R.id.textViewDebug);
-		mDraw.updateOverlay(e, this.mCurrentLoc);
+		mDraw.updateOverlay(e, this.mLocationHelper.getCurrentLocation());
 		if(tv != null)
 		{
 			tv.setText("Azimuth: " + (int)e.values[0] + "\n" +

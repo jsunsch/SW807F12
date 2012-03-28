@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.google.android.maps.GeoPoint;
 
+import android.app.Activity;
 import android.content.Context;
 import android.location.Location;
 import android.location.LocationListener;
@@ -12,9 +13,6 @@ import android.location.LocationManager;
 import android.os.Bundle;
 
 /**
- *	Could be called "Location Manager" but
- *  that name is reserved by Android.
- * 
  *  Handles location operations, such as the users 
  *  current location. It offers support for following the 
  *  lifecycle of the activity through onCreate(), onResume() etc., 
@@ -27,17 +25,18 @@ import android.os.Bundle;
  *  	?
  *  	
  */
-public class LocTool {
+public class LocationHelper {
 
-	private Context mContext;
-	private Location mCurrentLoc;
-	private LocationListener mLocationListenerGPS;
-	private LocationListener mLocationListenerNetwork;
-
-	public LocTool(Context context) {
-		this.mContext = context;
-    }
-
+	protected Location mCurrentLoc;
+	protected LocationListener mLocationListenerGPS;
+	protected LocationListener mLocationListenerNetwork;
+	protected Context mContext;
+	
+	public LocationHelper(Context c)
+	{
+		this.mContext = c;
+	}
+	
 	public Location getCurrentLocation(){
 		return mCurrentLoc;
 	}
@@ -49,7 +48,7 @@ public class LocTool {
 		}
 	}
 
-	public void onCreate() {
+	public void onCreate(Bundle savedInstance) {
 		// Define a listeners that responds to location updates
 		this.mLocationListenerGPS  = new LocationListener() {
 			public void onLocationChanged(Location location) {
@@ -88,6 +87,7 @@ public class LocTool {
 		Location latestGPS = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 		Location latestNetwork = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 		
+		// Find best location
 		if(latestGPS == null && latestNetwork != null) { this.mCurrentLoc = latestNetwork; }
 		else if(latestGPS != null && latestNetwork == null) { this.mCurrentLoc = latestGPS; }
 		else if(latestGPS != null && latestNetwork != null) {
@@ -101,14 +101,14 @@ public class LocTool {
 
 	public void onResume() {
 		// Resume getting location updates
-		LocationManager locationManager = (LocationManager) mContext.getSystemService(Context.LOCATION_SERVICE);
+		LocationManager locationManager = (LocationManager) this.mContext.getSystemService(Context.LOCATION_SERVICE);
 		locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, mLocationListenerNetwork);
 		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, mLocationListenerGPS);
 	}
 
 	public void onPause() {
 		// Save batterylife by not aquiring location data when paused
-		LocationManager locationManager = (LocationManager) mContext.getSystemService(Context.LOCATION_SERVICE);
+		LocationManager locationManager = (LocationManager) this.mContext.getSystemService(Context.LOCATION_SERVICE);
 		locationManager.removeUpdates(mLocationListenerGPS);
 		locationManager.removeUpdates(mLocationListenerNetwork);
 
@@ -195,11 +195,12 @@ public class LocTool {
 		return new GeoPoint((int)(loc.getLatitude()*1e6),(int)(loc.getLongitude()*1e6));
 	}
 
-	public void updateUserLocation(Location loc) {
+	protected void updateUserLocation(Location loc) {
 		// Update our location
 		if(isBetterLocation(loc, mCurrentLoc))
 		{
 			mCurrentLoc = loc;
+			//locationUpdateEvent();
 		}
 		else{ /* New location not better than current */ }
 	}
@@ -259,5 +260,8 @@ public class LocTool {
 		return provider1.equals(provider2);
 	}
 
+	// Callback for location sensor
+	// Subclasses should implement this to update UI when a new data is available
+	//protected abstract void locationUpdateEvent();
 
 }
