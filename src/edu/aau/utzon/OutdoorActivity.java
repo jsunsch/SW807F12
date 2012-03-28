@@ -6,9 +6,13 @@ import java.util.List;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
+import android.view.Window;
+
+import com.actionbarsherlock.app.SherlockMapActivity;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.Menu;
 
 import com.google.android.maps.GeoPoint;
-import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
@@ -18,10 +22,10 @@ import com.google.android.maps.OverlayItem;
 
 import edu.aau.utzon.location.LocationHelper;
 
-public class OutdoorActivity extends MapActivity {
+public class OutdoorActivity extends SherlockMapActivity {
 	
 	private LocationHelper mLocationHelper;
-
+	
 	@Override
 	public void onResume()
 	{
@@ -36,6 +40,8 @@ public class OutdoorActivity extends MapActivity {
 		mLocationHelper.onPause();
 	}
 	
+	private static int THEME = R.style.Theme_Sherlock_Light;
+	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,6 +49,12 @@ public class OutdoorActivity extends MapActivity {
         // Init locationHelper
         this.mLocationHelper = new LocationHelper(getApplicationContext());
         mLocationHelper.onCreate(savedInstanceState);
+        
+        // Set theme for actionbar (required)
+        setTheme(THEME);
+
+    	// Remove title bar
+    	//requestWindowFeature(Window.FEATURE_NO_TITLE);
         
         // Display Google maps to the user
         setContentView(R.layout.mapview);
@@ -115,5 +127,13 @@ public class OutdoorActivity extends MapActivity {
 	protected boolean isRouteDisplayed() {
 		// TODO Auto-generated method stub
 		return false;
+	}
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu)
+	{
+		  MenuInflater inflater = getSupportMenuInflater();
+		  inflater.inflate(R.layout.menu, menu);
+		  return true;
 	}
 }
