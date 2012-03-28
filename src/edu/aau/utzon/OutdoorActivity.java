@@ -3,14 +3,19 @@ package edu.aau.utzon;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.app.SearchManager;
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
 import android.view.Window;
+import android.widget.SearchView;
 
 import com.actionbarsherlock.app.SherlockMapActivity;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapController;
@@ -21,6 +26,7 @@ import com.google.android.maps.OverlayItem;
 
 
 import edu.aau.utzon.location.LocationHelper;
+import edu.aau.utzon.location.PointOfInterest;
 
 public class OutdoorActivity extends SherlockMapActivity {
 
@@ -40,8 +46,6 @@ public class OutdoorActivity extends SherlockMapActivity {
 		mLocationHelper.onPause();
 	}
 
-	private static int THEME = R.style.Theme_Sherlock_Light;
-
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -50,12 +54,7 @@ public class OutdoorActivity extends SherlockMapActivity {
 		this.mLocationHelper = new LocationHelper(getApplicationContext());
 		mLocationHelper.onCreate(savedInstanceState);
 
-		// Set theme for actionbar (required)
-		setTheme(THEME);
-
 		// Remove title bar
-		//
-		int currentapiVersion = android.os.Build.VERSION.SDK_INT;
 		if( android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB ) {
 			requestWindowFeature(Window.FEATURE_NO_TITLE);
 		}
@@ -137,7 +136,43 @@ public class OutdoorActivity extends SherlockMapActivity {
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
 		MenuInflater inflater = getSupportMenuInflater();
-		inflater.inflate(R.layout.menu, menu);
-		return true;
+		inflater.inflate(R.layout.menu_outdoor, menu);
+		
+		MenuItem searchItem = menu.findItem(R.id.actionbar_search);
+
+        return true;
+    }
+
+    
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// Handle item selection
+	    switch (item.getItemId()) {
+	        case R.id.actionbar_center_location:
+	            animateToLocation(mLocationHelper.getCurrentLocation());
+	            return true;
+	        case R.id.actionbar_poi_list:
+	        	ArrayList<PointOfInterest> pois = new ArrayList<PointOfInterest>();
+	    		pois.add(new PointOfInterest("Tyren ved vejen", 500));
+	    		pois.add(new PointOfInterest("Limfjordbroen", 2000));
+	        	
+	            Intent i = new Intent(this, PoiListActivity.class);
+	            i.putExtra("pois", pois);
+	            startActivity(i);
+	            
+	            return true;
+	        case R.id.actionbar_search:
+	            //
+	            return true;
+	        case R.id.actionbar_toggle_directions:
+	            //
+	            return true;
+	        case R.id.actionbar_augmented:
+	        	startActivity(new Intent(this, AugmentedActivity.class));
+	        	return true;
+	        default:
+	            return super.onOptionsItemSelected(item);
+	    }
 	}
 }

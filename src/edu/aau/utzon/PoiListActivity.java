@@ -2,6 +2,10 @@ package edu.aau.utzon;
 
 import java.util.ArrayList;
 
+import com.actionbarsherlock.app.SherlockListActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+
 import edu.aau.utzon.location.PointOfInterest;
 
 import android.app.ListActivity;
@@ -12,17 +16,33 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.view.View;;
+import android.view.View;
+import android.view.Window;
 
-public class PoiListActivity extends ListActivity {
+public class PoiListActivity extends SherlockListActivity {
+	
+	private static int THEME = R.style.Theme_Sherlock_Light;
 	
 	String[] mGuiText;
 	ArrayList<PointOfInterest> mPois;
 	
 	@Override
+	public boolean onCreateOptionsMenu(Menu menu)
+	{
+		MenuInflater inflater = getSupportMenuInflater();
+		inflater.inflate(R.layout.menu_outdoor, menu);
+		return true;
+	}
+	
+	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+
+		// Remove title bar
+		if( android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB ) {
+			requestWindowFeature(Window.FEATURE_NO_TITLE);
+		}
+
 		Bundle bundle = getIntent().getExtras();
 		
 		if (bundle == null)

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
-
     <item
         android:id="@+id/actionbar_search"
         android:icon="@drawable/search"
-        android:showAsAction="always" />
-
-    <item
+        android:showAsAction="always"
+        android:title="@string/menu_search"/>
+    
+	<item
         android:id="@+id/actionbar_center_location"
         android:icon="@drawable/centerlocation"
         android:showAsAction="always" />
@@ -25,5 +25,4 @@
         android:id="@+id/actionbar_augmented"
         android:icon="@drawable/augmented"
         android:showAsAction="always" />
-
 </menu>
