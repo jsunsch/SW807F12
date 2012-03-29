@@ -22,12 +22,12 @@ public final class ProviderContract {
         private static final String SCHEME = "content://";
     	
     	// Attributes
-    	public static final String ATTRIBUTE_ID = "_ID";
-    	public static final String ATTRIBUTE_X = "X";
-    	public static final String ATTRIBUTE_Y = "Y";
-    	public static final String ATTRIBUTE_STATE = "STATE";
-    	public static final String ATTRIBUTE_LAST_MODIFIED = "LAST_MODIFIED";
-    	public static final String ATTRIBUTE_DESCRIPTION = "DESCRIPTION";
+    	public static final String ATTRIBUTE_ID = "_id";
+    	public static final String ATTRIBUTE_X = "x";
+    	public static final String ATTRIBUTE_Y = "y";
+    	public static final String ATTRIBUTE_STATE = "state";
+    	public static final String ATTRIBUTE_LAST_MODIFIED = "last_modified";
+    	public static final String ATTRIBUTE_DESCRIPTION = "description";
     	
     	// Attribute states
     	public static final int STATE_POSTING = 1;
