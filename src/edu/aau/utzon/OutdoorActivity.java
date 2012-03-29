@@ -80,12 +80,15 @@ public class OutdoorActivity extends SherlockMapActivity {
 
 	protected void animateToLocation(Location loc)
 	{
-		// Display current position on map
-		MapView mapView = (MapView) findViewById(R.id.mapview);
-		MapController mc = mapView.getController();
+		// Only animate if its a valid location
+		if(loc != null){
+			// Display current position on map
+			MapView mapView = (MapView) findViewById(R.id.mapview);
+			MapController mc = mapView.getController();
 
-		GeoPoint point =  LocationHelper.locToGeo(loc);
-		mc.animateTo(point);
+			GeoPoint point =  LocationHelper.locToGeo(loc);
+			mc.animateTo(point);
+		}
 	}
 
 	protected void drawPOI()
@@ -137,42 +140,40 @@ public class OutdoorActivity extends SherlockMapActivity {
 	{
 		MenuInflater inflater = getSupportMenuInflater();
 		inflater.inflate(R.layout.menu_outdoor, menu);
-		
+
 		MenuItem searchItem = menu.findItem(R.id.actionbar_search);
 
-        return true;
-    }
+		return true;
+	}
 
-    
-	
+
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Handle item selection
-	    switch (item.getItemId()) {
-	        case R.id.actionbar_center_location:
-	            animateToLocation(mLocationHelper.getCurrentLocation());
-	            return true;
-	        case R.id.actionbar_poi_list:
-	        	ArrayList<PointOfInterest> pois = new ArrayList<PointOfInterest>();
-	    		pois.add(new PointOfInterest("Tyren ved vejen", 500));
-	    		pois.add(new PointOfInterest("Limfjordbroen", 2000));
-	        	
-	            Intent i = new Intent(this, PoiListActivity.class);
-	            i.putExtra("pois", pois);
-	            startActivity(i);
-	            
-	            return true;
-	        case R.id.actionbar_search:
-	            //
-	            return true;
-	        case R.id.actionbar_toggle_directions:
-	            //
-	            return true;
-	        case R.id.actionbar_augmented:
-	        	startActivity(new Intent(this, AugmentedActivity.class));
-	        	return true;
-	        default:
-	            return super.onOptionsItemSelected(item);
-	    }
+		switch (item.getItemId()) {
+		case R.id.actionbar_center_location:
+			animateToLocation(mLocationHelper.getCurrentLocation());
+			return true;
+		case R.id.actionbar_poi_list:
+			ArrayList<PointOfInterest> pois = new ArrayList<PointOfInterest>();
+			pois.add(new PointOfInterest("Tyren ved vejen", 500));
+			pois.add(new PointOfInterest("Limfjordbroen", 2000));
+
+			Intent i = new Intent(this, PoiListActivity.class);
+			i.putExtra("pois", pois);
+			startActivity(i);
+
+			return true;
+		case R.id.actionbar_search:
+			//
+			onSearchRequested();
+			return true;
+		case R.id.actionbar_augmented:
+			startActivity(new Intent(this, AugmentedActivity.class));
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
 	}
 }
