@@ -167,6 +167,7 @@ public class OutdoorActivity extends SherlockMapActivity {
 			return true;
 		case R.id.actionbar_search:
 			//
+			onSearchRequested();
 			return true;
 		case R.id.actionbar_augmented:
 			startActivity(new Intent(this, AugmentedActivity.class));

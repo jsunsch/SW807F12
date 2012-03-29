@@ -7,8 +7,9 @@
             android:id="@+id/actionbar_search"
             android:icon="@drawable/search"
             android:orderInCategory="1"
-            android:showAsAction="always|withText"
-            android:title="@string/menu_search"/>
+            android:showAsAction="always|withText|collapseActionView"
+            android:title="@string/menu_search"
+            android:actionViewClass="android.widget.SearchView" />
 
         <item
             android:id="@+id/actionbar_center_location"
