@@ -1,28 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
-    <item
-        android:id="@+id/actionbar_search"
-        android:icon="@drawable/search"
-        android:showAsAction="always"
-        android:title="@string/menu_search"/>
-    
-	<item
-        android:id="@+id/actionbar_center_location"
-        android:icon="@drawable/centerlocation"
-        android:showAsAction="always" />
 
-    <item
-        android:id="@+id/actionbar_toggle_directions"
-        android:icon="@drawable/toggledirections"
-        android:showAsAction="always" />
+    <group android:id="@+id/menugroup_outdoor" >
 
-    <item
-        android:id="@+id/actionbar_poi_list"
-        android:icon="@drawable/poilist"
-        android:showAsAction="always" />
-    
-    <item
-        android:id="@+id/actionbar_augmented"
-        android:icon="@drawable/augmented"
-        android:showAsAction="always" />
+        <item
+            android:id="@+id/actionbar_search"
+            android:icon="@drawable/search"
+            android:orderInCategory="1"
+            android:showAsAction="always|withText"
+            android:title="@string/menu_search"/>
+
+        <item
+            android:id="@+id/actionbar_center_location"
+            android:icon="@drawable/centerlocation"
+            android:orderInCategory="2"
+            android:showAsAction="ifRoom"
+            android:title="@string/menu_center_location"/>
+
+        <item
+            android:id="@+id/actionbar_augmented"
+            android:icon="@drawable/augmented"
+            android:orderInCategory="3"
+            android:showAsAction="ifRoom"
+            android:title="@string/menu_augmented"/>
+
+        <item
+            android:id="@+id/actionbar_poi_list"
+            android:icon="@drawable/poilist"
+            android:orderInCategory="4"
+            android:showAsAction="ifRoom"
+            android:title="@string/menu_poi_list"/>
+    </group>
+
 </menu>

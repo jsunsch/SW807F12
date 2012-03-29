@@ -1,9 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
-    <item
-        android:id="@+id/actionbar_search"
-        android:icon="@drawable/search"
-        android:showAsAction="always" />
+    <group android:id="@+id/menugroup_outdoor" >
+
+        <item
+            android:id="@+id/actionbar_search"
+            android:icon="@drawable/search"
+            android:orderInCategory="1"
+            android:showAsAction="always|withText"
+            android:title="@string/menu_search"/>
+        
+        <item
+            android:id="@+id/actionbar_outdoor"
+            android:icon="@drawable/worldmap"
+            android:orderInCategory="2"
+            android:showAsAction="always"
+            android:title="@string/menu_outdoor"/>
+        
+        
+    </group>
 
 </menu>

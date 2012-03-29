@@ -2,5 +2,11 @@
 <resources>
     <string name="app_name">Utzon</string>
     <string name="maps_apikey_debug">0fMYQWA7ahuZ_tS6tvDLZEzZyJOfYAwyAtPRJtQ</string>
+    
 	<string name="menu_search">Search</string>
+	<string name="menu_center_location">Center on current location</string>
+	<string name="menu_augmented">Augmented reality navigation</string>
+	<string name="menu_poi_list">List of available POIs</string>
+	<string name="menu_outdoor">Display outdoor map</string>
+	
 </resources>
