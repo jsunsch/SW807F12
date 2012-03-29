@@ -142,12 +142,18 @@ public class RestContentProvider extends ContentProvider{
         if (values.containsKey(ProviderContract.Points.ATTRIBUTE_DESCRIPTION) == false) {
             throw new IllegalArgumentException("Invalid insertion values " + values);
         }
-        
+
+        SQLiteDatabase db = mDBHelper.getWritableDatabase();
+
+        int id = (Integer)values.get("_ID");
+        db.delete(ProviderContract.Points.TABLE_NAME, "_ID=?", new String[] {Integer.toString(id) });
+ 
         // set modified attribute
+        
         values.put(ProviderContract.Points.ATTRIBUTE_LAST_MODIFIED, System.currentTimeMillis());
         
         // Opens the database object in "write" mode.
-        SQLiteDatabase db = mDBHelper.getWritableDatabase();
+        
         
         long rowId = db.insert(ProviderContract.Points.TABLE_NAME, 
         		ProviderContract.Points.ATTRIBUTE_DESCRIPTION, // "A hack, SQLite sets this column value to null if values is empty." (c) Google <- What?

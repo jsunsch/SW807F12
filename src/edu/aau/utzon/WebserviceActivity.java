@@ -14,8 +14,6 @@ public class WebserviceActivity extends Activity{
 		ProviderContract.Points.ATTRIBUTE_X, 
 		ProviderContract.Points.ATTRIBUTE_Y, 
 		ProviderContract.Points.ATTRIBUTE_DESCRIPTION};
-	
-	
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -27,7 +25,7 @@ public class WebserviceActivity extends Activity{
 		this.getApplicationContext()
 		.getContentResolver()
 		.registerContentObserver(ProviderContract.Points.CONTENT_URI, true, mContentObserver);
-
+		
 		// Asynchornously start a REST method
 		RestServiceHelper.getServiceHelper()
 		.getLocationPoints(this);
@@ -64,7 +62,7 @@ public class WebserviceActivity extends Activity{
 		Uri mNewUri = getContentResolver().insert(ProviderContract.Points.CONTENT_URI, values);
 		 */
 
-		//Log.e("Utzon", "Why you call them hoes bitches?");
+		Log.e("Utzon", "Why you call them hoes bitches?");
 	}
 
 	class RestContentObserver extends ContentObserver{
@@ -88,6 +86,8 @@ public class WebserviceActivity extends Activity{
 					null);                        			// The sort order for the returned rows
 			// listadapter(c);
 
+		
+			
 			Log.e("Utzon", "Cos them hoes is bitches!");
 		}
 	}
