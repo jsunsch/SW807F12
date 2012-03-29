@@ -29,8 +29,8 @@ public class RestProcessor {
 
 			ContentValues values = new ContentValues();
 			values.put(ProviderContract.Points.ATTRIBUTE_ID, point.id);
-			values.put(ProviderContract.Points.ATTRIBUTE_X, point.x);
-			values.put(ProviderContract.Points.ATTRIBUTE_Y, point.y);
+			values.put(ProviderContract.Points.ATTRIBUTE_X, point.geoPoint.getLatitudeE6()); // TODO: Det der getLatitude noget er jeg sq ikke helt sikker på
+			values.put(ProviderContract.Points.ATTRIBUTE_Y, point.geoPoint.getLongitudeE6());// TODO: Det der getLongtitude noget er jeg sq ikke helt sikker på
 			values.put(ProviderContract.Points.ATTRIBUTE_DESCRIPTION, point.description);
 			
 			Uri inserted = context.getContentResolver()

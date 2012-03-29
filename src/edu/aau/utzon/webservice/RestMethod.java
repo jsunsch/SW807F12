@@ -15,6 +15,8 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 
+import com.google.android.maps.GeoPoint;
+
 /*
  * <RESULT>
  * 	<POINT>
@@ -34,61 +36,67 @@ public class RestMethod {
 	private static final String X = "X";
 	private static final String Y = "Y";
 	private static final String DESCRIPTION = "DESCRIPTION";
-	
+
 	private static final String BASE_URL = "http://utzon.apphb.com";
-	
+
 	public static void getPoint(Context context, int id)
 	{
 		HttpGet request = new HttpGet(BASE_URL + "/Point/" + id);
 		PointModel result = new PointModel();
-		
+
 		try {
 			HttpClient client = new DefaultHttpClient();
 			HttpResponse response = client.execute(request);
 			InputStream in = response.getEntity().getContent();
 			XmlPullParser parser = Xml.newPullParser();
 			parser.setInput(in, null);
-			
+
 			int eventType = parser.getEventType();
-	        boolean done = false;
-	        PointModel point = new PointModel();
+			boolean done = false;
+			PointModel point = new PointModel();
+			float x = -1;
+			float y = -1;
+
+			// PARSE!
+			while (eventType != XmlPullParser.END_DOCUMENT && !done){
+				String node = null;
+				switch (eventType){
+				case XmlPullParser.START_TAG:
+					node = parser.getName();
+					if(node.equalsIgnoreCase(ID))
+					{
+						point.id = Integer.valueOf(parser.nextText().trim()).intValue();
+					}
+					else if(node.equalsIgnoreCase(X))
+					{
+						x = Float.valueOf(parser.nextText().trim()).floatValue();
+					}
+					else if(node.equalsIgnoreCase(Y))
+					{
+						y = Float.valueOf(parser.nextText().trim()).floatValue();
+					}
+					else if(node.equalsIgnoreCase(DESCRIPTION))
+					{
+						point.description = parser.nextText();
+					}
+					else if(node.equalsIgnoreCase(RESULT))
+					{
+						parser.next();
+					}
+					break;
+				case XmlPullParser.END_TAG:
+					node = parser.getName();
+					if(node.equalsIgnoreCase(RESULT))
+					{
+						point.geoPoint = new GeoPoint((int)x,(int)y);
+						done = true;
+					}
+					break;
+				}
+			}
+
 			
-	        // PARSE!
-	        while (eventType != XmlPullParser.END_DOCUMENT && !done){
-	        	String node = null;
-	        	switch (eventType){
-		        	case XmlPullParser.START_TAG:
-	            		node = parser.getName();
-	            		if(node.equalsIgnoreCase(ID))
-	            		{
-	            			point.id = Integer.valueOf(parser.nextText().trim()).intValue();
-	            		}
-	            		else if(node.equalsIgnoreCase(X))
-	            		{
-	            			point.x = Float.valueOf(parser.nextText().trim()).floatValue();
-	            		}
-	            		else if(node.equalsIgnoreCase(Y))
-	            		{
-	            			point.y = Float.valueOf(parser.nextText().trim()).floatValue();
-	            		}
-	            		else if(node.equalsIgnoreCase(DESCRIPTION))
-	            		{
-	            			point.description = parser.nextText();
-	            		}
-	            		else if(node.equalsIgnoreCase(RESULT))
-	            		{
-	            			parser.next();
-	            		}
-	            		break;
-		        	case XmlPullParser.END_TAG:
-	            		node = parser.getName();
-	            		if(node.equalsIgnoreCase(RESULT))
-	            		{
-	            			done = true;
-	            		}
-	            		break;
-	        	}
-	        }
+
 		} catch (XmlPullParserException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -99,71 +107,77 @@ public class RestMethod {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		RestProcessor.insertLocationPoint(result, context);
 	}
-	
+
 	public static void getAllPoints(Context context)
 	{
 		HttpGet request = new HttpGet(BASE_URL + "/Point");
 		ArrayList<PointModel> result = new ArrayList<PointModel>();
-		
+
 		try {			
 			HttpClient client = new DefaultHttpClient();
 			HttpResponse response = client.execute(request);
 			InputStream in = response.getEntity().getContent();
 			XmlPullParser parser = Xml.newPullParser();
 			parser.setInput(in, null);
-			
+
 			int eventType = parser.getEventType();
-	        boolean done = false;
-	        PointModel currentPoint = new PointModel();
+			boolean done = false;
+			PointModel currentPoint = new PointModel();
+			float x = -1;
+			float y = -1;
+
+			// PARSE!
+			while (eventType != XmlPullParser.END_DOCUMENT && !done){
+				String node = null;
+				switch (eventType){
+				case XmlPullParser.START_TAG:
+					node = parser.getName();
+					if(node.equalsIgnoreCase(POINT))
+					{
+						currentPoint = new PointModel();
+					}
+					else if(node.equalsIgnoreCase(ID))
+					{
+						currentPoint.id = Integer.valueOf(parser.nextText().trim()).intValue();
+					}
+					else if(node.equalsIgnoreCase(X))
+					{
+						x = Float.valueOf(parser.nextText().trim()).floatValue();
+					}
+					else if(node.equalsIgnoreCase(Y))
+					{
+						y = Float.valueOf(parser.nextText().trim()).floatValue();
+					}
+					else if(node.equalsIgnoreCase(DESCRIPTION))
+					{
+						currentPoint.description = parser.nextText();
+					}
+					else if(node.equalsIgnoreCase(RESULT))
+					{
+						parser.next();
+					}
+					break;
+				case XmlPullParser.END_TAG:
+					node = parser.getName();
+					if(node.equalsIgnoreCase(POINT))
+					{
+						currentPoint.geoPoint = new GeoPoint((int)x, (int)y);
+						result.add(currentPoint);
+					}
+					else if(node.equalsIgnoreCase(RESULT))
+					{
+						done = true;
+					}
+					break;
+				}
+				eventType = parser.next();
+			}
 			
-	        // PARSE!
-	        while (eventType != XmlPullParser.END_DOCUMENT && !done){
-	        	String node = null;
-	        	switch (eventType){
-	            	case XmlPullParser.START_TAG:
-	            		node = parser.getName();
-	            		if(node.equalsIgnoreCase(POINT))
-	            		{
-	            			currentPoint = new PointModel();
-	            		}
-	            		else if(node.equalsIgnoreCase(ID))
-	            		{
-	            			currentPoint.id = Integer.valueOf(parser.nextText().trim()).intValue();
-	            		}
-	            		else if(node.equalsIgnoreCase(X))
-	            		{
-	            			currentPoint.x = Float.valueOf(parser.nextText().trim()).floatValue();
-	            		}
-	            		else if(node.equalsIgnoreCase(Y))
-	            		{
-	            			currentPoint.y = Float.valueOf(parser.nextText().trim()).floatValue();
-	            		}
-	            		else if(node.equalsIgnoreCase(DESCRIPTION))
-	            		{
-	            			currentPoint.description = parser.nextText();
-	            		}
-	            		else if(node.equalsIgnoreCase(RESULT))
-	            		{
-	            			parser.next();
-	            		}
-	            		break;
-	            	case XmlPullParser.END_TAG:
-	            		node = parser.getName();
-	            		if(node.equalsIgnoreCase(POINT))
-	            		{
-	            			result.add(currentPoint);
-	            		}
-	            		else if(node.equalsIgnoreCase(RESULT))
-	            		{
-	            			done = true;
-	            		}
-	            		break;
-	        	}
-	        	eventType = parser.next();
-	        }
+			
+			
 		} catch (XmlPullParserException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -174,7 +188,7 @@ public class RestMethod {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-        RestProcessor.insertLocationPoints(result, context);
+
+		RestProcessor.insertLocationPoints(result, context);
 	}
 }
