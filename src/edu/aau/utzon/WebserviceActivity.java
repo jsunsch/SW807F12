@@ -3,13 +3,15 @@ package edu.aau.utzon;
 import edu.aau.utzon.webservice.ProviderContract;
 import edu.aau.utzon.webservice.RestServiceHelper;
 import android.app.Activity;
+import android.app.ListActivity;
 import android.database.ContentObserver;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.widget.SimpleCursorAdapter;
 
-public class WebserviceActivity extends Activity{
+public class WebserviceActivity extends ListActivity{
 	public final static  String[] mProjectionAll = {ProviderContract.Points.ATTRIBUTE_ID, 
 		ProviderContract.Points.ATTRIBUTE_X, 
 		ProviderContract.Points.ATTRIBUTE_Y, 
@@ -61,8 +63,8 @@ public class WebserviceActivity extends Activity{
 
 		Uri mNewUri = getContentResolver().insert(ProviderContract.Points.CONTENT_URI, values);
 		 */
-
-		Log.e("Utzon", "Why you call them hoes bitches?");
+        
+		Log.e("TACO", "Why you call them hoes bitches?");
 	}
 
 	class RestContentObserver extends ContentObserver{
@@ -86,9 +88,32 @@ public class WebserviceActivity extends Activity{
 					null);                        			// The sort order for the returned rows
 			// listadapter(c);
 
-		
+			//Log.e("TACO", c.getInt(0));
 			
-			Log.e("Utzon", "Cos them hoes is bitches!");
+			//Log.e("TACO", Integer.toString(c.getInt(0)));
+			
+			startManagingCursor(c);
+			
+			String[] columns = new String[] { ProviderContract.Points.ATTRIBUTE_ID,
+					ProviderContract.Points.ATTRIBUTE_DESCRIPTION,
+					//ProviderContract.Points.ATTRIBUTE_LAST_MODIFIED,
+					//ProviderContract.Points.ATTRIBUTE_STATE,
+					ProviderContract.Points.ATTRIBUTE_X,
+					ProviderContract.Points.ATTRIBUTE_Y};
+			
+			            // THE XML DEFINED VIEWS WHICH THE DATA WILL BE BOUND TO
+			
+			int[] to = new int[] { R.id.id, R.id.desc, R.id.x, R.id.y};
+
+			SimpleCursorAdapter mAdapter = new SimpleCursorAdapter(getApplicationContext(), R.layout.webservice_entry, c, columns, to);
+			
+		
+			            // SET THIS ADAPTER AS YOUR LISTACTIVITY'S ADAPTER
+			
+			setListAdapter(mAdapter);
+
+			
+			Log.e("TACO", "Cos them hoes is bitches!");
 		}
 	}
 }

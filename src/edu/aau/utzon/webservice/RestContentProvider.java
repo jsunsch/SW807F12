@@ -11,13 +11,14 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.text.TextUtils;
+import android.util.Log;
 
 public class RestContentProvider extends ContentProvider{
 
 	// SQL "backend" for the content provider
 	static class RestDB extends SQLiteOpenHelper{
 		private static final String DATABASE_NAME = "utzon.db";
-		private static final int DATABASE_VERSION = 13;
+		private static final int DATABASE_VERSION = 14;
 
 	    private static final String POINT_TABLE_CREATE =
 	                "CREATE TABLE " + ProviderContract.Points.TABLE_NAME + " (" +
@@ -89,6 +90,7 @@ public class RestContentProvider extends ContentProvider{
          * and observers that have registered themselves for the provider are notified.
          */
         getContext().getContentResolver().notifyChange(uri, null);
+        Log.e("TACO", "delete notified");
 
         // Returns the number of rows deleted.
         return count;
@@ -165,7 +167,9 @@ public class RestContentProvider extends ContentProvider{
             Uri noteUri = ContentUris.withAppendedId(ProviderContract.Points.CONTENT_ID_URI_BASE, rowId);
 
             // Notifies observers registered against this provider that the data changed.
+            
             getContext().getContentResolver().notifyChange(noteUri, null);
+            Log.e("TACO", "insert notified");
             return noteUri;
         }
         
@@ -253,6 +257,7 @@ public class RestContentProvider extends ContentProvider{
          * and observers that have registered themselves for the provider are notified.
          */
         getContext().getContentResolver().notifyChange(uri, null);
+        Log.e("TACO", "update notified");
 
         // Returns the number of rows updated.
         return count;
