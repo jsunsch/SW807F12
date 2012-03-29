@@ -98,7 +98,8 @@ public class OutdoorActivity extends SherlockMapActivity {
 		// Setup overlays
 		List<Overlay> mapOverlays = mapView.getOverlays();
 		Drawable drawable = this.getResources().getDrawable(R.drawable.androidmarker);
-		GMapsOverlay itemizedoverlay = new GMapsOverlay(drawable, this);
+		BalloonOverlay itemizedoverlay = new BalloonOverlay(drawable, mapView);
+//		GMapsOverlay itemizedoverlay = new GMapsOverlay(drawable, this);
 
 		// Add POI to the overlay
 		List<GeoPoint> pois = getPOIs();
