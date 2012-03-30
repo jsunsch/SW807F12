@@ -28,10 +28,10 @@ public class RestProcessor {
 		public static Uri insertLocationPoint(PointModel point, Context context) {
 
 			ContentValues values = new ContentValues();
-			values.put(ProviderContract.Points.ATTRIBUTE_ID, point.id);
-			values.put(ProviderContract.Points.ATTRIBUTE_X, point.geoPoint.getLatitudeE6()); // TODO: Det der getLatitude noget er jeg sq ikke helt sikker på
-			values.put(ProviderContract.Points.ATTRIBUTE_Y, point.geoPoint.getLongitudeE6());// TODO: Det der getLongtitude noget er jeg sq ikke helt sikker på
-			values.put(ProviderContract.Points.ATTRIBUTE_DESCRIPTION, point.description);
+			values.put(ProviderContract.Points.ATTRIBUTE_ID, point.mId);
+			values.put(ProviderContract.Points.ATTRIBUTE_X, point.mGeoPoint.getLatitudeE6()); // TODO: Det der getLatitude noget er jeg sq ikke helt sikker på
+			values.put(ProviderContract.Points.ATTRIBUTE_Y, point.mGeoPoint.getLongitudeE6());// TODO: Det der getLongtitude noget er jeg sq ikke helt sikker på
+			values.put(ProviderContract.Points.ATTRIBUTE_DESCRIPTION, point.mDesc);
 			
 			Uri inserted = context.getContentResolver()
 					.insert(ProviderContract.Points.CONTENT_URI, values);

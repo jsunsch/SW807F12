@@ -116,9 +116,9 @@ public class WebserviceActivity extends ListActivity{
 				Log.e("TACO", Integer.toString(id) + " - " + desc);
 
 				PointModel p = new PointModel();
-				p.description = desc;
-				p.id = id;
-				p.geoPoint = new GeoPoint((int)x,(int)y);
+				p.mDesc = desc;
+				p.mId = id;
+				p.mGeoPoint = new GeoPoint((int)x,(int)y);
 				
 				points.add(p);
 

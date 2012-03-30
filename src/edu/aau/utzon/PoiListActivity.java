@@ -8,6 +8,7 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 
 import edu.aau.utzon.location.PointOfInterest;
+import edu.aau.utzon.webservice.PointModel;
 
 import android.app.ListActivity;
 import android.content.Intent;
@@ -23,10 +24,10 @@ import android.view.Window;
 
 public class PoiListActivity extends SherlockListActivity {
 	
-	private static int THEME = R.style.Theme_Sherlock_Light;
+	//private static int THEME = R.style.Theme_Sherlock_Light;
 	
 	String[] mGuiText;
-	ArrayList<PointOfInterest> mPois;
+	ArrayList<PointModel> mPois;
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
@@ -65,12 +66,13 @@ public class PoiListActivity extends SherlockListActivity {
 		if (bundle == null)
 			return;
 		
-		 mPois = (ArrayList<PointOfInterest>)bundle.getSerializable("pois");
+		 mPois = (ArrayList<PointModel>)bundle.getSerializable("pois");
 		
 		mGuiText = new String[mPois.size()];
 		
+		
 		for (int i = 0; i < mPois.size(); i++) {
-			mGuiText[i] = mPois.get(i).getmLocationName() + " - " + mPois.get(i).getmProximity() + "m";
+			mGuiText[i] = mPois.get(i).mDesc + " - " + 50 + "m"; // TODO: Use SharedPreferences for proximity instead of "50"
 		}
 		
 		setListAdapter(new ArrayAdapter<String>(this, R.layout.poi_list, mGuiText));

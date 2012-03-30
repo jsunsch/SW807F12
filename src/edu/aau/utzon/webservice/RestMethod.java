@@ -65,7 +65,7 @@ public class RestMethod {
 					node = parser.getName();
 					if(node.equalsIgnoreCase(ID))
 					{
-						point.id = Integer.valueOf(parser.nextText().trim()).intValue();
+						point.mId = Integer.valueOf(parser.nextText().trim()).intValue();
 					}
 					else if(node.equalsIgnoreCase(X))
 					{
@@ -77,7 +77,7 @@ public class RestMethod {
 					}
 					else if(node.equalsIgnoreCase(DESCRIPTION))
 					{
-						point.description = parser.nextText();
+						point.mDesc = parser.nextText();
 					}
 					else if(node.equalsIgnoreCase(RESULT))
 					{
@@ -88,7 +88,7 @@ public class RestMethod {
 					node = parser.getName();
 					if(node.equalsIgnoreCase(RESULT))
 					{
-						point.geoPoint = new GeoPoint((int)x,(int)y);
+						point.mGeoPoint = new GeoPoint((int)x,(int)y);
 						done = true;
 					}
 					break;
@@ -141,7 +141,7 @@ public class RestMethod {
 					}
 					else if(node.equalsIgnoreCase(ID))
 					{
-						currentPoint.id = Integer.valueOf(parser.nextText().trim()).intValue();
+						currentPoint.mId = Integer.valueOf(parser.nextText().trim()).intValue();
 					}
 					else if(node.equalsIgnoreCase(X))
 					{
@@ -153,7 +153,7 @@ public class RestMethod {
 					}
 					else if(node.equalsIgnoreCase(DESCRIPTION))
 					{
-						currentPoint.description = parser.nextText();
+						currentPoint.mDesc = parser.nextText();
 					}
 					else if(node.equalsIgnoreCase(RESULT))
 					{
@@ -164,7 +164,7 @@ public class RestMethod {
 					node = parser.getName();
 					if(node.equalsIgnoreCase(POINT))
 					{
-						currentPoint.geoPoint = new GeoPoint((int)x, (int)y);
+						currentPoint.mGeoPoint = new GeoPoint((int)x, (int)y);
 						result.add(currentPoint);
 					}
 					else if(node.equalsIgnoreCase(RESULT))

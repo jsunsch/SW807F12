@@ -43,7 +43,7 @@ public class LocationHelper {
 
 	protected void makeUseOfNewLocation(Location location) {
 		// Update our latest record of the users position
-		if(isBetterLocation(location, mCurrentLoc)) {
+		if(isBetterLocation(location, mCurrentLoc) || mCurrentLoc == null) {
 			this.mCurrentLoc = location; 
 		}
 	}
