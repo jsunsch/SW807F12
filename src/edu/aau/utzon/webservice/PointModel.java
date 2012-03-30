@@ -42,8 +42,7 @@ public class PointModel implements Parcelable{
 		}
 	};
 
-	// example constructor that takes a Parcel and gives you an object populated
-	// with it's values
+	// Constructor that takes a Parcel and gives you an object populated with it's values
 	private PointModel(Parcel in) {
 		int lat = in.readInt();
 		int longitude = in.readInt();

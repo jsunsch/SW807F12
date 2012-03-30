@@ -7,7 +7,6 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 
-import edu.aau.utzon.location.PointOfInterest;
 import edu.aau.utzon.webservice.PointModel;
 
 import android.app.ListActivity;

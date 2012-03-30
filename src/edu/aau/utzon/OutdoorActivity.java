@@ -35,7 +35,6 @@ import com.readystatesoftware.maps.OnSingleTapListener;
 
 import edu.aau.utzon.WebserviceActivity.RestContentObserver;
 import edu.aau.utzon.location.LocationHelper;
-import edu.aau.utzon.location.PointOfInterest;
 import edu.aau.utzon.webservice.PointModel;
 import edu.aau.utzon.webservice.ProviderContract;
 import edu.aau.utzon.webservice.RestServiceHelper;
@@ -192,17 +191,18 @@ public class OutdoorActivity extends SherlockMapActivity {
 			animateToLocation(mLocationHelper.getCurrentLocation());
 			return true;
 		case R.id.actionbar_poi_list:
-			Intent i = new Intent(this, PoiListActivity.class);
-			i.putExtra("pois", mOutdoorPois);
-			startActivity(i);
-
+			Intent poiListIntent = new Intent(this, PoiListActivity.class);
+			poiListIntent.putExtra("pois", mOutdoorPois);
+			startActivity(poiListIntent);
 			return true;
 		case R.id.actionbar_search:
 			//
 			onSearchRequested();
 			return true;
 		case R.id.actionbar_augmented:
-			startActivity(new Intent(this, AugmentedActivity.class));
+			Intent augmentedIntent = new Intent(this, AugmentedActivity.class);
+			augmentedIntent.putExtra("pois", mOutdoorPois);
+			startActivity(augmentedIntent);
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);

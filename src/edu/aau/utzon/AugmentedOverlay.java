@@ -16,11 +16,13 @@ import com.google.android.maps.GeoPoint;
 
 
 import edu.aau.utzon.location.LocationHelper;
+import edu.aau.utzon.webservice.PointModel;
 
 public class AugmentedOverlay extends View { 
 	private float[] mSensorValues;
 	//private LocationAwareActivity mLocTool;
 	private Location mCurrentLocation;
+	private ArrayList<PointModel> mPois;
 	
 	public void updateOverlay(SensorEvent e, Location l)
 	{
@@ -30,28 +32,12 @@ public class AugmentedOverlay extends View {
 		this.invalidate();
 	}
 
-	public AugmentedOverlay(Context context) { 
+	public AugmentedOverlay(Context context, ArrayList<PointModel> pois) { 
 		super(context); 
+		this.mPois = pois;
 	}
 
-	public ArrayList<GeoPoint> getPOIs()
-	{
-		ArrayList<GeoPoint> pois = new ArrayList<GeoPoint>();
-
-		// Query webservice?
-		// FIXME: Dummy POIs
-		GeoPoint dummy = new GeoPoint(19240000,-99120000);
-		GeoPoint dummy2 = new GeoPoint(29240000,-89120000);
-		GeoPoint dummy3 = new GeoPoint(39240000,-79120000);
-		GeoPoint dummy4 = new GeoPoint(2240000,-2120000);
-
-		pois.add(dummy);
-		pois.add(dummy2);
-		pois.add(dummy3);
-		pois.add(dummy4);
-
-		return pois;
-	}
+	
 
 	@Override 
 	protected void onDraw(Canvas canvas) {	
@@ -66,19 +52,16 @@ public class AugmentedOverlay extends View {
 		BitmapDrawable d = (BitmapDrawable) this.getResources().getDrawable(R.drawable.androidmarker);
 		Bitmap bitmap = ((BitmapDrawable)d).getBitmap();
 
-		//TODO: Dummy POI
-		ArrayList<GeoPoint> pois = getPOIs();
-
 		GeoPoint userLoc = LocationHelper.locToGeo(this.mCurrentLocation);
 
 
 		float userLong = (float) (userLoc.getLongitudeE6()/1e6 +180);
 		float userLat = (float) (userLoc.getLatitudeE6()/1e6);
 
-		for(GeoPoint poi : pois)
+		for(PointModel poi : mPois)
 		{
-			float poiLong = (float) (poi.getLongitudeE6()/1e6 +180 );
-			float poiLat = (float) (poi.getLatitudeE6()/1e6);
+			float poiLong = (float) (poi.mGeoPoint.getLongitudeE6()/1e6 +180 );
+			float poiLat = (float) (poi.mGeoPoint.getLatitudeE6()/1e6);
 
 
 			// Rectangle for the current view, what the user sees

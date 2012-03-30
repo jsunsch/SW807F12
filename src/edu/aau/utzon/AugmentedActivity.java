@@ -1,10 +1,12 @@
 package edu.aau.utzon;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 
 import edu.aau.utzon.location.LocationHelper;
+import edu.aau.utzon.webservice.PointModel;
 
 import android.app.Activity;
 import android.content.Context; 
@@ -26,8 +28,8 @@ import android.widget.TextView;
 
 public class AugmentedActivity extends Activity implements SensorEventListener {
 	private Preview mPreview;
-	int numberOfCameras;
-	int cameraCurrentlyLocked;
+	private int numberOfCameras;
+	private int cameraCurrentlyLocked;
 	
 	private SensorManager mSensorManager;
     private Sensor mGyro;
@@ -38,10 +40,17 @@ public class AugmentedActivity extends Activity implements SensorEventListener {
 	private AugmentedOverlay mDraw;
 
 	private LocationHelper mLocationHelper;
+	private ArrayList<PointModel> mPois;
+	
+	
 
 	@Override
 	public void onCreate(Bundle saved) {
 		super.onCreate(saved);
+		
+		Bundle bundle = getIntent().getExtras();
+
+		mPois = (ArrayList<PointModel>)bundle.getSerializable("pois");
 
 		// Initialize location helper
 		this.mLocationHelper = new LocationHelper(getApplicationContext());
@@ -67,7 +76,7 @@ public class AugmentedActivity extends Activity implements SensorEventListener {
 		mPreview = new Preview(this);
 
 		// Create layout for the overlay
-		mDraw = new AugmentedOverlay(this); 
+		mDraw = new AugmentedOverlay(this, mPois); 
 		addContentView(mDraw, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)); 
 
 		mSurfaceHolder = mSurfaceView.getHolder();

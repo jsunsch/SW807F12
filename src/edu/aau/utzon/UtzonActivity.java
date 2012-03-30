@@ -2,8 +2,6 @@ package edu.aau.utzon;
 
 import java.util.ArrayList;
 
-import edu.aau.utzon.location.PointOfInterest;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -33,6 +31,7 @@ public class UtzonActivity extends Activity implements OnClickListener {
 			startActivity(new Intent(getApplicationContext(), WebserviceActivity.class));
 			break;
 		case R.id.PoiListButton:
+			/*
 			ArrayList<PointOfInterest> pois = new ArrayList<PointOfInterest>();
 			pois.add(new PointOfInterest("Tyren ved vejen", 500));
 			pois.add(new PointOfInterest("Limfjordbroen", 2000));
@@ -40,7 +39,7 @@ public class UtzonActivity extends Activity implements OnClickListener {
 			Intent intent = new Intent(this, PoiListActivity.class);
 			intent.putExtra("pois", pois);
 			
-			startActivity(intent);
+			startActivity(intent);*/
 			break;
 		
 		default:
