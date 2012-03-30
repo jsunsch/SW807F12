@@ -45,6 +45,7 @@ public class OutdoorActivity extends SherlockMapActivity {
 	private LocationHelper mLocationHelper;
 	private ArrayList<PointModel> mOutdoorPois;
 	private TapControlledMapView mMapView;
+	private MyLocationOverlay mMyLocationOverlay;
 
 	public final static  String[] mProjectionAll = {ProviderContract.Points.ATTRIBUTE_ID, 
 		ProviderContract.Points.ATTRIBUTE_X, 
@@ -55,6 +56,7 @@ public class OutdoorActivity extends SherlockMapActivity {
 	public void onResume()
 	{
 		super.onResume();
+		mMyLocationOverlay.enableMyLocation();
 		mLocationHelper.onResume();
 	}
 
@@ -62,6 +64,7 @@ public class OutdoorActivity extends SherlockMapActivity {
 	public void onPause()
 	{
 		super.onPause();
+		mMyLocationOverlay.disableMyLocation();
 		mLocationHelper.onPause();
 	}
 
@@ -87,9 +90,9 @@ public class OutdoorActivity extends SherlockMapActivity {
 
 
 		// Draw the user position on map
-		MyLocationOverlay locationOverlay = new MyLocationOverlay(this, mMapView);
-		locationOverlay.enableMyLocation();
-		mMapView.getOverlays().add(locationOverlay);
+		mMyLocationOverlay = new MyLocationOverlay(this, mMapView);
+		mMyLocationOverlay.enableMyLocation();
+		mMapView.getOverlays().add(mMyLocationOverlay);
 
 		registerContentObserver();
 		getAllOutdoorPois();
@@ -154,7 +157,7 @@ public class OutdoorActivity extends SherlockMapActivity {
 			}
 		});
 
-		// set iOS behavior attributes for overlay
+		// set iOS behavior attributes for overlay (?)
 		itemizedoverlay.setShowClose(false);
 		itemizedoverlay.setShowDisclosure(true);
 		itemizedoverlay.setSnapToCenter(false);
