@@ -225,9 +225,6 @@ public class OutdoorActivity extends SherlockMapActivity {
 				float x = c.getFloat(colIndexX);
 				float y = c.getFloat(colIndexY);
 
-
-				Log.e("TACO", Integer.toString(id) + " - " + desc);
-
 				PointModel p = new PointModel();
 				p.description = desc;
 				p.id = id;
