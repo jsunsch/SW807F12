@@ -6,11 +6,16 @@ import java.util.List;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.database.ContentObserver;
+import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
+import android.util.Log;
 import android.view.Window;
 import android.widget.SearchView;
+import android.widget.SimpleCursorAdapter;
 
 import com.actionbarsherlock.app.SherlockMapActivity;
 import com.actionbarsherlock.view.MenuInflater;
@@ -25,12 +30,22 @@ import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
 
 
+import edu.aau.utzon.WebserviceActivity.RestContentObserver;
 import edu.aau.utzon.location.LocationHelper;
 import edu.aau.utzon.location.PointOfInterest;
+import edu.aau.utzon.webservice.PointModel;
+import edu.aau.utzon.webservice.ProviderContract;
+import edu.aau.utzon.webservice.RestServiceHelper;
 
 public class OutdoorActivity extends SherlockMapActivity {
 
 	private LocationHelper mLocationHelper;
+	private ArrayList<PointModel> mOutdoorPois;
+	
+	public final static  String[] mProjectionAll = {ProviderContract.Points.ATTRIBUTE_ID, 
+		ProviderContract.Points.ATTRIBUTE_X, 
+		ProviderContract.Points.ATTRIBUTE_Y, 
+		ProviderContract.Points.ATTRIBUTE_DESCRIPTION};
 
 	@Override
 	public void onResume()
@@ -49,8 +64,8 @@ public class OutdoorActivity extends SherlockMapActivity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
 		// Init locationHelper
+		mOutdoorPois = new ArrayList<PointModel>();
 		this.mLocationHelper = new LocationHelper(getApplicationContext());
 		mLocationHelper.onCreate(savedInstanceState);
 
@@ -71,11 +86,23 @@ public class OutdoorActivity extends SherlockMapActivity {
 		locationOverlay.enableMyLocation();
 		mapView.getOverlays().add(locationOverlay);
 
-		// Draw POIs
-		drawPOI();
+		registerContentObserver();
+		getAllOutdoorPois();
 
 		// Do fancy fancy animation to our current position :P
 		//animateToLocation(mLocTool.getCurrentLocation());
+	}
+	
+	private void getAllOutdoorPois() {
+		RestServiceHelper.getServiceHelper()
+		.getLocationPoints(this);
+	}
+	
+	private void registerContentObserver() {
+		RestContentObserver mContentObserver = new RestContentObserver(new Handler());
+		this.getApplicationContext()
+		.getContentResolver()
+		.registerContentObserver(ProviderContract.Points.CONTENT_URI, true, mContentObserver);
 	}
 
 	protected void animateToLocation(Location loc)
@@ -90,44 +117,29 @@ public class OutdoorActivity extends SherlockMapActivity {
 			mc.animateTo(point);
 		}
 	}
+	
+	public void updateOutdoorPois(ArrayList<PointModel> pois) {
+		mOutdoorPois = pois;
+		 drawOutdoorPois();
+	}
 
-	protected void drawPOI()
+	protected void drawOutdoorPois()
 	{
 		MapView mapView = (MapView) findViewById(R.id.mapview);
 
 		// Setup overlays
 		List<Overlay> mapOverlays = mapView.getOverlays();
+		mapOverlays.clear();
 		Drawable drawable = this.getResources().getDrawable(R.drawable.androidmarker);
 		BalloonOverlay itemizedoverlay = new BalloonOverlay(drawable, mapView);
-//		GMapsOverlay itemizedoverlay = new GMapsOverlay(drawable, this);
+//		GMapsOverlay itemizedover)lay = new GMapsOverlay(drawable, this);
 
 		// Add POI to the overlay
-		List<GeoPoint> pois = getPOIs();
-		for(GeoPoint l : pois)
+		for(PointModel p : mOutdoorPois)
 		{
-			// TODO: Draw real items instead of dummies
-			itemizedoverlay.addOverlay(new OverlayItem(l, "Hi, title", "This is longer..."));
+			itemizedoverlay.addOverlay(new OverlayItem(p.geoPoint, "Title", p.description));
 		}
 		mapOverlays.add(itemizedoverlay);
-	}
-
-	public List<GeoPoint> getPOIs()
-	{
-		ArrayList<GeoPoint> pois = new ArrayList<GeoPoint>();
-
-		// Query webservice?
-		// FIXME: Dummy POIs
-		GeoPoint dummy = new GeoPoint(19240000,-99120000);
-		GeoPoint dummy2 = new GeoPoint(29240000,-89120000);
-		GeoPoint dummy3 = new GeoPoint(39240000,-79120000);
-		GeoPoint dummy4 = new GeoPoint(2240000,-2120000);
-
-		pois.add(dummy);
-		pois.add(dummy2);
-		pois.add(dummy3);
-		pois.add(dummy4);
-
-		return pois;
 	}
 
 	@Override
@@ -175,6 +187,56 @@ public class OutdoorActivity extends SherlockMapActivity {
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
+		}
+	}
+	
+	class RestContentObserver extends ContentObserver{
+		public RestContentObserver(Handler handler) {
+			super(handler);
+		}
+
+		@Override
+		public boolean deliverSelfNotifications() {
+			return true;
+		}
+
+		@Override
+		public void onChange(boolean selfChange) {
+			super.onChange(selfChange);
+			// New content is available
+			Cursor c = managedQuery(ProviderContract.Points.CONTENT_URI,   	// The content URI of the points table
+					mProjectionAll,                        	// The columns to return for each row
+					null,                    				// Selection criteria
+					null,                     				// Selection criteria
+					null);                        			// The sort order for the returned rows
+
+			ArrayList<PointModel> points = new ArrayList<PointModel>();
+
+			c.moveToFirst();
+			do
+			{
+				int colIndexId = c.getColumnIndex(ProviderContract.Points.ATTRIBUTE_ID);
+				int colIndexDesc = c.getColumnIndex(ProviderContract.Points.ATTRIBUTE_DESCRIPTION);
+				int colIndexX = c.getColumnIndex(ProviderContract.Points.ATTRIBUTE_X);
+				int colIndexY = c.getColumnIndex(ProviderContract.Points.ATTRIBUTE_Y);
+
+				int id = c.getInt(colIndexId);
+				String desc = c.getString(colIndexDesc);
+				float x = c.getFloat(colIndexX);
+				float y = c.getFloat(colIndexY);
+
+				PointModel p = new PointModel();
+				p.description = desc;
+				p.id = id;
+				p.geoPoint = new GeoPoint((int)x,(int)y);
+				
+				points.add(p);
+
+			} while (c.moveToNext() == true);
+			
+			updateOutdoorPois(points);
+			
+			Log.e("TACO", "Cos them hoes is bitches!");
 		}
 	}
 }
