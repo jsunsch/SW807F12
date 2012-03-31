@@ -63,6 +63,8 @@
         <activity android:name="edu.aau.utzon.indoor.CalibrationActivity" />
         <activity android:name="edu.aau.utzon.PoiListActivity" />
         <activity android:name="edu.aau.utzon.indoor.LocatingActivity" />
+        <activity android:name="edu.aau.utzon.PoiContentActivity" />
+        
 
         <provider
             android:name=".webservice.RestContentProvider"
