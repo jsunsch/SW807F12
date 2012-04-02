@@ -5,9 +5,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.SearchManager;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.database.ContentObserver;
 import android.database.Cursor;
@@ -19,6 +21,7 @@ import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.Window;
 import android.widget.SearchView;
@@ -37,7 +40,6 @@ import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
 
 
-import edu.aau.utzon.PoiService.IncomingHandler;
 import edu.aau.utzon.WebserviceActivity.RestContentObserver;
 import edu.aau.utzon.location.LocationHelper;
 import edu.aau.utzon.location.PointOfInterest;
@@ -49,7 +51,7 @@ public class OutdoorActivity extends SherlockMapActivity implements Serializable
 
 	private LocationHelper mLocationHelper;
 	private ArrayList<PointModel> mOutdoorPois;
-	
+
 	public final static  String[] mProjectionAll = {ProviderContract.Points.ATTRIBUTE_ID, 
 		ProviderContract.Points.ATTRIBUTE_X, 
 		ProviderContract.Points.ATTRIBUTE_Y, 
@@ -76,7 +78,7 @@ public class OutdoorActivity extends SherlockMapActivity implements Serializable
 		mOutdoorPois = new ArrayList<PointModel>();
 		this.mLocationHelper = new LocationHelper(getApplicationContext());
 		mLocationHelper.onCreate(savedInstanceState);
-		
+
 		// Remove title bar
 		if( android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB ) {
 			requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -96,20 +98,34 @@ public class OutdoorActivity extends SherlockMapActivity implements Serializable
 
 		registerContentObserver();
 		getAllOutdoorPois();
-		
+
 		//PoiService.StartService(this);
 		startPoiNotificationService();
-	
-		
-		// Do fancy fancy animation to our current position :P
-		//animateToLocation(mLocTool.getCurrentLocation());
+
+
+
+		// Register to receive broadcasts (from the PoiNotificationService)
+		LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
+				new IntentFilter(PoiService.POI_INTENTFILTER));
+
 	}
-	
+
+	// Handler for broadcast events (Poi notification)
+	private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			// Get extra data included in the Intent
+			String message = intent.getStringExtra("message");
+			Log.d("receiver", "Got message: " + message);
+		}
+	};
+
+
 	private void getAllOutdoorPois() {
 		RestServiceHelper.getServiceHelper()
 		.getLocationPoints(this);
 	}
-	
+
 	private void registerContentObserver() {
 		RestContentObserver mContentObserver = new RestContentObserver(new Handler());
 		this.getApplicationContext()
@@ -129,10 +145,10 @@ public class OutdoorActivity extends SherlockMapActivity implements Serializable
 			mc.animateTo(point);
 		}
 	}
-	
+
 	public void updateOutdoorPois(ArrayList<PointModel> pois) {
 		mOutdoorPois = pois;
-		 drawOutdoorPois();
+		drawOutdoorPois();
 	}
 
 	protected void drawOutdoorPois()
@@ -144,7 +160,7 @@ public class OutdoorActivity extends SherlockMapActivity implements Serializable
 		mapOverlays.clear();
 		Drawable drawable = this.getResources().getDrawable(R.drawable.androidmarker);
 		BalloonOverlay itemizedoverlay = new BalloonOverlay(drawable, mapView);
-//		GMapsOverlay itemizedover)lay = new GMapsOverlay(drawable, this);
+		//		GMapsOverlay itemizedover)lay = new GMapsOverlay(drawable, this);
 
 		// Add POI to the overlay
 		for(PointModel p : mOutdoorPois)
@@ -199,53 +215,17 @@ public class OutdoorActivity extends SherlockMapActivity implements Serializable
 			return super.onOptionsItemSelected(item);
 		}
 	}
-	
+
 	private void startPoiNotificationService() {
 
-		
 		Intent intent = new Intent(this, PoiService.class);
-		intent.putExtra(PoiService.COMMAND, PoiService.START_SERVICE);
+		intent.putExtra(PoiService.COMMAND, PoiService.COMMAND_START_SERVICE);
+		intent.putExtra(PoiService.USER_LOCATION_X, mLocationHelper.getCurrentLocation().getLatitude());
+		intent.putExtra(PoiService.USER_LOCATION_Y, mLocationHelper.getCurrentLocation().getLongitude());
 		startService(intent);
-		bindService(intent, networkServiceConnection, Context.BIND_AUTO_CREATE);
+		//bindService(intent, networkServiceConnection, Context.BIND_AUTO_CREATE);
 	}
-	
-	Messenger messenger = new Messenger(new IncomingHandler());
 
-	class IncomingHandler extends Handler {
-	    @Override
-	    public void handleMessage(Message msg) {
-	    	
-	        switch (msg.what) {
-	            case 0:
-	                Log.e("TACO", "Activity");
-	                break;
-	            default:
-	                super.handleMessage(msg);
-	        }
-	    }
-	}
-	
-	private ServiceConnection networkServiceConnection = new ServiceConnection() {
-	    public void onServiceConnected(ComponentName className, IBinder service) {
-	        Messenger networkService = new Messenger(service);
-	        try {
-	            Message msg = Message.obtain(null, 0);
-	            msg.replyTo = messenger;
-	            networkService.send(msg);
-	            Log.e("TACO", "Connected to service");
-
-	        } catch (RemoteException e) {
-	            // Here, the service has crashed even before we were able to connect
-	        }
-	    }
-
-		@Override
-		public void onServiceDisconnected(ComponentName name) {
-			// TODO Auto-generated method stub
-			
-		}
-	};
-	
 	class RestContentObserver extends ContentObserver{
 		public RestContentObserver(Handler handler) {
 			super(handler);
@@ -285,13 +265,13 @@ public class OutdoorActivity extends SherlockMapActivity implements Serializable
 				p.description = desc;
 				p.id = id;
 				p.geoPoint = new GeoPoint((int)x,(int)y);
-				
+
 				points.add(p);
 
 			} while (c.moveToNext() == true);
-			
+
 			updateOutdoorPois(points);
-			
+
 			Log.e("TACO", "Cos them hoes is bitches!");
 		}
 	}
