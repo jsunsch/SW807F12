@@ -120,23 +120,23 @@ public class LocationHelper {
 	}
 
 	// This is a pretty bad estimation, lol. TODO: FIX
-	protected boolean isNearPOI(List<Location> pois)
-	{
-		boolean result = false;
-		for(Location p : pois)
-		{
-			if(p.getLatitude() <= mCurrentLoc.getLatitude()+1 && p.getLatitude() >= mCurrentLoc.getLatitude()-1)
-			{
-				if(p.getLongitude() <= mCurrentLoc.getLongitude()+1 && p.getLongitude() >= mCurrentLoc.getLongitude()-1)
-				{
+	//protected boolean isNearPOI(List<Location> pois)
+	//{
+		//boolean result = false;
+		//for(Location p : pois)
+		//{
+			//if(p.getLatitude() <= mCurrentLoc.getLatitude()+1 && p.getLatitude() >= mCurrentLoc.getLatitude()-1)
+			//{
+				//if(p.getLongitude() <= mCurrentLoc.getLongitude()+1 && p.getLongitude() >= mCurrentLoc.getLongitude()-1)
+				//{
 					// "Near" : A few hundred km.... move to webservice?
-					result = true;
-				}
-			}
-		}
+				//	result = true;
+				//}
+			//}
+		//}
 
-		return result;
-	}
+		//return result;
+	//}
 
 	protected boolean isNearPoi(PointModel point, int threshholdMeters) {
 
