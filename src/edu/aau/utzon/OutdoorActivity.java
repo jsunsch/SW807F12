@@ -1,5 +1,6 @@
 package edu.aau.utzon;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,7 +38,7 @@ import edu.aau.utzon.webservice.PointModel;
 import edu.aau.utzon.webservice.ProviderContract;
 import edu.aau.utzon.webservice.RestServiceHelper;
 
-public class OutdoorActivity extends SherlockMapActivity {
+public class OutdoorActivity extends SherlockMapActivity implements Serializable {
 
 	private LocationHelper mLocationHelper;
 	private ArrayList<PointModel> mOutdoorPois;
@@ -88,6 +89,8 @@ public class OutdoorActivity extends SherlockMapActivity {
 
 		registerContentObserver();
 		getAllOutdoorPois();
+		
+		PoiService.StartService(this);
 
 		// Do fancy fancy animation to our current position :P
 		//animateToLocation(mLocTool.getCurrentLocation());
