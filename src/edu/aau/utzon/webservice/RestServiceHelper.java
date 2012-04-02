@@ -25,7 +25,6 @@ public class RestServiceHelper {
     }
 	
 	public void getLocationPoints(Context context) {
-		Log.e("Service Example", "Niggar niggar niggar niggar niggar niggar niggar! Why you call them hoes bitches?"); 
 		Intent intent = new Intent(context, RestService.class);
 		
 		intent.putExtra(RestService.COMMAND, RestService.COMMAND_GET_LOCATION_POINTS);

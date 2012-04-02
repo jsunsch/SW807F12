@@ -90,8 +90,11 @@ public class OutdoorActivity extends SherlockMapActivity implements Serializable
 		registerContentObserver();
 		getAllOutdoorPois();
 		
-		PoiService.StartService(this);
+		//PoiService.StartService(this);
 
+		PoiNotificationThread t = new PoiNotificationThread();
+		t.start();
+		
 		// Do fancy fancy animation to our current position :P
 		//animateToLocation(mLocTool.getCurrentLocation());
 	}

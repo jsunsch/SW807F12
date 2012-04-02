@@ -14,8 +14,6 @@ public class RestProcessor {
 			//TODO: Add logic for sending these points to the ContentProvider, so that they can be stored in the database.
 			ArrayList<Uri> uris = new ArrayList<Uri>();
 			
-			Log.e("TACO", Integer.toString(points.size()));
-			
 			for(PointModel p : points)
 			{
 				uris.add(insertLocationPoint(p, context));
