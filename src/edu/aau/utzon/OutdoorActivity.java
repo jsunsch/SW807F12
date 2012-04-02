@@ -5,14 +5,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.SearchManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.database.ContentObserver;
 import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
+import android.os.Message;
+import android.os.Messenger;
+import android.os.RemoteException;
 import android.util.Log;
 import android.view.Window;
 import android.widget.SearchView;
@@ -31,6 +37,7 @@ import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
 
 
+import edu.aau.utzon.PoiService.IncomingHandler;
 import edu.aau.utzon.WebserviceActivity.RestContentObserver;
 import edu.aau.utzon.location.LocationHelper;
 import edu.aau.utzon.location.PointOfInterest;
@@ -91,9 +98,8 @@ public class OutdoorActivity extends SherlockMapActivity implements Serializable
 		getAllOutdoorPois();
 		
 		//PoiService.StartService(this);
-
-		PoiNotificationThread t = new PoiNotificationThread();
-		t.start();
+		startPoiNotificationService();
+	
 		
 		// Do fancy fancy animation to our current position :P
 		//animateToLocation(mLocTool.getCurrentLocation());
@@ -195,6 +201,52 @@ public class OutdoorActivity extends SherlockMapActivity implements Serializable
 			return super.onOptionsItemSelected(item);
 		}
 	}
+	
+	private void startPoiNotificationService() {
+
+		
+		Intent intent = new Intent(this, PoiService.class);
+		intent.putExtra(PoiService.COMMAND, PoiService.START_SERVICE);
+		startService(intent);
+		bindService(intent, networkServiceConnection, Context.BIND_AUTO_CREATE);
+	}
+	
+	Messenger messenger = new Messenger(new IncomingHandler());
+
+	class IncomingHandler extends Handler {
+	    @Override
+	    public void handleMessage(Message msg) {
+	    	
+	        switch (msg.what) {
+	            case 0:
+	                Log.e("TACO", "Activity");
+	                break;
+	            default:
+	                super.handleMessage(msg);
+	        }
+	    }
+	}
+	
+	private ServiceConnection networkServiceConnection = new ServiceConnection() {
+	    public void onServiceConnected(ComponentName className, IBinder service) {
+	        Messenger networkService = new Messenger(service);
+	        try {
+	            Message msg = Message.obtain(null, 0);
+	            msg.replyTo = messenger;
+	            networkService.send(msg);
+	            Log.e("TACO", "Connected to service");
+
+	        } catch (RemoteException e) {
+	            // Here, the service has crashed even before we were able to connect
+	        }
+	    }
+
+		@Override
+		public void onServiceDisconnected(ComponentName name) {
+			// TODO Auto-generated method stub
+			
+		}
+	};
 	
 	class RestContentObserver extends ContentObserver{
 		public RestContentObserver(Handler handler) {
