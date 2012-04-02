@@ -5,6 +5,8 @@ import java.util.List;
 
 import com.google.android.maps.GeoPoint;
 
+import edu.aau.utzon.webservice.PointModel;
+
 import android.app.Activity;
 import android.content.Context;
 import android.location.Location;
@@ -131,6 +133,20 @@ public class LocationHelper {
 		}
 
 		return result;
+	}
+	
+	protected boolean isNearPoi(PointModel point, int threshholdMeters) {
+		
+		float converted = (float)threshholdMeters / (float)1852; // converts the distance threshold to "longtitude/latitude" distance
+		
+		//if (point.geoPoint.getLatitudeE6())
+		
+		return false;
+	}
+	
+	private float euclidianDistance()
+	{
+		return (float)0;
 	}
 
 	protected List<Location> knearestPOI(List<Location> query, int k)
