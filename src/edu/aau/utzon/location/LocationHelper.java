@@ -5,6 +5,8 @@ import java.util.List;
 
 import com.google.android.maps.GeoPoint;
 
+import edu.aau.utzon.indoor.Point;
+import edu.aau.utzon.indoor.WifiMeasure;
 import edu.aau.utzon.webservice.PointModel;
 
 import android.app.Activity;
@@ -13,6 +15,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.util.Log;
 
 /**
  *  Handles location operations, such as the users 
@@ -33,12 +36,12 @@ public class LocationHelper {
 	protected LocationListener mLocationListenerGPS;
 	protected LocationListener mLocationListenerNetwork;
 	protected Context mContext;
-	
+
 	public LocationHelper(Context c)
 	{
 		this.mContext = c;
 	}
-	
+
 	public Location getCurrentLocation(){
 		return mCurrentLoc;
 	}
@@ -88,7 +91,7 @@ public class LocationHelper {
 		// Set the current position to the last known position, until we have a better fixpoint
 		Location latestGPS = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 		Location latestNetwork = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-		
+
 		// Find best location
 		if(latestGPS == null && latestNetwork != null) { this.mCurrentLoc = latestNetwork; }
 		else if(latestGPS != null && latestNetwork == null) { this.mCurrentLoc = latestGPS; }
@@ -134,19 +137,36 @@ public class LocationHelper {
 
 		return result;
 	}
-	
+
 	protected boolean isNearPoi(PointModel point, int threshholdMeters) {
-		
-		float converted = (float)threshholdMeters / (float)1852; // converts the distance threshold to "longtitude/latitude" distance
-		
+
+		double converted = (double)threshholdMeters / (double)1852; // converts the distance threshold to "longtitude/latitude" distance
+
+		double pointLongtitude =  (double)point.geoPoint.getLongitudeE6() / (double)1000000;
+		double pointLattitude = (double)point.geoPoint.getLatitudeE6() / (double)1000000;
+
+		//double dist = distFrom(pointLongtitude, pointLattitude, mCurrentLoc.getLongitude(), mCurrentLoc.getLatitude());
+
+		//Log.e("TACO", Double.toString(dist));
+
 		//if (point.geoPoint.getLatitudeE6())
-		
+
 		return false;
 	}
-	
-	private float euclidianDistance()
-	{
-		return (float)0;
+
+      private double distFrom(double lat1, double lng1, double lat2, double lng2) {
+		double earthRadius = 3958.75;
+		double dLat = Math.toRadians(lat2-lat1);
+		double dLng = Math.toRadians(lng2-lng1);
+		double a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+				Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
+				Math.sin(dLng/2) * Math.sin(dLng/2);
+		double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+		double dist = earthRadius * c;
+
+		int meterConversion = 1609;
+
+		return new Double(dist * meterConversion).doubleValue();
 	}
 
 	protected List<Location> knearestPOI(List<Location> query, int k)

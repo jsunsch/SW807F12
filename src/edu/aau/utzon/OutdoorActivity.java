@@ -68,7 +68,7 @@ public class OutdoorActivity extends SherlockMapActivity {
 		mOutdoorPois = new ArrayList<PointModel>();
 		this.mLocationHelper = new LocationHelper(getApplicationContext());
 		mLocationHelper.onCreate(savedInstanceState);
-
+		
 		// Remove title bar
 		if( android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB ) {
 			requestWindowFeature(Window.FEATURE_NO_TITLE);
