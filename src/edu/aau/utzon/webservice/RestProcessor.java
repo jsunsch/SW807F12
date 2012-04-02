@@ -9,8 +9,9 @@ import android.net.Uri;
 import android.util.Log;
 
 public class RestProcessor {
+	
 		// Returns list of URIs with the ID of the newly inserted resource's ID
-		public static List<Uri> insertLocationPoints(ArrayList<PointModel> points, Context context) {
+		public static List<Uri> insertLocationPoints(List<PointModel> points, Context context) {
 			//TODO: Add logic for sending these points to the ContentProvider, so that they can be stored in the database.
 			ArrayList<Uri> uris = new ArrayList<Uri>();
 			
