@@ -171,8 +171,6 @@ public class OutdoorActivity extends SherlockMapActivity implements Serializable
 		return true;
 	}
 
-
-
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Handle item selection
