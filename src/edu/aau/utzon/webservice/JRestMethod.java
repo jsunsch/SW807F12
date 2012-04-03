@@ -16,16 +16,13 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 import android.content.Context;
-import android.util.Xml;
 
 import com.google.android.maps.GeoPoint;
 
 public class JRestMethod {
-	private static final String BASE_URL = "http://utzonwebservice.apphb.com/";
+//	private static final String BASE_URL = "http://utzonwebservice.apphb.com/";
 	private static final String K_NEAREST_URL = "http://utzonwebservice.apphb.com/KNearestPOI";
 	
 	
@@ -41,10 +38,6 @@ public class JRestMethod {
 		getPoints(context, q);
 	}
 	
-	/**
-	 * Gets N nearest neighbours within the radius. radius or
-	 * numberOfNearestNeighbours can be omitted, but only one of them may.
-	 */
 	public static void getNearestPoints(Context context, double longitude, double latitude, int numberOfNearestNeighbours, double radius)
 	{
 		String q = K_NEAREST_URL + "/" + longitude + "/" + latitude + "/" + numberOfNearestNeighbours + "/" + radius;
@@ -71,16 +64,16 @@ public class JRestMethod {
 					
 					JSONArray pointArray = new JSONArray(convertStreamToString(in));
 					
-					JSONObject _jsonObj;
+					JSONObject jsonObj;
 					for(int i=0; i < pointArray.length(); i++){
-						_jsonObj = pointArray.getJSONObject(i);
+						jsonObj = pointArray.getJSONObject(i);
 						
 						PointModel pm = new PointModel();
-						pm.mId = _jsonObj.getInt("Id");
-						pm.mDesc = _jsonObj.getString("Name");
+						pm.mId = jsonObj.getInt("Id");
+						pm.mName = jsonObj.getString("Name");
 						
 						
-						pm.mGeoPoint = new GeoPoint((int)_jsonObj.getDouble("Longitude"), (int)_jsonObj.getDouble("Latitude"));
+						pm.mGeoPoint = new GeoPoint((int)jsonObj.getDouble("Longitude"), (int)jsonObj.getDouble("Latitude"));
 						result.add(pm);
 					}
 					
