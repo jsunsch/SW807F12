@@ -56,7 +56,6 @@ public class IndoorActivity extends Activity {
 	}
 
 	public void readSignals(View view) {
-
 		_editText.setText("");
 		if (_wifi.startScan() == true)
 		{
