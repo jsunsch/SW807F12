@@ -17,6 +17,7 @@ import android.view.MotionEvent;
 import android.view.Window;
 import android.widget.SearchView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockMapActivity;
 import com.actionbarsherlock.view.MenuInflater;
@@ -35,11 +36,12 @@ import com.readystatesoftware.maps.OnSingleTapListener;
 
 import edu.aau.utzon.WebserviceActivity.RestContentObserver;
 import edu.aau.utzon.location.LocationHelper;
+import edu.aau.utzon.location.NearPoiPublisher;
 import edu.aau.utzon.webservice.PointModel;
 import edu.aau.utzon.webservice.ProviderContract;
 import edu.aau.utzon.webservice.RestServiceHelper;
 
-public class OutdoorActivity extends SherlockMapActivity {
+public class OutdoorActivity extends SherlockMapActivity implements NearPoiPublisher {
 
 	private LocationHelper mLocationHelper;
 	private ArrayList<PointModel> mOutdoorPois;
@@ -98,6 +100,19 @@ public class OutdoorActivity extends SherlockMapActivity {
 
 		// Do fancy fancy animation to our current position :P
 		//animateToLocation(mLocTool.getCurrentLocation());
+	}
+	
+	public void userIsNearPoi(PointModel poi) {
+		Log.e("TACO", "IS NEAR POI");
+		StartPoiContentActivity();
+	}
+	
+	private void StartPoiContentActivity() {
+		startActivity(new Intent(getApplicationContext(), PoiContentActivity.class));
+	}
+	
+	public ArrayList<PointModel> getPois() {
+		return mOutdoorPois;
 	}
 
 	private void getAllOutdoorPois() {

@@ -5,6 +5,8 @@ import java.util.List;
 
 import com.google.android.maps.GeoPoint;
 
+import edu.aau.utzon.webservice.PointModel;
+
 import android.app.Activity;
 import android.content.Context;
 import android.location.Location;
@@ -31,6 +33,8 @@ public class LocationHelper {
 	protected LocationListener mLocationListenerGPS;
 	protected LocationListener mLocationListenerNetwork;
 	protected Context mContext;
+	protected NearPoiPublisher mPublisher;
+	PointModel mPreviusClosePoi = null;
 	
 	public LocationHelper(Context c)
 	{
@@ -44,8 +48,27 @@ public class LocationHelper {
 	protected void makeUseOfNewLocation(Location location) {
 		// Update our latest record of the users position
 		if(isBetterLocation(location, mCurrentLoc) || mCurrentLoc == null) {
-			this.mCurrentLoc = location; 
+			this.mCurrentLoc = location;
+			
+			ArrayList<PointModel> pois = mPublisher.getPois();
+			
+			for (PointModel p : pois) {
+				if (isNearPoi(p, 50)) {
+					if (mPreviusClosePoi.mId == p.mId) {
+						return;
+					}
+					mPublisher.userIsNearPoi(p);
+					mPreviusClosePoi = p;
+					return;
+				}
+			}
+			
+			mPreviusClosePoi = null;
 		}
+	}
+	
+	public void setNearPoiPublisher(NearPoiPublisher publisher) {
+		mPublisher = publisher;
 	}
 
 	public void onCreate(Bundle savedInstance) {
@@ -114,23 +137,39 @@ public class LocationHelper {
 
 	}
 
-	// This is a pretty bad estimation, lol. TODO: FIX
-	protected boolean isNearPOI(List<Location> pois)
-	{
-		boolean result = false;
-		for(Location p : pois)
-		{
-			if(p.getLatitude() <= mCurrentLoc.getLatitude()+1 && p.getLatitude() >= mCurrentLoc.getLatitude()-1)
-			{
-				if(p.getLongitude() <= mCurrentLoc.getLongitude()+1 && p.getLongitude() >= mCurrentLoc.getLongitude()-1)
-				{
-					// "Near" : A few hundred km.... move to webservice?
-					result = true;
-				}
-			}
-		}
+	protected boolean isNearPoi(PointModel point, float threshholdMeters) {
 
-		return result;
+		double converted = (double)threshholdMeters / (double)1852; // converts the distance threshold to "longtitude/latitude" distance
+
+		double pointLongtitude =  (double)point.mGeoPoint.getLongitudeE6() / (double)1000000;
+		double pointLattitude = (double)point.mGeoPoint.getLatitudeE6() / (double)1000000;
+
+		double dist = distFrom(pointLongtitude, pointLattitude, mCurrentLoc.getLongitude(), mCurrentLoc.getLatitude());
+
+		if (dist < threshholdMeters) {
+			return true;
+		}
+		
+		//Log.e("TACO", Double.toString(dist));
+
+		//if (point.geoPoint.getLatitudeE6())
+
+		return false;
+	}
+
+      private double distFrom(double lat1, double lng1, double lat2, double lng2) {
+		double earthRadius = 3958.75;
+		double dLat = Math.toRadians(lat2-lat1);
+		double dLng = Math.toRadians(lng2-lng1);
+		double a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+				Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
+				Math.sin(dLng/2) * Math.sin(dLng/2);
+		double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+		double dist = earthRadius * c;
+
+		int meterConversion = 1609;
+
+		return new Double(dist * meterConversion).doubleValue();
 	}
 
 	protected List<Location> knearestPOI(List<Location> query, int k)
