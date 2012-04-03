@@ -10,7 +10,8 @@ import com.google.android.maps.GeoPoint;
 public class PointModel implements Parcelable{
 	public GeoPoint mGeoPoint;
 	public int mId;
-	public String mDesc;
+	public String mDesc
+	public String mName;
 
 	public PointModel() {
 	}
