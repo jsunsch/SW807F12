@@ -33,17 +33,17 @@ public class CalibrationActivity extends Activity  {
 		String connectivity_context = Context.WIFI_SERVICE;
 		_wifi = (WifiManager)getSystemService(connectivity_context);
 
-		_textView.setText("Number of points: " + PointData.getPoints().size());
+		_textView.setText("Number of points: " + RadioMap.getPoints().size());
 	}
 
 	public void addPoint(View view) throws InterruptedException {
 
-		ArrayList<WifiMeasure> realMeasures = WifiHelper.getWifiMeasures(this, _wifi, 5);
+		ArrayList<WifiMeasure> realMeasures = WifiHelper.getWifiMeasures(this, _wifi, 15, 200);
 		
 		if (realMeasures == null)
 			return;
 		
-		PointData.addPoint(new Point(realMeasures, _editText.getText().toString()));
+		RadioMap.addPoint(new Point(realMeasures, _editText.getText().toString()));
 
 		new AlertDialog.Builder(this)
 		.setTitle("Done")
@@ -57,12 +57,12 @@ public class CalibrationActivity extends Activity  {
 		
 		//PointData.AddPoint(new Point())
 
-		_textView.setText("Number of points: " + PointData.getPoints().size());
+		_textView.setText("Number of points: " + RadioMap.getPoints().size());
 	}
 
 	public void deleteAllPoints(View view)  {
-		PointData.deleteAllPoints();
+		RadioMap.deleteAllPoints();
 
-		_textView.setText("Number of points: " + PointData.getPoints().size());
+		_textView.setText("Number of points: " + RadioMap.getPoints().size());
 	}
 }

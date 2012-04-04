@@ -35,6 +35,7 @@ import com.readystatesoftware.maps.OnSingleTapListener;
 
 
 import edu.aau.utzon.WebserviceActivity.RestContentObserver;
+import edu.aau.utzon.indoor.IndoorActivity;
 import edu.aau.utzon.location.LocationHelper;
 import edu.aau.utzon.location.NearPoiPublisher;
 import edu.aau.utzon.webservice.PointModel;
@@ -71,6 +72,10 @@ public class OutdoorActivity extends SherlockMapActivity implements NearPoiPubli
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+		
+		Intent intent = new Intent(this, IndoorActivity.class);
+		startActivity(intent);
+		
 		super.onCreate(savedInstanceState);
 		// Init locationHelper
 		mOutdoorPois = new ArrayList<PointModel>();

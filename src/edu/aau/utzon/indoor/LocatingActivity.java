@@ -10,6 +10,7 @@ import android.content.Context;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -34,32 +35,26 @@ public class LocatingActivity extends Activity {
 		{
 			List<ScanResult> scanResults =  _wifi.getScanResults();
 
-			ArrayList<WifiMeasure> measures = WifiHelper.getWifiMeasures(this, _wifi, 3);
-			Point p = PointData.FindPosition(measures);
-
+			ArrayList<WifiMeasure> measures = WifiHelper.getWifiMeasures(this, _wifi, 10, 200);
+			
+			Point p = RadioMap.FindPosition(measures, 3);
 
 			String text = "";
+			text += p.getName() + "\n";
+			
 			if (p == null) {
 				text = "You are not close to any points.!";
 			}
 			else {
-				text += p.getName() + "\n";
-			}
-
-			for (ScanResult res : scanResults) {
-				text += res.BSSID + ": " +  -res.level + "\n";
-			}
-			
-			text += "------------\n";
-			
-			for (WifiMeasure wm : p.getMeasures()) {
-				text += wm.getName() + ": " + wm.getSignal() + "\n";
-			}
-			
-			for (Point p2 : PointData.getPoints()) {
-				text += p2.getName() + ": " + PointData.findDist(new Point(measures, ""), p2) + "\n";
-				for (WifiMeasure wm : p2.getMeasures()) {
-					text += wm.getName() + ": " + wm.getSignal() + "\n";
+				
+				// This is just printet out for debug reasons. You can just delete it if you want... But ask lige Steffan first
+				for (WifiMeasure m1 : measures) {
+					for (WifiMeasure m2 : p.getMeasures()) {
+						if (m1.getName().equals(m2.getName())) {
+							Double temp = (double)m1.getSignal() - (double)m2.getSignal();
+							text += m1.getName() + ": " + temp + "\n";
+						}
+					}
 				}
 			}
 
