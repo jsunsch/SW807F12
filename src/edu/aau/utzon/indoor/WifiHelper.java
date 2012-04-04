@@ -12,18 +12,22 @@ import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 
 public class WifiHelper {
-	public static ArrayList<WifiMeasure> getWifiMeasures(Context context, WifiManager wifi, int seconds) throws InterruptedException {
+	
+	public static ArrayList<WifiMeasure> getWifiMeasures(Context context, WifiManager wifi, int seconds, int signalMax) throws InterruptedException {
 		if (wifi.startScan() == true)
 		{
+			// Contains the signal sum from each WIFI acces points
 			Hashtable<String, Integer> measures = new Hashtable<String, Integer>();
+			// Contains the count of how many times an access point as been measured
 			Hashtable<String, Integer> wifiCounts = new Hashtable<String, Integer> ();
 			
 			for (int i = 0; i < 2*seconds; i++) {
 
+				// Raw list of WIFI access points
 				List<ScanResult> scanResults =  wifi.getScanResults();
 
 				for (ScanResult res : scanResults) {
-					if (-res.level < 80) {
+					if (-res.level < signalMax) {
 
 						if (measures.containsKey(res.BSSID) == false) {
 							measures.put(res.BSSID, new Integer(-res.level));
@@ -67,16 +71,6 @@ public class WifiHelper {
 		}
 		else
 		{
-			new AlertDialog.Builder(context)
-			.setTitle("Error")
-			.setMessage("Could not scan for WIFI networks!")
-			.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int which) { 
-
-				}
-			})
-			.show();
-			
 			return null;
 		}
 	}

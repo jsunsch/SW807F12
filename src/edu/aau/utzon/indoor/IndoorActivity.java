@@ -37,7 +37,7 @@ public class IndoorActivity extends Activity {
 	public void showPoints(View view) {
 		String text = "";
 		
-		for (Point p : PointData.getPoints()) {
+		for (Point p : RadioMap.getPoints()) {
 			text += p.name + ": ";
 			
 			for(WifiMeasure wm : p.getMeasures()) {
