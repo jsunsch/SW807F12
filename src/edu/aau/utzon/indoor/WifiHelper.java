@@ -16,13 +16,13 @@ public class WifiHelper {
 	public static ArrayList<WifiMeasure> getWifiMeasures(Context context, WifiManager wifi, int seconds, int signalMax) throws InterruptedException {
 		if (wifi.startScan() == true)
 		{
-			// Contains the signal sum from each WIFI acces points
+			// Contains the signal sum from each WIFI access points
 			Hashtable<String, Integer> measures = new Hashtable<String, Integer>();
 			// Contains the count of how many times an access point as been measured
 			Hashtable<String, Integer> wifiCounts = new Hashtable<String, Integer> ();
 			
 			for (int i = 0; i < 2*seconds; i++) {
-
+				
 				// Raw list of WIFI access points
 				List<ScanResult> scanResults =  wifi.getScanResults();
 
