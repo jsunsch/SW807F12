@@ -36,9 +36,7 @@ public class AugmentedOverlay extends View {
 		super(context); 
 		this.mPois = pois;
 	}
-
 	
-
 	@Override 
 	protected void onDraw(Canvas canvas) {	
 		//LocTool mLocTool = LocTool.getLocTool(getContext());

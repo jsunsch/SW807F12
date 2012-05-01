@@ -35,12 +35,12 @@ public class LocationHelper {
 	protected Context mContext;
 	protected NearPoiPublisher mPublisher;
 	PointModel mPreviusClosePoi = null;
-	
+
 	public LocationHelper(Context c)
 	{
 		this.mContext = c;
 	}
-	
+
 	public Location getCurrentLocation(){
 		return mCurrentLoc;
 	}
@@ -49,24 +49,26 @@ public class LocationHelper {
 		// Update our latest record of the users position
 		if(isBetterLocation(location, mCurrentLoc) || mCurrentLoc == null) {
 			this.mCurrentLoc = location;
-			
-			ArrayList<PointModel> pois = mPublisher.getPois();
-			
-			for (PointModel p : pois) {
-				if (isNearPoi(p, 50)) {
-					if (mPreviusClosePoi.mId == p.mId) {
-						return;
-					}
-					mPublisher.userIsNearPoi(p);
-					mPreviusClosePoi = p;
-					return;
-				}
-			}
-			
+
+			//ArrayList<PointModel> pois = mPublisher.getPois();
+
+			//for (PointModel p : pois) {
+			//	if (isNearPoi(p, 50)) {
+			//		if (mPreviusClosePoi != null) {
+			//			if (mPreviusClosePoi.mId == p.mId) {
+			//				return;
+			//			}
+			//		}
+			//		mPublisher.userIsNearPoi(p);
+			//		mPreviusClosePoi = p;
+			//		return;
+			//	}
+			//}
+
 			mPreviusClosePoi = null;
 		}
 	}
-	
+
 	public void setNearPoiPublisher(NearPoiPublisher publisher) {
 		mPublisher = publisher;
 	}
@@ -109,7 +111,7 @@ public class LocationHelper {
 		// Set the current position to the last known position, until we have a better fixpoint
 		Location latestGPS = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 		Location latestNetwork = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-		
+
 		// Find best location
 		if(latestGPS == null && latestNetwork != null) { this.mCurrentLoc = latestNetwork; }
 		else if(latestGPS != null && latestNetwork == null) { this.mCurrentLoc = latestGPS; }
@@ -149,7 +151,7 @@ public class LocationHelper {
 		if (dist < threshholdMeters) {
 			return true;
 		}
-		
+
 		//Log.e("TACO", Double.toString(dist));
 
 		//if (point.geoPoint.getLatitudeE6())
@@ -157,7 +159,7 @@ public class LocationHelper {
 		return false;
 	}
 
-      private double distFrom(double lat1, double lng1, double lat2, double lng2) {
+	private double distFrom(double lat1, double lng1, double lat2, double lng2) {
 		double earthRadius = 3958.75;
 		double dLat = Math.toRadians(lat2-lat1);
 		double dLng = Math.toRadians(lng2-lng1);
