@@ -38,7 +38,7 @@
                 android:resource="@xml/searchable" />
         </activity>
         <activity
-            android:name=".OutdoorActivity"
+            android:name=".outdoor.OutdoorActivity"
             android:uiOptions="splitActionBarWhenNarrow" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -55,7 +55,7 @@
             android:label="@+id/WebserviceActivity" >
         </activity>
         <activity
-            android:name=".AugmentedActivity"
+            android:name=".augmented.AugmentedActivity"
             android:label="@+id/AugmentedActivity"
             android:screenOrientation="landscape" >
         </activity>

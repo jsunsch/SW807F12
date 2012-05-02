@@ -2,6 +2,9 @@ package edu.aau.utzon;
 
 import java.util.ArrayList;
 
+import edu.aau.utzon.augmented.AugmentedActivity;
+import edu.aau.utzon.outdoor.OutdoorActivity;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
