@@ -9,8 +9,9 @@ import android.net.Uri;
 import android.util.Log;
 
 public class RestProcessor {
+	
 		// Returns list of URIs with the ID of the newly inserted resource's ID
-		public static List<Uri> insertLocationPoints(ArrayList<PointModel> points, Context context) {
+		public static List<Uri> insertLocationPoints(List<PointModel> points, Context context) {
 			//TODO: Add logic for sending these points to the ContentProvider, so that they can be stored in the database.
 			ArrayList<Uri> uris = new ArrayList<Uri>();
 			
@@ -32,6 +33,7 @@ public class RestProcessor {
 			values.put(ProviderContract.Points.ATTRIBUTE_X, point.mGeoPoint.getLatitudeE6()); // TODO: Det der getLatitude noget er jeg sq ikke helt sikker på
 			values.put(ProviderContract.Points.ATTRIBUTE_Y, point.mGeoPoint.getLongitudeE6());// TODO: Det der getLongtitude noget er jeg sq ikke helt sikker på
 			values.put(ProviderContract.Points.ATTRIBUTE_DESCRIPTION, point.mDesc);
+			values.put(ProviderContract.Points.ATTRIBUTE_NAME, point.mName);
 			
 			Uri inserted = context.getContentResolver()
 					.insert(ProviderContract.Points.CONTENT_URI, values);

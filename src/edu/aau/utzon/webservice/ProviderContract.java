@@ -28,6 +28,7 @@ public final class ProviderContract {
     	public static final String ATTRIBUTE_STATE = "state";
     	public static final String ATTRIBUTE_LAST_MODIFIED = "last_modified";
     	public static final String ATTRIBUTE_DESCRIPTION = "description";
+    	public static final String ATTRIBUTE_NAME = "name";
     	
     	// Attribute states
     	public static final int STATE_POSTING = 1;
