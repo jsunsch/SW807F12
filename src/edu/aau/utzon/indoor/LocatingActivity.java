@@ -33,12 +33,9 @@ public class LocatingActivity extends Activity {
 		_textView.setText("");
 		if (_wifi.startScan() == true)
 		{
-			List<ScanResult> scanResults =  _wifi.getScanResults();
-
-			ArrayList<WifiMeasure> measures = WifiHelper.getWifiMeasures(this, _wifi, 10, 200);
-			
-			Point p = RadioMap.FindPosition(measures, 3);
-
+			List<ScanResult> scanResults = _wifi.getScanResults();
+			ArrayList<WifiMeasureCollection> measures = WifiHelper.getWifiMeasures(this, _wifi, 10, 200);
+			Point p = RadioMap.FindPosition(measures, 1);
 			String text = "";
 			text += p.getName() + "\n";
 			
@@ -48,16 +45,15 @@ public class LocatingActivity extends Activity {
 			else {
 				
 				// This is just printet out for debug reasons. You can just delete it if you want... But ask lige Steffan first
-				for (WifiMeasure m1 : measures) {
-					for (WifiMeasure m2 : p.getMeasures()) {
-						if (m1.getName().equals(m2.getName())) {
-							Double temp = (double)m1.getSignal() - (double)m2.getSignal();
-							text += m1.getName() + ": " + temp + "\n";
-						}
-					}
-				}
+				//for (WifiMeasure m1 : measures) {
+				//	for (WifiMeasure m2 : p.getMeasures()) {
+				//		if (m1.getName().equals(m2.getName())) {
+				//			Double temp = (double)m1.getSignal() - (double)m2.getSignal();
+				//			text += m1.getName() + ": " + temp + "\n";
+				//		}
+				//	}
+				//}
 			}
-
 			_textView.setText(text);
 		}
 		else

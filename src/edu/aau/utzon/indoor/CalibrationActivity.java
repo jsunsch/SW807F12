@@ -38,7 +38,7 @@ public class CalibrationActivity extends Activity  {
 
 	public void addPoint(View view) throws InterruptedException {
 
-		ArrayList<WifiMeasure> realMeasures = WifiHelper.getWifiMeasures(this, _wifi, 15, 200);
+		ArrayList<WifiMeasureCollection> realMeasures = WifiHelper.getWifiMeasures(this, _wifi, 15, 200);
 		
 		if (realMeasures == null)
 			return;

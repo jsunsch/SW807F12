@@ -40,9 +40,9 @@ public class IndoorActivity extends Activity {
 		for (Point p : RadioMap.getPoints()) {
 			text += p.name + ": ";
 			
-			for(WifiMeasure wm : p.getMeasures()) {
-				text += wm.getSignal() + " ";
-			}
+			//for(WifiMeasure wm : p.getMeasures()) {
+			//	text += wm.getSignal() + " ";
+			//}
 			
 			text += "\n";
 		}
