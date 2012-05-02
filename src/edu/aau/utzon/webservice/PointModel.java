@@ -7,10 +7,10 @@ import android.os.Parcelable;
 
 import com.google.android.maps.GeoPoint;
 
-public class PointModel implements Parcelable{
+public class PointModel implements Parcelable {
 	public GeoPoint mGeoPoint;
 	public int mId;
-	public String mDesc
+	public String mDesc;
 	public String mName;
 
 	public PointModel() {
@@ -29,6 +29,7 @@ public class PointModel implements Parcelable{
 		dest.writeInt(mGeoPoint.getLongitudeE6());
 		dest.writeInt(mId);
 		dest.writeString(mDesc);
+		dest.writeString(mName);
 	}
 
 	// this is used to regenerate your object. All Parcelables must have a
@@ -50,5 +51,6 @@ public class PointModel implements Parcelable{
 		mGeoPoint = new GeoPoint(lat, longitude);
 		mId = in.readInt();
 		mDesc = in.readString();
+		mName = in.readString();
 	}
 }

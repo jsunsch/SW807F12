@@ -49,7 +49,8 @@ public class OutdoorActivity extends SherlockMapActivity {
 	public final static  String[] mProjectionAll = {ProviderContract.Points.ATTRIBUTE_ID, 
 		ProviderContract.Points.ATTRIBUTE_X, 
 		ProviderContract.Points.ATTRIBUTE_Y, 
-		ProviderContract.Points.ATTRIBUTE_DESCRIPTION};
+		ProviderContract.Points.ATTRIBUTE_DESCRIPTION,
+		ProviderContract.Points.ATTRIBUTE_NAME};
 
 	@Override
 	public void onResume()
@@ -144,7 +145,7 @@ public class OutdoorActivity extends SherlockMapActivity {
 		// Add POI to the overlay
 		for(PointModel p : mOutdoorPois)
 		{
-			itemizedoverlay.addOverlay(new OverlayItem(p.mGeoPoint, "Title", p.mDesc));
+			itemizedoverlay.addOverlay(new OverlayItem(p.mGeoPoint, "Hej" + p.mName, p.mDesc));
 		}
 
 		// Ballon stuff
@@ -238,16 +239,19 @@ public class OutdoorActivity extends SherlockMapActivity {
 				int colIndexDesc = c.getColumnIndex(ProviderContract.Points.ATTRIBUTE_DESCRIPTION);
 				int colIndexX = c.getColumnIndex(ProviderContract.Points.ATTRIBUTE_X);
 				int colIndexY = c.getColumnIndex(ProviderContract.Points.ATTRIBUTE_Y);
+				int colIndexName = c.getColumnIndex(ProviderContract.Points.ATTRIBUTE_NAME);
 
 				int id = c.getInt(colIndexId);
 				String desc = c.getString(colIndexDesc);
 				float x = c.getFloat(colIndexX);
 				float y = c.getFloat(colIndexY);
-
+				String name = c.getString(colIndexName);
+				
 				PointModel p = new PointModel();
 				p.mDesc = desc;
 				p.mId = id;
 				p.mGeoPoint = new GeoPoint((int)x,(int)y);
+				p.mName = name;
 
 				points.add(p);
 

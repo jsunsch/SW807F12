@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,34 +19,40 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.google.android.maps.GeoPoint;
 
 public class JRestMethod {
 //	private static final String BASE_URL = "http://utzonwebservice.apphb.com/";
-	private static final String K_NEAREST_URL = "http://utzonwebservice.apphb.com/KNearestPOI";
+	private static final String K_NEAREST_URL = "http://62.243.46.141:12345/KNearestPOI";
 	
 	
 	public static void getNearestPoints(Context context, double longitude, double latitude, int numberOfNearestNeighbours)
-	{
+	{	
 		String q = K_NEAREST_URL + "/" + longitude + "/" + latitude + "/" + numberOfNearestNeighbours;
 		getPoints(context, q);
 	}
 	
 	public static void getNearestPoints(Context context, double longitude, double latitude, double  radius)
 	{
-		String q = K_NEAREST_URL + "/" + longitude + "/" + latitude + "/-1/" + radius;
+		DecimalFormat myFormatter = new DecimalFormat("###,###.###");
+		
+		String q = K_NEAREST_URL + "/" + longitude + "/" + latitude + "/-1/" + myFormatter.format(radius);
 		getPoints(context, q);
 	}
 	
 	public static void getNearestPoints(Context context, double longitude, double latitude, int numberOfNearestNeighbours, double radius)
 	{
-		String q = K_NEAREST_URL + "/" + longitude + "/" + latitude + "/" + numberOfNearestNeighbours + "/" + radius;
+		DecimalFormat myFormatter = new DecimalFormat("###,###.###");
+		
+		String q = K_NEAREST_URL + "/" + longitude + "/" + latitude + "/" + numberOfNearestNeighbours + "/" + myFormatter.format(radius);
 		getPoints(context, q);
 	}
 	
 	private static void getPoints(Context context, String query)
 	{
+		Log.e("hey", query);
 		List<PointModel> result = new ArrayList<PointModel>();
 
 		try {
@@ -63,15 +70,15 @@ public class JRestMethod {
 					InputStream in = entity.getContent();
 					
 					JSONArray pointArray = new JSONArray(convertStreamToString(in));
-					
+
 					JSONObject jsonObj;
 					for(int i=0; i < pointArray.length(); i++){
 						jsonObj = pointArray.getJSONObject(i);
-						
+						Log.e("Point data, name", jsonObj.getString("Name"));
 						PointModel pm = new PointModel();
 						pm.mId = jsonObj.getInt("Id");
 						pm.mName = jsonObj.getString("Name");
-						
+						pm.mDesc = "something something....";
 						
 						pm.mGeoPoint = new GeoPoint((int)jsonObj.getDouble("Longitude"), (int)jsonObj.getDouble("Latitude"));
 						result.add(pm);

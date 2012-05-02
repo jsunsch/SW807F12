@@ -18,7 +18,7 @@ public class RestContentProvider extends ContentProvider{
 	// SQL "backend" for the content provider
 	static class RestDB extends SQLiteOpenHelper{
 		private static final String DATABASE_NAME = "utzon.db";
-		private static final int DATABASE_VERSION = 14;
+		private static final int DATABASE_VERSION = 15;
 
 	    private static final String POINT_TABLE_CREATE =
 	                "CREATE TABLE " + ProviderContract.Points.TABLE_NAME + " (" +
@@ -27,7 +27,8 @@ public class RestContentProvider extends ContentProvider{
 	                ProviderContract.Points.ATTRIBUTE_Y + " REAL, " +
 	                ProviderContract.Points.ATTRIBUTE_STATE + " INTEGER, " +
 	                ProviderContract.Points.ATTRIBUTE_LAST_MODIFIED + " INTEGER, " +
-	                ProviderContract.Points.ATTRIBUTE_DESCRIPTION + " TEXT);";
+	                ProviderContract.Points.ATTRIBUTE_DESCRIPTION + " TEXT, " +
+	                ProviderContract.Points.ATTRIBUTE_NAME + " TEXT);";
 		  
 		public RestDB(Context context) {
 			super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -142,6 +143,9 @@ public class RestContentProvider extends ContentProvider{
             throw new IllegalArgumentException("Invalid insertion values " + values);
         }
         if (values.containsKey(ProviderContract.Points.ATTRIBUTE_DESCRIPTION) == false) {
+            throw new IllegalArgumentException("Invalid insertion values " + values);
+        }
+        if (values.containsKey(ProviderContract.Points.ATTRIBUTE_NAME) == false) {
             throw new IllegalArgumentException("Invalid insertion values " + values);
         }
 

@@ -55,7 +55,8 @@ public class RestService extends IntentService {
 			}
 		}
 		*/
-		RestMethod.getAllPoints(getBaseContext());
+		//RestMethod.getAllPoints(getBaseContext());
+		JRestMethod.getNearestPoints(getBaseContext(), 0, 0, 3, 10000000);
 		
 		Log.e("Service Example", "Niggar niggar niggar niggar niggar niggar niggar! Cos them hoes is bitches!"); 
 	}
