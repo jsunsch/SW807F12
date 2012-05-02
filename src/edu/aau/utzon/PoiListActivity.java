@@ -80,11 +80,10 @@ public class PoiListActivity extends SherlockListActivity {
 		  lv.setTextFilterEnabled(true);
 
 		  lv.setOnItemClickListener(new OnItemClickListener() {
-		    public void onItemClick(AdapterView<?> parent, View view,
-		        int position, long id) {
-		    	
-		    	// TODO: Når der er blevet clicket på en POI skal der "ske noget". brug position variablen til at finde du af hvilken POI der er blevet klikket på
-		    	
+		    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+		    	Intent i = new Intent(getBaseContext(), PoiContentActivity.class);
+		    	i.putExtra("poi", mPois.get(position));
+		    	startActivity(i);
 		    }
 		  });
 	}
