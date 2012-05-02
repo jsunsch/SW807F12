@@ -166,7 +166,7 @@ public class OutdoorActivity extends SherlockMapActivity implements NearPoiPubli
 		// Add POI to the overlay
 		for(PointModel p : mOutdoorPois)
 		{
-			itemizedoverlay.addOverlay(new OverlayItem(p.mGeoPoint, "Hej" + p.mName, p.mDesc));
+			itemizedoverlay.addOverlay(new OverlayItem(p.mGeoPoint, p.mName, p.mDesc));
 		}
 
 		// Ballon stuff

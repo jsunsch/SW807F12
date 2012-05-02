@@ -229,6 +229,12 @@ public class LocationHelper {
 
 		return pois;
 	}
+	
+	static public GeoPoint geoToE6(GeoPoint gp)
+	{
+		return new GeoPoint((int)(gp.getLatitudeE6()*1e6),(int)(gp.getLongitudeE6()*1e6));
+	}
+	
 
 	static public GeoPoint locToGeo(Location loc)
 	{

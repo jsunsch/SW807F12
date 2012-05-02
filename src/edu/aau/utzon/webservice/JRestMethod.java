@@ -23,36 +23,44 @@ import android.util.Log;
 
 import com.google.android.maps.GeoPoint;
 
+import edu.aau.utzon.location.LocationHelper;
+
 public class JRestMethod {
-//	private static final String BASE_URL = "http://utzonwebservice.apphb.com/";
-	private static final String K_NEAREST_URL = "http://62.243.46.141:12345/KNearestPOI";
-	
+	private static final String K_NEAREST_URL = "http://62.243.46.141:12345";
+	private static final DecimalFormat mDm = new DecimalFormat("###.################################");
 	
 	public static void getNearestPoints(Context context, double longitude, double latitude, int numberOfNearestNeighbours)
 	{	
-		String q = K_NEAREST_URL + "/" + longitude + "/" + latitude + "/" + numberOfNearestNeighbours;
+		String q = K_NEAREST_URL + "/KNearestPOI/" + mDm.format(longitude) + "/" + mDm.format(latitude) + "/" + numberOfNearestNeighbours;
 		getPoints(context, q);
 	}
 	
 	public static void getNearestPoints(Context context, double longitude, double latitude, double  radius)
 	{
-		DecimalFormat myFormatter = new DecimalFormat("###,###.###");
-		
-		String q = K_NEAREST_URL + "/" + longitude + "/" + latitude + "/-1/" + myFormatter.format(radius);
+		String q = K_NEAREST_URL + "/KNearestPOI/" + mDm.format(longitude) + "/" + mDm.format(latitude) + "/-1/" + mDm.format(radius);
 		getPoints(context, q);
 	}
 	
 	public static void getNearestPoints(Context context, double longitude, double latitude, int numberOfNearestNeighbours, double radius)
+	{	
+		String q = K_NEAREST_URL + "/KNearestPOI/" + mDm.format(longitude) + "/" + mDm.format(latitude) + "/" + numberOfNearestNeighbours + "/" + mDm.format(radius);
+		getPoints(context, q);
+	}
+	
+	public static void getAllPoints(Context context)
 	{
-		DecimalFormat myFormatter = new DecimalFormat("###,###.###");
-		
-		String q = K_NEAREST_URL + "/" + longitude + "/" + latitude + "/" + numberOfNearestNeighbours + "/" + myFormatter.format(radius);
+		String q = K_NEAREST_URL + "/AllPoints";
+		getPoints(context, q);
+	}
+	
+	public static void getPoint(Context context, int id)
+	{
+		String q = K_NEAREST_URL + "/GetPoint/" + id;
 		getPoints(context, q);
 	}
 	
 	private static void getPoints(Context context, String query)
 	{
-		Log.e("hey", query);
 		List<PointModel> result = new ArrayList<PointModel>();
 
 		try {
@@ -74,13 +82,16 @@ public class JRestMethod {
 					JSONObject jsonObj;
 					for(int i=0; i < pointArray.length(); i++){
 						jsonObj = pointArray.getJSONObject(i);
-						Log.e("Point data, name", jsonObj.getString("Name"));
+						
 						PointModel pm = new PointModel();
+						
 						pm.mId = jsonObj.getInt("Id");
 						pm.mName = jsonObj.getString("Name");
-						pm.mDesc = "something something....";
+						pm.mDesc = jsonObj.getString("Text");
 						
 						pm.mGeoPoint = new GeoPoint((int)jsonObj.getDouble("Longitude"), (int)jsonObj.getDouble("Latitude"));
+						pm.mGeoPoint = LocationHelper.geoToE6(pm.mGeoPoint);
+						
 						result.add(pm);
 					}
 					
