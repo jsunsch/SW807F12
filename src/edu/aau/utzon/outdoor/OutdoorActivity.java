@@ -4,12 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Intent;
-import android.database.ContentObserver;
 import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.Window;
@@ -36,7 +34,6 @@ import edu.aau.utzon.location.LocationHelper;
 import edu.aau.utzon.location.NearPoiPublisher;
 import edu.aau.utzon.webservice.PointModel;
 import edu.aau.utzon.webservice.ProviderContract;
-import edu.aau.utzon.webservice.RestServiceHelper;
 
 public class OutdoorActivity extends SherlockMapActivity implements NearPoiPublisher {
 
@@ -67,14 +64,7 @@ public class OutdoorActivity extends SherlockMapActivity implements NearPoiPubli
 		mLocationHelper.onPause();
 	}
 	
-	private final static  String[] ProjectionAllPOI = {
-		ProviderContract.Points.ATTRIBUTE_ID, 
-		ProviderContract.Points.ATTRIBUTE_X, 
-		ProviderContract.Points.ATTRIBUTE_Y, 
-		ProviderContract.Points.ATTRIBUTE_DESCRIPTION,
-		ProviderContract.Points.ATTRIBUTE_LAST_MODIFIED,
-		ProviderContract.Points.ATTRIBUTE_NAME,
-		ProviderContract.Points.ATTRIBUTE_STATE};
+
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -85,7 +75,11 @@ public class OutdoorActivity extends SherlockMapActivity implements NearPoiPubli
 		mLocationHelper.onCreate(savedInstanceState);
 		
 		// Get available POIs
-		mOutdoorPois = getContentResolver().query(ProviderContract.Points.CONTENT_URI, ProjectionAllPOI, null, null, null);
+		mOutdoorPois = getContentResolver().query(ProviderContract.Points.CONTENT_URI, 
+				ProviderContract.Points.PROJECTIONSTRING_ALL, 
+				null, 
+				null, 
+				null);
 
 		// Remove title bar
 		if( android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB ) {
@@ -142,6 +136,8 @@ public class OutdoorActivity extends SherlockMapActivity implements NearPoiPubli
 		final BalloonOverlay itemizedoverlay = new BalloonOverlay(drawable, mMapView);
 		//		GMapsOverlay itemizedover)lay = new GMapsOverlay(drawable, this);
 
+		
+		
 		// Add POI to the overlay
 		for(PointModel p : list)
 		{

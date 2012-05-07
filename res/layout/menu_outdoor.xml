@@ -10,14 +10,14 @@
             android:showAsAction="always|withText|collapseActionView"
             android:title="@string/menu_search"
             android:actionViewClass="android.widget.SearchView" />
-
+        
         <item
-            android:id="@+id/actionbar_center_location"
-            android:icon="@drawable/centerlocation"
+            android:id="@+id/actionbar_indoor"
+            android:icon="@drawable/indoor"
             android:orderInCategory="2"
             android:showAsAction="ifRoom"
-            android:title="@string/menu_center_location"/>
-
+            android:title="@string/menu_indoor"/>
+        
         <item
             android:id="@+id/actionbar_augmented"
             android:icon="@drawable/augmented"
@@ -33,11 +33,13 @@
             android:title="@string/menu_poi_list"/>
         
         <item
-            android:id="@+id/actionbar_indoor"
-            android:icon="@drawable/indoor"
+            android:id="@+id/actionbar_center_location"
+            android:icon="@drawable/centerlocation"
             android:orderInCategory="5"
             android:showAsAction="ifRoom"
-            android:title="@string/menu_indoor"/>
+            android:title="@string/menu_center_location"/>
+        
+
     </group>
 
 </menu>

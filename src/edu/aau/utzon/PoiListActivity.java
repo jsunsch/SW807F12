@@ -1,13 +1,16 @@
 package edu.aau.utzon;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import com.actionbarsherlock.app.SherlockListActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 
+import edu.aau.utzon.outdoor.OutdoorActivity;
 import edu.aau.utzon.webservice.PointModel;
+import edu.aau.utzon.webservice.ProviderContract;
 
 import android.app.ListActivity;
 import android.content.Intent;
@@ -26,7 +29,7 @@ public class PoiListActivity extends SherlockListActivity {
 	//private static int THEME = R.style.Theme_Sherlock_Light;
 	
 	String[] mGuiText;
-	ArrayList<PointModel> mPois;
+	List<PointModel> mPois;
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
@@ -41,10 +44,7 @@ public class PoiListActivity extends SherlockListActivity {
 		// Handle item selection
 		switch (item.getItemId()) {
 		case R.id.actionbar_search:
-			//
-			return true;
-		case R.id.actionbar_outdoor:
-			finish();
+			onSearchRequested();
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
@@ -60,16 +60,17 @@ public class PoiListActivity extends SherlockListActivity {
 			requestWindowFeature(Window.FEATURE_NO_TITLE);
 		}
 
-		Bundle bundle = getIntent().getExtras();
 		
-		if (bundle == null)
-			return;
-		
-		mPois = bundle.getParcelable("pois");
+		mPois = PointModel.asPointModel(
+				getContentResolver().query(	ProviderContract.Points.CONTENT_URI, 
+				ProviderContract.Points.PROJECTIONSTRING_ALL, 
+				null, 
+				null, 
+				null));
 		
 		mGuiText = new String[mPois.size()];
 		for (int i = 0; i < mPois.size(); i++) {
-			mGuiText[i] = mPois.get(i).mDesc + " - " + 50 + "m"; // TODO: Use SharedPreferences for proximity instead of "50"
+			mGuiText[i] = mPois.get(i).mDesc; // TODO: Use SharedPreferences for proximity instead of "50"
 		}
 		
 		setListAdapter(new ArrayAdapter<String>(this, R.layout.poi_list, mGuiText));

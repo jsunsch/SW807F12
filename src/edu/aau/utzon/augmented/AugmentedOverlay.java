@@ -1,6 +1,8 @@
 package edu.aau.utzon.augmented;
 
 import java.util.ArrayList;
+import java.util.List;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -24,7 +26,7 @@ public class AugmentedOverlay extends View {
 	private float[] mSensorValues;
 	//private LocationAwareActivity mLocTool;
 	private Location mCurrentLocation;
-	private ArrayList<PointModel> mPois;
+	private List<PointModel> mPois;
 	
 	public void updateOverlay(SensorEvent e, Location l)
 	{
@@ -34,7 +36,7 @@ public class AugmentedOverlay extends View {
 		this.invalidate();
 	}
 
-	public AugmentedOverlay(Context context, ArrayList<PointModel> pois) { 
+	public AugmentedOverlay(Context context, List<PointModel> pois) { 
 		super(context); 
 		this.mPois = pois;
 	}
@@ -55,12 +57,12 @@ public class AugmentedOverlay extends View {
 		GeoPoint userLoc = LocationHelper.locToGeo(this.mCurrentLocation);
 
 
-		float userLong = (float) (userLoc.getLongitudeE6()/1e6 +180);
+		float userLong = (float) (userLoc.getLongitudeE6()/1e6);
 		float userLat = (float) (userLoc.getLatitudeE6()/1e6);
 
 		for(PointModel poi : mPois)
 		{
-			float poiLong = (float) (poi.mGeoPoint.getLongitudeE6()/1e6 +180 );
+			float poiLong = (float) (poi.mGeoPoint.getLongitudeE6()/1e6);
 			float poiLat = (float) (poi.mGeoPoint.getLatitudeE6()/1e6);
 
 

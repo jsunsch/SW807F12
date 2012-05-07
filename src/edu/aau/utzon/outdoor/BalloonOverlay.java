@@ -3,12 +3,18 @@ package edu.aau.utzon.outdoor;
 import java.util.ArrayList;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.widget.Toast;
 
+import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapView;
 import com.google.android.maps.OverlayItem;
 import com.readystatesoftware.mapviewballoons.BalloonItemizedOverlay;
+
+import edu.aau.utzon.PoiContentActivity;
+import edu.aau.utzon.PoiListActivity;
+import edu.aau.utzon.webservice.PointModel;
 
 public class BalloonOverlay extends BalloonItemizedOverlay<OverlayItem> {
 	private ArrayList<OverlayItem> m_overlays = new ArrayList<OverlayItem>();
@@ -36,8 +42,16 @@ public class BalloonOverlay extends BalloonItemizedOverlay<OverlayItem> {
 
 	@Override
 	protected boolean onBalloonTap(int index, OverlayItem item) {
-		Toast.makeText(c, "onBalloonTap for overlay index " + index,
-				Toast.LENGTH_LONG).show();
+		/* TODO: How do we get DB id from this? */
+		GeoPoint p = item.getPoint();
+		String title = item.getTitle();
+		String snippet = item.getSnippet();
+		
+		/* TODO: Do not use dummy ID */
+		PointModel poi = new PointModel(1, snippet, title, p.getLatitudeE6(), p.getLatitudeE6());
+		Intent i = new Intent(c, PoiContentActivity.class);
+		i.putExtra("poi", poi);
+		c.startActivity(i);
 		return true;
 	}
 }

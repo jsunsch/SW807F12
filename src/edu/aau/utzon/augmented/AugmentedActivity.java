@@ -10,6 +10,7 @@ import edu.aau.utzon.R.id;
 import edu.aau.utzon.R.layout;
 import edu.aau.utzon.location.LocationHelper;
 import edu.aau.utzon.webservice.PointModel;
+import edu.aau.utzon.webservice.ProviderContract;
 
 import android.app.Activity;
 import android.content.Context; 
@@ -43,22 +44,23 @@ public class AugmentedActivity extends Activity implements SensorEventListener {
 	private AugmentedOverlay mDraw;
 
 	private LocationHelper mLocationHelper;
-	private ArrayList<PointModel> mPois;
+	private List<PointModel> mPois;
 	
 	
 
 	@Override
 	public void onCreate(Bundle saved) {
 		super.onCreate(saved);
-		
-		Bundle bundle = getIntent().getExtras();
-		
-		
-		
-		mPois = (ArrayList<PointModel>)bundle.getSerializable("pois");
+
+		mPois = PointModel.asPointModel(getContentResolver()
+				.query(ProviderContract.Points.CONTENT_URI, 
+						ProviderContract.Points.PROJECTIONSTRING_ALL, 
+						null, 
+						null, 
+						null));
 
 		// Initialize location helper
-		this.mLocationHelper = new LocationHelper(getApplicationContext());
+		this.mLocationHelper = new LocationHelper(this);
 		this.mLocationHelper.onCreate(saved);
 		
 		// Fullscreen
@@ -104,7 +106,7 @@ public class AugmentedActivity extends Activity implements SensorEventListener {
 
 	}
 
-	/** GURO SENSOR CALLBACKS **/
+	/** GYRO SENSOR CALLBACKS **/
 	@Override
 	public void onSensorChanged(SensorEvent e) {
 		// New data from gyro available

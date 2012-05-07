@@ -67,5 +67,14 @@ public final class ProviderContract {
         public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/vnd.aau.point";
         
         public static final String DEFAULT_SORT_ORDER = ATTRIBUTE_ID + " ASC";
+        
+        public final static  String[] PROJECTIONSTRING_ALL = {
+    		ProviderContract.Points.ATTRIBUTE_ID, 
+    		ProviderContract.Points.ATTRIBUTE_X, 
+    		ProviderContract.Points.ATTRIBUTE_Y, 
+    		ProviderContract.Points.ATTRIBUTE_DESCRIPTION,
+    		ProviderContract.Points.ATTRIBUTE_LAST_MODIFIED,
+    		ProviderContract.Points.ATTRIBUTE_NAME,
+    		ProviderContract.Points.ATTRIBUTE_STATE};
     }
 }

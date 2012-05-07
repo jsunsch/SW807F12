@@ -10,14 +10,7 @@
             android:showAsAction="always|withText|collapseActionView"
             android:title="@string/menu_search"
             android:actionViewClass="android.widget.SearchView" />
-        
-        <item
-            android:id="@+id/actionbar_outdoor"
-            android:icon="@drawable/worldmap"
-            android:orderInCategory="2"
-            android:showAsAction="always"
-            android:title="@string/menu_outdoor"/>
-        
+              
         
     </group>
 
