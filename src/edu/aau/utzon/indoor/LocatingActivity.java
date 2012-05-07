@@ -35,7 +35,7 @@ public class LocatingActivity extends Activity {
 		{
 			List<ScanResult> scanResults = _wifi.getScanResults();
 			ArrayList<WifiMeasureCollection> measures = WifiHelper.getWifiMeasures(this, _wifi, 10, 200);
-			Point p = RadioMap.FindPosition(measures, 1);
+			Point p = RadioMap.FindPosition(measures, 1, 1);
 			String text = "";
 			text += p.getName() + "\n";
 			
