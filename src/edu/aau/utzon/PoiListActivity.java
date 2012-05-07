@@ -7,6 +7,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 
+import edu.aau.utzon.location.LocationHelper;
 import edu.aau.utzon.webservice.PointModel;
 import edu.aau.utzon.webservice.ProviderContract;
 
@@ -46,16 +47,28 @@ public class PoiListActivity extends SherlockListActivity {
 		}
 	}
 	
+	
+	
+	@Override
+	public void onPause()
+	{
+		super.onPause();
+	}
+	
+	@Override
+	public void onResume()
+	{
+		super.onResume();
+	}
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
 		// Remove title bar
 		if( android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB ) {
 			requestWindowFeature(Window.FEATURE_NO_TITLE);
 		}
 
-		
 		mPois = PointModel.asPointModel(
 				getContentResolver().query(	ProviderContract.Points.CONTENT_URI, 
 				ProviderContract.Points.PROJECTIONSTRING_ALL, 
@@ -65,7 +78,8 @@ public class PoiListActivity extends SherlockListActivity {
 		
 		mGuiText = new String[mPois.size()];
 		for (int i = 0; i < mPois.size(); i++) {
-			mGuiText[i] = mPois.get(i).mDesc; // TODO: Use SharedPreferences for proximity instead of "50"
+			//mGuiText[i] = "Name: " + mPois.get(i).mName + "Desc: " + mPois.get(i).mDesc; 
+			mGuiText[i] = mPois.get(i).mId + ": " + mPois.get(i).mName;
 		}
 		
 		setListAdapter(new ArrayAdapter<String>(this, R.layout.poi_list, mGuiText));
