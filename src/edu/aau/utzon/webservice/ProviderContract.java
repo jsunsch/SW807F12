@@ -41,6 +41,12 @@ public final class ProviderContract {
     	
     	// Position of ID
     	public static final int POINT_ID_PATH_POSITION = 1;
+    	public static final int POINT_X_PATH_POSITION = 2;
+    	public static final int POINT_Y_PATH_POSITION = 3;
+    	public static final int POINT_STATE_PATH_POSITION = 4;
+    	public static final int POINT_LAST_MODIFIED_PATH_POSITION = 5;
+    	public static final int POINT_DESCRIPTION_PATH_POSITION = 6;
+    	public static final int POINT_NAME_PATH_POSITION = 7;
     	
     	// The content:// style URL for this table
     	public static final Uri CONTENT_URI =  Uri.parse(SCHEME + AUTHORITY + PATH_POINTS);

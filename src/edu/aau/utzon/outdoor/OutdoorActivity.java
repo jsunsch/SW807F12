@@ -3,8 +3,6 @@ package edu.aau.utzon.outdoor;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.app.SearchManager;
-import android.content.Context;
 import android.content.Intent;
 import android.database.ContentObserver;
 import android.database.Cursor;
@@ -15,10 +13,6 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.Window;
-import android.widget.SearchView;
-import android.widget.SimpleCursorAdapter;
-import android.widget.Toast;
-
 import com.actionbarsherlock.app.SherlockMapActivity;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.Menu;
@@ -26,7 +20,6 @@ import com.actionbarsherlock.view.MenuItem;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapController;
-import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
 import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
@@ -37,9 +30,6 @@ import com.readystatesoftware.maps.OnSingleTapListener;
 import edu.aau.utzon.PoiContentActivity;
 import edu.aau.utzon.PoiListActivity;
 import edu.aau.utzon.R;
-import edu.aau.utzon.R.drawable;
-import edu.aau.utzon.R.id;
-import edu.aau.utzon.R.layout;
 import edu.aau.utzon.augmented.AugmentedActivity;
 import edu.aau.utzon.indoor.IndoorActivity;
 import edu.aau.utzon.location.LocationHelper;
@@ -51,15 +41,15 @@ import edu.aau.utzon.webservice.RestServiceHelper;
 public class OutdoorActivity extends SherlockMapActivity implements NearPoiPublisher {
 
 	private LocationHelper mLocationHelper;
-	private ArrayList<PointModel> mOutdoorPois;
+	private Cursor mOutdoorPois;
 	private TapControlledMapView mMapView;
 	private MyLocationOverlay mMyLocationOverlay;
 
-	public final static  String[] mProjectionAll = {ProviderContract.Points.ATTRIBUTE_ID, 
-		ProviderContract.Points.ATTRIBUTE_X, 
-		ProviderContract.Points.ATTRIBUTE_Y, 
-		ProviderContract.Points.ATTRIBUTE_DESCRIPTION,
-		ProviderContract.Points.ATTRIBUTE_NAME};
+//	public final static  String[] mProjectionAll = {ProviderContract.Points.ATTRIBUTE_ID, 
+//		ProviderContract.Points.ATTRIBUTE_X, 
+//		ProviderContract.Points.ATTRIBUTE_Y, 
+//		ProviderContract.Points.ATTRIBUTE_DESCRIPTION,
+//		ProviderContract.Points.ATTRIBUTE_NAME};
 
 	@Override
 	public void onResume()
@@ -76,19 +66,26 @@ public class OutdoorActivity extends SherlockMapActivity implements NearPoiPubli
 		mMyLocationOverlay.disableMyLocation();
 		mLocationHelper.onPause();
 	}
-
+	
+	private final static  String[] ProjectionAllPOI = {
+		ProviderContract.Points.ATTRIBUTE_ID, 
+		ProviderContract.Points.ATTRIBUTE_X, 
+		ProviderContract.Points.ATTRIBUTE_Y, 
+		ProviderContract.Points.ATTRIBUTE_DESCRIPTION,
+		ProviderContract.Points.ATTRIBUTE_LAST_MODIFIED,
+		ProviderContract.Points.ATTRIBUTE_NAME,
+		ProviderContract.Points.ATTRIBUTE_STATE};
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		
-		//Intent intent = new Intent(this, IndoorActivity.class);
-		//startActivity(intent);
-		
 		super.onCreate(savedInstanceState);
 		// Init locationHelper
-		mOutdoorPois = new ArrayList<PointModel>();
-		this.mLocationHelper = new LocationHelper(getApplicationContext());
+		this.mLocationHelper = new LocationHelper(this);
 		this.mLocationHelper.setNearPoiPublisher(this);
 		mLocationHelper.onCreate(savedInstanceState);
+		
+		// Get available POIs
+		mOutdoorPois = getContentResolver().query(ProviderContract.Points.CONTENT_URI, ProjectionAllPOI, null, null, null);
 
 		// Remove title bar
 		if( android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB ) {
@@ -102,17 +99,13 @@ public class OutdoorActivity extends SherlockMapActivity implements NearPoiPubli
 		mMapView = (TapControlledMapView) findViewById(R.id.mapview);
 		mMapView.setBuiltInZoomControls(true);
 
-
 		// Draw the user position on map
 		mMyLocationOverlay = new MyLocationOverlay(this, mMapView);
 		mMyLocationOverlay.enableMyLocation();
 		mMapView.getOverlays().add(mMyLocationOverlay);
 
-		registerContentObserver();
-		getAllOutdoorPois();
-
-		// Do fancy fancy animation to our current position :P
-		//animateToLocation(mLocTool.getCurrentLocation());
+		// Draw POI
+		drawOutdoorPois(PointModel.asPointModel(mOutdoorPois));
 	}
 	
 	public void userIsNearPoi(PointModel poi) {
@@ -124,53 +117,33 @@ public class OutdoorActivity extends SherlockMapActivity implements NearPoiPubli
 		startActivity(new Intent(getApplicationContext(), PoiContentActivity.class));
 	}
 	
-	public ArrayList<PointModel> getPois() {
-		return mOutdoorPois;
-	}
-
-	private void getAllOutdoorPois() {
-		RestServiceHelper.getServiceHelper()
-		.getLocationPoints(this);
-	}
-
-	private void registerContentObserver() {
-		RestContentObserver mContentObserver = new RestContentObserver(new Handler());
-		this.getApplicationContext()
-		.getContentResolver()
-		.registerContentObserver(ProviderContract.Points.CONTENT_URI, true, mContentObserver);
-	}
-
 	protected void animateToLocation(Location loc)
 	{
 		// Only animate if its a valid location
 		if(loc != null){
-			// Display current position on map
-			//MapView mapView = (MapView) findViewById(R.id.mapview);
 			MapController mc = mMapView.getController();
-
 			GeoPoint point =  LocationHelper.locToGeo(loc);
 			mc.animateTo(point);
 		}
 	}
 
 	public void updateOutdoorPois(ArrayList<PointModel> pois) {
-		mOutdoorPois = pois;
-		drawOutdoorPois();
+		drawOutdoorPois(pois);
 	}
 
-	protected void drawOutdoorPois()
+	protected void drawOutdoorPois(List<PointModel> list)
 	{
 		//MapView mapView = (MapView) findViewById(R.id.mapview);
 
 		// Setup overlays
 		List<Overlay> mapOverlays = mMapView.getOverlays();
-		mapOverlays.clear();
+		//mapOverlays.clear(); ?
 		Drawable drawable = this.getResources().getDrawable(R.drawable.androidmarker);
 		final BalloonOverlay itemizedoverlay = new BalloonOverlay(drawable, mMapView);
 		//		GMapsOverlay itemizedover)lay = new GMapsOverlay(drawable, this);
 
 		// Add POI to the overlay
-		for(PointModel p : mOutdoorPois)
+		for(PointModel p : list)
 		{
 			itemizedoverlay.addOverlay(new OverlayItem(p.mGeoPoint, p.mName, p.mDesc));
 		}
@@ -209,8 +182,6 @@ public class OutdoorActivity extends SherlockMapActivity implements NearPoiPubli
 		return true;
 	}
 
-
-
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Handle item selection
@@ -220,16 +191,14 @@ public class OutdoorActivity extends SherlockMapActivity implements NearPoiPubli
 			return true;
 		case R.id.actionbar_poi_list:
 			Intent poiListIntent = new Intent(this, PoiListActivity.class);
-			poiListIntent.putExtra("pois", mOutdoorPois);
 			startActivity(poiListIntent);
 			return true;
 		case R.id.actionbar_search:
-			//
+			// TODO: Implement
 			onSearchRequested();
 			return true;
 		case R.id.actionbar_augmented:
 			Intent augmentedIntent = new Intent(this, AugmentedActivity.class);
-			augmentedIntent.putExtra("pois", mOutdoorPois);
 			startActivity(augmentedIntent);
 			return true;
 		case R.id.actionbar_indoor:
@@ -241,56 +210,8 @@ public class OutdoorActivity extends SherlockMapActivity implements NearPoiPubli
 		}
 	}
 
-	class RestContentObserver extends ContentObserver{
-		public RestContentObserver(Handler handler) {
-			super(handler);
-		}
-
-		@Override
-		public boolean deliverSelfNotifications() {
-			return true;
-		}
-
-		@Override
-		public void onChange(boolean selfChange) {
-			super.onChange(selfChange);
-			// New content is available
-			Cursor c = managedQuery(ProviderContract.Points.CONTENT_URI,   	// The content URI of the points table
-					mProjectionAll,                        	// The columns to return for each row
-					null,                    				// Selection criteria
-					null,                     				// Selection criteria
-					null);                        			// The sort order for the returned rows
-
-			ArrayList<PointModel> points = new ArrayList<PointModel>();
-
-			c.moveToFirst();
-			do
-			{
-				int colIndexId = c.getColumnIndex(ProviderContract.Points.ATTRIBUTE_ID);
-				int colIndexDesc = c.getColumnIndex(ProviderContract.Points.ATTRIBUTE_DESCRIPTION);
-				int colIndexX = c.getColumnIndex(ProviderContract.Points.ATTRIBUTE_X);
-				int colIndexY = c.getColumnIndex(ProviderContract.Points.ATTRIBUTE_Y);
-				int colIndexName = c.getColumnIndex(ProviderContract.Points.ATTRIBUTE_NAME);
-
-				int id = c.getInt(colIndexId);
-				String desc = c.getString(colIndexDesc);
-				float x = c.getFloat(colIndexX);
-				float y = c.getFloat(colIndexY);
-				String name = c.getString(colIndexName);
-				
-				PointModel p = new PointModel();
-				p.mDesc = desc;
-				p.mId = id;
-				p.mGeoPoint = new GeoPoint((int)x,(int)y);
-				p.mName = name;
-
-				points.add(p);
-
-			} while (c.moveToNext() == true);
-
-			updateOutdoorPois(points);
-
-			Log.e("TACO", "Cos them hoes is bitches!");
-		}
+	@Override
+	public List<PointModel> getPois() {
+		return PointModel.asPointModel(mOutdoorPois);
 	}
 }

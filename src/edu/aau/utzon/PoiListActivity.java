@@ -65,11 +65,9 @@ public class PoiListActivity extends SherlockListActivity {
 		if (bundle == null)
 			return;
 		
-		 mPois = (ArrayList<PointModel>)bundle.getSerializable("pois");
+		mPois = bundle.getParcelable("pois");
 		
 		mGuiText = new String[mPois.size()];
-		
-		
 		for (int i = 0; i < mPois.size(); i++) {
 			mGuiText[i] = mPois.get(i).mDesc + " - " + 50 + "m"; // TODO: Use SharedPreferences for proximity instead of "50"
 		}

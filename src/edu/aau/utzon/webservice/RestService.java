@@ -31,32 +31,7 @@ public class RestService extends IntentService {
 	}
 
 	private void GetLocationPoints() {
-		
-		/* Simulates long respons by waiting
-		long endTime = System.currentTimeMillis() + 5*1000;
-		while (System.currentTimeMillis() < endTime) {
-			synchronized (this) {
-				try {
-					wait(endTime - System.currentTimeMillis());
-				} catch (Exception e) {
-				}
-			}
-		}
-		
-		
-		while(!haveInternet())
-		{
-			// Wait for internet...
-			synchronized (this) {
-				try {
-					wait(System.currentTimeMillis() - System.currentTimeMillis() + 5*1000);
-				} catch (Exception e) {
-				}
-			}
-		}
-		*/
-		//RestMethod.getAllPoints(getBaseContext());
-		JRestMethod.getAllPoints(getBaseContext()); 
+		JRestMethod.getAllPoints(this); 
 	}
 	
 	/*

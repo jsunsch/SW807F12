@@ -1,7 +1,10 @@
 package edu.aau.utzon.webservice;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
+import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -14,6 +17,45 @@ public class PointModel implements Parcelable {
 	public String mName;
 
 	public PointModel() {
+	}
+	
+	public PointModel(int id, String desc, String name, int lat, int lg)
+	{
+		this.mId = id;
+		this.mDesc = desc;
+		this.mName = name;
+		this.mGeoPoint = new GeoPoint(lat, lg);
+	}
+	
+	static public List<PointModel> asPointModel (Cursor c){
+		List<PointModel> result = new ArrayList<PointModel>();
+		
+		c.moveToFirst();
+		do
+		{
+			int colIndexId = c.getColumnIndex(ProviderContract.Points.ATTRIBUTE_ID);
+			int colIndexDesc = c.getColumnIndex(ProviderContract.Points.ATTRIBUTE_DESCRIPTION);
+			int colIndexX = c.getColumnIndex(ProviderContract.Points.ATTRIBUTE_X);
+			int colIndexY = c.getColumnIndex(ProviderContract.Points.ATTRIBUTE_Y);
+			int colIndexName = c.getColumnIndex(ProviderContract.Points.ATTRIBUTE_NAME);
+
+			int id = c.getInt(colIndexId);
+			String desc = c.getString(colIndexDesc);
+			float x = c.getFloat(colIndexX);
+			float y = c.getFloat(colIndexY);
+			String name = c.getString(colIndexName);
+			
+			PointModel p = new PointModel();
+			p.mDesc = desc;
+			p.mId = id;
+			p.mGeoPoint = new GeoPoint((int)x,(int)y);
+			p.mName = name;
+
+			result.add(p);
+
+		} while (c.moveToNext() == true);
+		
+		return result;
 	}
 
 	@Override

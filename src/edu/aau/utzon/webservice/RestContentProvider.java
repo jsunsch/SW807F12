@@ -61,7 +61,7 @@ public class RestContentProvider extends ContentProvider{
 	}
 	
 	private RestDB mDBHelper;
-	
+	    
 	@Override
 	public int delete(Uri uri, String selection, String[] selectionArgs) {
 		// Open DB in write-mode

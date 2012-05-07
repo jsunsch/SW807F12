@@ -3,33 +3,22 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical" >
-    
-    <Button
-        android:id="@+id/AugmentedButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Augmented"
-        android:onClick="onClick"/>
-    
-    <Button
-        android:id="@+id/OutdoorButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Outdoor Map"
-        android:onClick="onClick"/>
-    
-    <Button
-        android:id="@+id/WebserviceButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Webservice"
-        android:onClick="onClick"/>
 
-    <Button
-        android:id="@+id/PoiListButton"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="POI List"
-        android:onClick="onClick"/>
+        android:layout_weight="0.5" >
+
+        <ProgressBar
+            android:id="@+id/main_progressBar"
+            android:layout_width="18dp"
+            android:layout_height="18dp" />
+
+        <TextView
+            android:id="@+id/main_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Loading..." />
+    </LinearLayout>
 
 </LinearLayout>

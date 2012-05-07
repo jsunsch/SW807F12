@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <group android:id="@+id/menugroup_outdoor" >
+
+        <item
+            android:id="@+id/actionbar_augmented"
+            android:icon="@drawable/augmented"
+            android:showAsAction="ifRoom"
+            android:title="@string/menu_augmented"/>
+
+        <item
+            android:id="@+id/actionbar_outdoor"
+            android:icon="@drawable/poilist"
+            android:showAsAction="ifRoom"
+            android:title="@string/menu_poi_list"/>
+        
+        <item
+            android:id="@+id/actionbar_indoor"
+            android:icon="@drawable/indoor"
+            android:showAsAction="ifRoom"
+            android:title="@string/menu_indoor"/>
+        
+        <item
+            android:id="@+id/actionbar_settings"
+            android:icon="@drawable/indoor"
+            android:showAsAction="ifRoom"
+            android:title="@string/menu_indoor"/>
+    </group>
+
+</menu>

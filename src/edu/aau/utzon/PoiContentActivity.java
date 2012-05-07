@@ -17,7 +17,7 @@ public class PoiContentActivity extends Activity{
 		PointModel pm = i.getParcelableExtra("poi");
 		
 		if(pm == null)
-			throw new IllegalArgumentException("PoiContentActivity expected POI extras, null received");
+			return;
 		
 		setContentView(R.layout.poi_content);
 		TextView tvTitle = (TextView)findViewById(R.id.textViewName);

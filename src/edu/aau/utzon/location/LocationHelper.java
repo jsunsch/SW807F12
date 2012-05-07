@@ -45,7 +45,7 @@ public class LocationHelper {
 		return mCurrentLoc;
 	}
 
-	protected void makeUseOfNewLocation(Location location) {
+	private void makeUseOfNewLocation(Location location) {
 		// Update our latest record of the users position
 		if(isBetterLocation(location, mCurrentLoc) || mCurrentLoc == null) {
 			this.mCurrentLoc = location;
@@ -139,7 +139,7 @@ public class LocationHelper {
 
 	}
 
-	protected boolean isNearPoi(PointModel point, float threshholdMeters) {
+	private boolean isNearPoi(PointModel point, float threshholdMeters) {
 
 		double converted = (double)threshholdMeters / (double)1852; // converts the distance threshold to "longtitude/latitude" distance
 
@@ -174,7 +174,7 @@ public class LocationHelper {
 		return new Double(dist * meterConversion).doubleValue();
 	}
 
-	protected List<Location> knearestPOI(List<Location> query, int k)
+	private List<Location> knearestPOI(List<Location> query, int k)
 	{
 		ArrayList<Location> result = new ArrayList<Location>();
 
@@ -193,7 +193,7 @@ public class LocationHelper {
 		return result;
 	}
 
-	protected Location nearestPOI(List<Location> query) {
+	private Location nearestPOI(List<Location> query) {
 		Location result = null;
 
 		float closestDist = 1000000;
@@ -242,7 +242,7 @@ public class LocationHelper {
 		return new GeoPoint((int)(loc.getLatitude()*1e6),(int)(loc.getLongitude()*1e6));
 	}
 
-	protected void updateUserLocation(Location loc) {
+	private void updateUserLocation(Location loc) {
 		// Update our location
 		if(isBetterLocation(loc, mCurrentLoc))
 		{
@@ -257,7 +257,7 @@ public class LocationHelper {
 	 * @param currentBestLocation  The current Location fix, to which you want to compare the new one
 	 */
 	private static final int TWO_MINUTES = 1000 * 60 * 2;
-	protected boolean isBetterLocation(Location location, Location currentBestLocation) {
+	private boolean isBetterLocation(Location location, Location currentBestLocation) {
 		if (currentBestLocation == null) {
 			// A new location is always better than no location
 			return true;

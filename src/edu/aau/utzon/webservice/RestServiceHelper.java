@@ -2,6 +2,8 @@ package edu.aau.utzon.webservice;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 public class RestServiceHelper {
@@ -16,6 +18,7 @@ public class RestServiceHelper {
           ref = new RestServiceHelper();
       return ref;
     }
+      
     
     public void getLocationPoint(Context context, int id) {
     	Intent intent = new Intent(context, RestService.class);
