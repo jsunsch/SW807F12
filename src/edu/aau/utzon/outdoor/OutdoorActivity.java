@@ -42,12 +42,6 @@ public class OutdoorActivity extends SherlockMapActivity implements NearPoiPubli
 	private TapControlledMapView mMapView;
 	private MyLocationOverlay mMyLocationOverlay;
 
-//	public final static  String[] mProjectionAll = {ProviderContract.Points.ATTRIBUTE_ID, 
-//		ProviderContract.Points.ATTRIBUTE_X, 
-//		ProviderContract.Points.ATTRIBUTE_Y, 
-//		ProviderContract.Points.ATTRIBUTE_DESCRIPTION,
-//		ProviderContract.Points.ATTRIBUTE_NAME};
-
 	@Override
 	public void onResume()
 	{
@@ -63,9 +57,7 @@ public class OutdoorActivity extends SherlockMapActivity implements NearPoiPubli
 		mMyLocationOverlay.disableMyLocation();
 		mLocationHelper.onPause();
 	}
-	
 
-	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -121,7 +113,7 @@ public class OutdoorActivity extends SherlockMapActivity implements NearPoiPubli
 		}
 	}
 
-	public void updateOutdoorPois(ArrayList<PointModel> pois) {
+	public void updateOutdoorPois(List<PointModel> pois) {
 		drawOutdoorPois(pois);
 	}
 
@@ -131,12 +123,8 @@ public class OutdoorActivity extends SherlockMapActivity implements NearPoiPubli
 
 		// Setup overlays
 		List<Overlay> mapOverlays = mMapView.getOverlays();
-		//mapOverlays.clear(); ?
 		Drawable drawable = this.getResources().getDrawable(R.drawable.androidmarker);
 		final BalloonOverlay itemizedoverlay = new BalloonOverlay(drawable, mMapView);
-		//		GMapsOverlay itemizedover)lay = new GMapsOverlay(drawable, this);
-
-		
 		
 		// Add POI to the overlay
 		for(PointModel p : list)
@@ -144,7 +132,7 @@ public class OutdoorActivity extends SherlockMapActivity implements NearPoiPubli
 			itemizedoverlay.addOverlay(new OverlayItem(p.mGeoPoint, p.mName, p.mDesc));
 		}
 
-		// Ballon stuff
+		// Balloon stuff
 		mMapView.setOnSingleTapListener(new OnSingleTapListener() {		
 			@Override
 			public boolean onSingleTap(MotionEvent e) {
@@ -173,7 +161,7 @@ public class OutdoorActivity extends SherlockMapActivity implements NearPoiPubli
 		MenuInflater inflater = getSupportMenuInflater();
 		inflater.inflate(R.layout.menu_outdoor, menu);
 
-		MenuItem searchItem = menu.findItem(R.id.actionbar_search);
+		MenuItem searchItem = menu.findItem(R.id.actionbar_search); // TODO: Implement
 
 		return true;
 	}
@@ -186,20 +174,17 @@ public class OutdoorActivity extends SherlockMapActivity implements NearPoiPubli
 			animateToLocation(mLocationHelper.getCurrentLocation());
 			return true;
 		case R.id.actionbar_poi_list:
-			Intent poiListIntent = new Intent(this, PoiListActivity.class);
-			startActivity(poiListIntent);
+			startActivity(new Intent(this, PoiListActivity.class));
 			return true;
 		case R.id.actionbar_search:
 			// TODO: Implement
 			onSearchRequested();
 			return true;
 		case R.id.actionbar_augmented:
-			Intent augmentedIntent = new Intent(this, AugmentedActivity.class);
-			startActivity(augmentedIntent);
+			startActivity(new Intent(this, AugmentedActivity.class));
 			return true;
 		case R.id.actionbar_indoor:
-			Intent indoorIntent = new Intent(this, IndoorActivity.class);
-			startActivity(indoorIntent);
+			startActivity(new Intent(this, IndoorActivity.class));
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
