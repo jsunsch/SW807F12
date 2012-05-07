@@ -35,7 +35,7 @@ public class UtzonActivity extends SherlockActivity {
 		public void onChange(boolean selfChange) {
 			super.onChange(selfChange);
 			TextView tv = (TextView) findViewById(R.id.main_text);
-			tv.setText("Received " + ++poiCounter + " points of interest");
+			tv.setText("Found " + ++poiCounter + " points of interest.");
 		}
 	}
 	
