@@ -1,6 +1,5 @@
 package edu.aau.utzon;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.actionbarsherlock.app.SherlockListActivity;
@@ -8,19 +7,15 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 
-import edu.aau.utzon.outdoor.OutdoorActivity;
 import edu.aau.utzon.webservice.PointModel;
 import edu.aau.utzon.webservice.ProviderContract;
 
-import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
 import android.view.View;
 import android.view.Window;
 

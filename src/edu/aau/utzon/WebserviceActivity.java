@@ -16,6 +16,8 @@ import android.os.Handler;
 import android.util.Log;
 import android.widget.SimpleCursorAdapter;
 
+/** THIS CLASS IS USELESS ! DESTROY IT WITH FIRE **/
+/** Query for POIs : getContentResolver().query(ProviderContract.Points.CONTENT_URI, ProviderContract.Points.PROJECTIONSTRING_ALL, null, null, null); **/
 public class WebserviceActivity extends ListActivity{
 	public final static  String[] mProjectionAll = {ProviderContract.Points.ATTRIBUTE_ID, 
 		ProviderContract.Points.ATTRIBUTE_X, 
@@ -34,8 +36,8 @@ public class WebserviceActivity extends ListActivity{
 //		.registerContentObserver(ProviderContract.Points.CONTENT_URI, true, mContentObserver);
 
 		// Asynchornously start a REST method
-		RestServiceHelper.getServiceHelper()
-		.getLocationPoints(this);
+//		RestServiceHelper.getServiceHelper()
+//		.getLocationPoints(this);
 
 		// Get what is currently in the local db
 		// Cursor c = getContentResolver().query(
