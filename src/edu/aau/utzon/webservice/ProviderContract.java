@@ -23,8 +23,8 @@ public final class ProviderContract {
     	
     	// Attributes
     	public static final String ATTRIBUTE_ID = "_id";
-    	public static final String ATTRIBUTE_X = "x";
-    	public static final String ATTRIBUTE_Y = "y";
+    	public static final String ATTRIBUTE_LAT = "lat";
+    	public static final String ATTRIBUTE_LONG = "long";
     	public static final String ATTRIBUTE_STATE = "state";
     	public static final String ATTRIBUTE_LAST_MODIFIED = "last_modified";
     	public static final String ATTRIBUTE_DESCRIPTION = "description";
@@ -70,8 +70,8 @@ public final class ProviderContract {
         
         public final static  String[] PROJECTIONSTRING_ALL = {
     		ProviderContract.Points.ATTRIBUTE_ID, 
-    		ProviderContract.Points.ATTRIBUTE_X, 
-    		ProviderContract.Points.ATTRIBUTE_Y, 
+    		ProviderContract.Points.ATTRIBUTE_LAT, 
+    		ProviderContract.Points.ATTRIBUTE_LONG, 
     		ProviderContract.Points.ATTRIBUTE_DESCRIPTION,
     		ProviderContract.Points.ATTRIBUTE_LAST_MODIFIED,
     		ProviderContract.Points.ATTRIBUTE_NAME,

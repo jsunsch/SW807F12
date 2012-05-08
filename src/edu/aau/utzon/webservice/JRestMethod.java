@@ -83,14 +83,12 @@ public class JRestMethod {
 					for(int i=0; i < pointArray.length(); i++){
 						jsonObj = pointArray.getJSONObject(i);
 						
-						PointModel pm = new PointModel();
-						
-						pm.mId = jsonObj.getInt("Id");
-						pm.mName = jsonObj.getString("Name");
-						pm.mDesc = jsonObj.getString("Description");
-						
-						pm.mGeoPoint = new GeoPoint((int)jsonObj.getDouble("Longitude"), (int)jsonObj.getDouble("Latitude"));
-						pm.mGeoPoint = LocationHelper.geoToE6(pm.mGeoPoint);
+						PointModel pm = new PointModel(	
+								jsonObj.getInt("Id"),
+								jsonObj.getString("Description"),
+								jsonObj.getString("Name"), 
+								jsonObj.getDouble("Latitude"),
+								jsonObj.getDouble("Longitude"));
 						
 						result.add(pm);
 					}

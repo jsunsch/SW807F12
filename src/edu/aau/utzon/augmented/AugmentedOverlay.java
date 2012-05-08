@@ -62,8 +62,8 @@ public class AugmentedOverlay extends View {
 
 		for(PointModel poi : mPois)
 		{
-			float poiLong = (float) (poi.mGeoPoint.getLongitudeE6()/1e6);
-			float poiLat = (float) (poi.mGeoPoint.getLatitudeE6()/1e6);
+			float poiLong = (float) (poi.getLong());
+			float poiLat = (float) (poi.getLat());
 
 
 			// Rectangle for the current view, what the user sees

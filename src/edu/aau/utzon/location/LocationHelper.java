@@ -123,10 +123,10 @@ public class LocationHelper {
 
 		double converted = (double)threshholdMeters / (double)1852; // converts the distance threshold to "longtitude/latitude" distance
 
-		double pointLongtitude =  (double)point.mGeoPoint.getLongitudeE6() / (double)1000000;
-		double pointLattitude = (double)point.mGeoPoint.getLatitudeE6() / (double)1000000;
+		//double pointLongtitude =  (double)point.mGeoPoint.getLongitudeE6() / (double)1000000;
+		//double pointLattitude = (double)point.mGeoPoint.getLatitudeE6() / (double)1000000;
 
-		double dist = distFrom(pointLongtitude, pointLattitude, mCurrentLoc.getLongitude(), mCurrentLoc.getLatitude());
+		double dist = distFrom(point.getLong(), point.getLat(), mCurrentLoc.getLongitude(), mCurrentLoc.getLatitude());
 
 		if (dist < threshholdMeters) {
 			return true;

@@ -20,8 +20,8 @@ import android.widget.SimpleCursorAdapter;
 /** Query for POIs : getContentResolver().query(ProviderContract.Points.CONTENT_URI, ProviderContract.Points.PROJECTIONSTRING_ALL, null, null, null); **/
 public class WebserviceActivity extends ListActivity{
 	public final static  String[] mProjectionAll = {ProviderContract.Points.ATTRIBUTE_ID, 
-		ProviderContract.Points.ATTRIBUTE_X, 
-		ProviderContract.Points.ATTRIBUTE_Y, 
+		ProviderContract.Points.ATTRIBUTE_LAT, 
+		ProviderContract.Points.ATTRIBUTE_LONG, 
 		ProviderContract.Points.ATTRIBUTE_DESCRIPTION};
 
 	@Override

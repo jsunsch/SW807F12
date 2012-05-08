@@ -61,12 +61,11 @@ public class OutdoorActivity extends SherlockMapActivity implements NearPoiPubli
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		// Init locationHelper
-		
+		// Init locationHelper		
 		this.mLocationHelper = new LocationHelper(getBaseContext());
 		this.mLocationHelper.setNearPoiPublisher(this);
 		mLocationHelper.onCreate(savedInstanceState);
-		
+
 		// Get available POIs
 		mOutdoorPois = getContentResolver().query(ProviderContract.Points.CONTENT_URI, 
 				ProviderContract.Points.PROJECTIONSTRING_ALL, 
@@ -94,16 +93,16 @@ public class OutdoorActivity extends SherlockMapActivity implements NearPoiPubli
 		// Draw POI
 		drawOutdoorPois(PointModel.asPointModel(mOutdoorPois));
 	}
-	
+
 	public void userIsNearPoi(PointModel poi) {
 		Log.e("TACO", "IS NEAR POI");
 		StartPoiContentActivity();
 	}
-	
+
 	private void StartPoiContentActivity() {
 		startActivity(new Intent(getApplicationContext(), PoiContentActivity.class));
 	}
-	
+
 	protected void animateToLocation(Location loc)
 	{
 		// Only animate if its a valid location
@@ -118,6 +117,7 @@ public class OutdoorActivity extends SherlockMapActivity implements NearPoiPubli
 		drawOutdoorPois(pois);
 	}
 
+	private BalloonOverlay itemizedoverlay = null;
 	protected void drawOutdoorPois(List<PointModel> list)
 	{
 		//MapView mapView = (MapView) findViewById(R.id.mapview);
@@ -125,19 +125,24 @@ public class OutdoorActivity extends SherlockMapActivity implements NearPoiPubli
 		// Setup overlays
 		List<Overlay> mapOverlays = mMapView.getOverlays();
 		Drawable drawable = this.getResources().getDrawable(R.drawable.androidmarker);
-		final BalloonOverlay itemizedoverlay = new BalloonOverlay(drawable, mMapView);
-		
+		itemizedoverlay = new BalloonOverlay(drawable, mMapView);
+
+		// DEBUG
+		//list.clear();
+		PointModel pm = new PointModel(10, "MyDescriptionHere", "MyNameHere", 57.036564, 9.919659); // Aalborg
+		OverlayItem item = new OverlayItem(pm.getGeoPoint(), pm.getName(), pm.getDesc());
+		itemizedoverlay.addOverlay(item);
 		// Add POI to the overlay
 		for(PointModel p : list)
 		{
-			itemizedoverlay.addOverlay(new OverlayItem(p.mGeoPoint, p.mName, p.mDesc));
+			itemizedoverlay.addOverlay(new OverlayItem(p.getGeoPoint(), p.getName(), p.getDesc()));
 		}
 
 		// Balloon stuff
 		mMapView.setOnSingleTapListener(new OnSingleTapListener() {		
 			@Override
 			public boolean onSingleTap(MotionEvent e) {
-				itemizedoverlay.hideAllBalloons();
+				
 				return true;
 			}
 		});

@@ -79,7 +79,7 @@ public class PoiListActivity extends SherlockListActivity {
 		mGuiText = new String[mPois.size()];
 		for (int i = 0; i < mPois.size(); i++) {
 			//mGuiText[i] = "Name: " + mPois.get(i).mName + "Desc: " + mPois.get(i).mDesc; 
-			mGuiText[i] = mPois.get(i).mId + ": " + mPois.get(i).mName;
+			mGuiText[i] = mPois.get(i).getId() + ": " + mPois.get(i).getName();
 		}
 		
 		setListAdapter(new ArrayAdapter<String>(this, R.layout.poi_list, mGuiText));
@@ -89,9 +89,8 @@ public class PoiListActivity extends SherlockListActivity {
 
 		  lv.setOnItemClickListener(new OnItemClickListener() {
 		    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-		    	Intent i = new Intent(getBaseContext(), PoiContentActivity.class);
-		    	i.putExtra("poi", mPois.get(position));
-		    	startActivity(i);
+		    	startActivity(new Intent(getBaseContext(), PoiContentActivity.class)
+		    	.putExtra("_POILIST_ID", position).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
 		    }
 		  });
 	}

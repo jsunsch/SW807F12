@@ -18,13 +18,13 @@ public class RestContentProvider extends ContentProvider{
 	// SQL "backend" for the content provider
 	static class RestDB extends SQLiteOpenHelper{
 		private static final String DATABASE_NAME = "utzon.db";
-		private static final int DATABASE_VERSION = 15;
+		private static final int DATABASE_VERSION = 20;
 
 	    private static final String POINT_TABLE_CREATE =
 	                "CREATE TABLE " + ProviderContract.Points.TABLE_NAME + " (" +
 	                ProviderContract.Points.ATTRIBUTE_ID + " INTEGER UNIQUE, " +
-	                ProviderContract.Points.ATTRIBUTE_X + " REAL, " +
-	                ProviderContract.Points.ATTRIBUTE_Y + " REAL, " +
+	                ProviderContract.Points.ATTRIBUTE_LAT + " REAL, " +
+	                ProviderContract.Points.ATTRIBUTE_LONG + " REAL, " +
 	                ProviderContract.Points.ATTRIBUTE_STATE + " INTEGER, " +
 	                ProviderContract.Points.ATTRIBUTE_LAST_MODIFIED + " INTEGER, " +
 	                ProviderContract.Points.ATTRIBUTE_DESCRIPTION + " TEXT, " +
@@ -136,10 +136,10 @@ public class RestContentProvider extends ContentProvider{
         if (values.containsKey(ProviderContract.Points.ATTRIBUTE_ID) == false) {
             throw new IllegalArgumentException("Invalid insertion values " + values);
         }
-        if (values.containsKey(ProviderContract.Points.ATTRIBUTE_X) == false) {
+        if (values.containsKey(ProviderContract.Points.ATTRIBUTE_LAT) == false) {
             throw new IllegalArgumentException("Invalid insertion values " + values);
         }
-        if (values.containsKey(ProviderContract.Points.ATTRIBUTE_Y) == false) {
+        if (values.containsKey(ProviderContract.Points.ATTRIBUTE_LONG) == false) {
             throw new IllegalArgumentException("Invalid insertion values " + values);
         }
         if (values.containsKey(ProviderContract.Points.ATTRIBUTE_DESCRIPTION) == false) {
