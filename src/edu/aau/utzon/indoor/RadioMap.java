@@ -1,6 +1,7 @@
 package edu.aau.utzon.indoor;
 
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.SortedMap;
@@ -97,6 +98,7 @@ public class RadioMap {
 		}
 		
 		Hashtable<String, Integer> counts = new Hashtable<String, Integer>();
+		
 		for (int i = 0; i < k; i++)
 		{
 			if (counts.containsKey(kpoints[i].name) == false)
@@ -112,6 +114,21 @@ public class RadioMap {
 			}
 		}
 		
+		Enumeration<String> keys = counts.keys();
+	    
+		ArrayList<String> bestKeys = new ArrayList<String>();
+		String bestKey;
+		int bestCount = -1;
+		
+	    while(keys.hasMoreElements()) {
+	       String key = keys.nextElement();
+	       int value = (Integer)counts.get(key);
+	       
+	      if (value > bestCount)
+	      {
+	    	  
+	      }
+	    }
 		
 
 		Point p2 = null;
