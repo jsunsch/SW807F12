@@ -124,6 +124,7 @@ public class OutdoorActivity extends SherlockMapActivity implements NearPoiPubli
 
 		// Setup overlays
 		List<Overlay> mapOverlays = mMapView.getOverlays();
+		mapOverlays.clear();
 		Drawable drawable = this.getResources().getDrawable(R.drawable.androidmarker);
 		itemizedoverlay = new BalloonOverlay(drawable, mMapView);
 
