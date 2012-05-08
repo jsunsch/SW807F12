@@ -21,6 +21,7 @@ import android.widget.TextView;
 public class CalibrationActivity extends Activity  {
 	WifiManager _wifi;
 	EditText _editText;
+	EditText _editTextTime;
 	TextView _textView;
 
 	public void onCreate(Bundle savedInstanceState) {
@@ -29,6 +30,7 @@ public class CalibrationActivity extends Activity  {
 
 		_editText = (EditText)findViewById(R.id.editText2);  
 		_textView = (TextView)findViewById(R.id.textView1);
+		_editTextTime = (EditText)findViewById(R.id.editText3);  
 
 		String connectivity_context = Context.WIFI_SERVICE;
 		_wifi = (WifiManager)getSystemService(connectivity_context);
@@ -38,7 +40,7 @@ public class CalibrationActivity extends Activity  {
 
 	public void addPoint(View view) throws InterruptedException {
 
-		ArrayList<WifiMeasureCollection> realMeasures = WifiHelper.getWifiMeasures(this, _wifi, 15, 200);
+		ArrayList<WifiMeasureCollection> realMeasures = WifiHelper.getWifiMeasures(this, _wifi, Integer.parseInt(_editTextTime.getText().toString()), 200);
 		
 		if (realMeasures == null)
 			return;

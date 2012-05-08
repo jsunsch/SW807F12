@@ -19,6 +19,7 @@ public class LocatingActivity extends Activity {
 	WifiManager _wifi;
 	TextView _textView;
 	EditText _textViewK;
+	EditText _textViewTime;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -26,6 +27,7 @@ public class LocatingActivity extends Activity {
 
 		_textView = (TextView)findViewById(R.id.textView3);
 		_textViewK = (EditText)findViewById(R.id.editText4);
+		_textViewTime = (EditText)findViewById(R.id.editText5);
 
 		String connectivity_context = Context.WIFI_SERVICE;
 		_wifi = (WifiManager)getSystemService(connectivity_context);
@@ -37,10 +39,14 @@ public class LocatingActivity extends Activity {
 		{
 			List<ScanResult> scanResults = _wifi.getScanResults();
 			//ArrayList<WifiMeasureCollection> measures = WifiHelper.getWifiMeasures(this, _wifi, 10, 200);
-			ArrayList<WifiMeasure> measures = WifiHelper.getWifiMeasuresAvg(this, _wifi, 10, 200);
+			ArrayList<WifiMeasure> measures = WifiHelper.getWifiMeasuresAvg(this, _wifi, Integer.parseInt(_textViewTime.getText().toString()), 200);
+			
+			long timeBefore = System.currentTimeMillis();
 			Point p = RadioMap.FindPosition(measures, 1, Integer.parseInt(_textViewK.getText().toString()));
+			long timeAfter = System.currentTimeMillis();
+			
 			String text = "";
-			text += p.getName() + "\n";
+			text += p.getName() + "\n\n" + "Calculation Time: " + (timeAfter - timeBefore);
 			
 			if (p == null) {
 				text = "You are not close to any points.!";

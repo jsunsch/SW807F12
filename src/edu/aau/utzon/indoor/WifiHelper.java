@@ -53,7 +53,7 @@ public class WifiHelper {
 			// Contains the count of how many times an access point as been measured
 			Hashtable<String, Integer> wifiCounts = new Hashtable<String, Integer> ();
 			
-			for (int i = 0; i < 2*seconds; i++) {
+			for (int i = 0; i < seconds/2; i++) {
 
 				// Raw list of WIFI access points
 				List<ScanResult> scanResults =  wifi.getScanResults();
@@ -83,7 +83,7 @@ public class WifiHelper {
 					}
 				}
 
-				Thread.sleep(500);
+				Thread.sleep(1500);
 				wifi.startScan();
 			}
 			
