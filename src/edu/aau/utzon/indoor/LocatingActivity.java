@@ -18,12 +18,14 @@ import android.widget.TextView;
 public class LocatingActivity extends Activity {
 	WifiManager _wifi;
 	TextView _textView;
+	EditText _textViewK;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.location);
 
 		_textView = (TextView)findViewById(R.id.textView3);
+		_textViewK = (EditText)findViewById(R.id.editText4);
 
 		String connectivity_context = Context.WIFI_SERVICE;
 		_wifi = (WifiManager)getSystemService(connectivity_context);
@@ -36,7 +38,7 @@ public class LocatingActivity extends Activity {
 			List<ScanResult> scanResults = _wifi.getScanResults();
 			//ArrayList<WifiMeasureCollection> measures = WifiHelper.getWifiMeasures(this, _wifi, 10, 200);
 			ArrayList<WifiMeasure> measures = WifiHelper.getWifiMeasuresAvg(this, _wifi, 10, 200);
-			Point p = RadioMap.FindPosition(measures, 1, 3);
+			Point p = RadioMap.FindPosition(measures, 1, Integer.parseInt(_textViewK.getText().toString()));
 			String text = "";
 			text += p.getName() + "\n";
 			
