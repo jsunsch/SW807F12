@@ -1,20 +1,9 @@
 package edu.aau.utzon;
 
-import java.util.ArrayList;
-
-import com.google.android.maps.GeoPoint;
-
-import edu.aau.utzon.webservice.PointModel;
 import edu.aau.utzon.webservice.ProviderContract;
-import edu.aau.utzon.webservice.RestServiceHelper;
-import android.app.Activity;
 import android.app.ListActivity;
-import android.database.ContentObserver;
-import android.database.Cursor;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
-import android.widget.SimpleCursorAdapter;
 
 /** THIS CLASS IS USELESS ! DESTROY IT WITH FIRE **/
 /** Query for POIs : getContentResolver().query(ProviderContract.Points.CONTENT_URI, ProviderContract.Points.PROJECTIONSTRING_ALL, null, null, null); **/

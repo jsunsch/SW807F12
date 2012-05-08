@@ -64,7 +64,6 @@ public class UtzonActivity extends SherlockActivity {
 		RestServiceHelper.getServiceHelper()
 			.getLocationPoints(getBaseContext());
 		
-		TextView tv3 = (TextView) findViewById(R.id.main_text3);
 		RestContentObserver mContentObserver = new RestContentObserver(new Handler());
 		getContentResolver().registerContentObserver(ProviderContract.Points.CONTENT_URI, true, mContentObserver);
 	}

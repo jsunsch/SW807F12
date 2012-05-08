@@ -1,7 +1,5 @@
 package edu.aau.utzon.outdoor;
 
-import java.security.spec.MGF1ParameterSpec;
-import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Intent;

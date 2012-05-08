@@ -1,6 +1,5 @@
 package edu.aau.utzon.augmented;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
@@ -18,7 +17,6 @@ import com.google.android.maps.GeoPoint;
 
 
 import edu.aau.utzon.R;
-import edu.aau.utzon.R.drawable;
 import edu.aau.utzon.location.LocationHelper;
 import edu.aau.utzon.webservice.PointModel;
 

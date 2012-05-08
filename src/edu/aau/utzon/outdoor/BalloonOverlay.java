@@ -5,15 +5,12 @@ import java.util.ArrayList;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
-import android.widget.Toast;
-
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapView;
 import com.google.android.maps.OverlayItem;
 import com.readystatesoftware.mapviewballoons.BalloonItemizedOverlay;
 
 import edu.aau.utzon.PoiContentActivity;
-import edu.aau.utzon.PoiListActivity;
 import edu.aau.utzon.webservice.PointModel;
 
 public class BalloonOverlay extends BalloonItemizedOverlay<OverlayItem> {

@@ -1,13 +1,9 @@
 package edu.aau.utzon.webservice;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import android.database.Cursor;
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import com.google.android.maps.GeoPoint;
 
 public class PointModel {

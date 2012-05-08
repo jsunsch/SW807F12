@@ -29,8 +29,8 @@ import android.widget.TextView;
 
 public class AugmentedActivity extends Activity implements SensorEventListener {
 	private Preview mPreview;
-	private int numberOfCameras;
-	private int cameraCurrentlyLocked;
+	//private int numberOfCameras;
+	//private int cameraCurrentlyLocked;
 	
 	private SensorManager mSensorManager;
     private Sensor mGyro;

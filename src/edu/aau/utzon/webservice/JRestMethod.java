@@ -19,11 +19,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
-import android.util.Log;
-
-import com.google.android.maps.GeoPoint;
-
-import edu.aau.utzon.location.LocationHelper;
 
 public class JRestMethod {
 	private static final String K_NEAREST_URL = "http://62.243.46.141:12345";
