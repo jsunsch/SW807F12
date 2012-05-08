@@ -50,8 +50,7 @@ public class PointModel {
 		this.mName = name;
 		this.mLat = lat;
 		this.mLong = lg;
-		this.mGeoPoint = new GeoPoint((int)(lat*1e6), (int)(lg*1e6));
-		
+		this.mGeoPoint = new GeoPoint((int)(lg*1e6d), (int)(lat*1e6d));
 	}
 	
 	static public List<PointModel> asPointModel (Cursor c){

@@ -1,5 +1,6 @@
 package edu.aau.utzon.outdoor;
 
+import java.security.spec.MGF1ParameterSpec;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -130,13 +131,17 @@ public class OutdoorActivity extends SherlockMapActivity implements NearPoiPubli
 
 		// DEBUG
 		//list.clear();
-		PointModel pm = new PointModel(10, "MyDescriptionHere", "MyNameHere", 57.036564, 9.919659); // Aalborg
-		OverlayItem item = new OverlayItem(pm.getGeoPoint(), pm.getName(), pm.getDesc());
-		itemizedoverlay.addOverlay(item);
+//		PointModel pm = new PointModel(10, "MyDescriptionHere", "MyNameHere", 57.036564, 9.919659); // Aalborg
+//		OverlayItem item = new OverlayItem(pm.getGeoPoint(), pm.getName(), pm.getDesc());
+//		itemizedoverlay.addOverlay(item);
 		// Add POI to the overlay
 		for(PointModel p : list)
 		{
-			itemizedoverlay.addOverlay(new OverlayItem(p.getGeoPoint(), p.getName(), p.getDesc()));
+			GeoPoint gp = p.getGeoPoint();
+			int id = p.getId();
+			String n = p.getName();
+			String d = p.getDesc();
+			itemizedoverlay.addOverlay(new OverlayItem(gp, n, d));
 		}
 
 		// Balloon stuff
