@@ -126,10 +126,18 @@ public class RadioMap {
 	       
 	      if (value > bestCount)
 	      {
-	    	  
+	    	  bestKeys.clear();
+	    	  bestKey = key;
+	    	  bestKeys.add(key);
+	    	  bestCount = value;
+	      }
+	      else if (value == bestCount)
+	      {
+	    	  bestKeys.add(key);
 	      }
 	    }
 		
+	    
 
 		Point p2 = null;
 		if (closestPoint != null)
