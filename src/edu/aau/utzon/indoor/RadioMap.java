@@ -64,24 +64,25 @@ public class RadioMap {
 		double[] distances = new double[k];
 		Point[] kpoints = new Point[k];
 
+		// Finds the k nearest points
 		for (Point p : points) {
 			for (WifiMeasureCollection pointMeasures1 : p.getMeasures())
 			{
 				double dist = findDist(pointMeasures1.getMeasures(), measures, minAccesPoints);
 
 				boolean isPointsFull = true;
-				
+
 				for (int i = 0; i < k; i++)
 				{
 					if (kpoints[i] == null)
 					{
 						kpoints[i] = p;
 						distances[i] = dist;
-						
+
 						isPointsFull = false;
 						if (i == k-1)
 							sortPoints(kpoints, distances);
-						
+
 						break;
 					}
 				}
@@ -96,9 +97,9 @@ public class RadioMap {
 				}
 			}
 		}
-		
+
+		// Counts the number of times a point was the nearest
 		Hashtable<String, Integer> counts = new Hashtable<String, Integer>();
-		
 		for (int i = 0; i < k; i++)
 		{
 			if (counts.containsKey(kpoints[i].name) == false)
@@ -113,43 +114,59 @@ public class RadioMap {
 				counts.put(kpoints[i].name, buffer);
 			}
 		}
-		
+
 		Enumeration<String> keys = counts.keys();
-	    
+
 		ArrayList<String> bestKeys = new ArrayList<String>();
-		String bestKey;
+		String bestKey = "";
 		int bestCount = -1;
-		
-	    while(keys.hasMoreElements()) {
-	       String key = keys.nextElement();
-	       int value = (Integer)counts.get(key);
-	       
-	      if (value > bestCount)
-	      {
-	    	  bestKeys.clear();
-	    	  bestKey = key;
-	    	  bestKeys.add(key);
-	    	  bestCount = value;
-	      }
-	      else if (value == bestCount)
-	      {
-	    	  bestKeys.add(key);
-	      }
-	    }
-		
-	    
 
-		Point p2 = null;
-		if (closestPoint != null)
-			p2 = new Point(closestPoint.getMeasures(), closestPoint.getName() + " " + smallestDistance);
+		// Findes the point that was nearest the most
+		while(keys.hasMoreElements()) {
+			String key = keys.nextElement();
+			int value = (Integer)counts.get(key);
 
-		return p2;
+			if (value > bestCount)
+			{
+				bestKeys.clear();
+				bestKey = key;
+				bestKeys.add(key);
+				bestCount = value;
+			}
+			else if (value == bestCount)
+			{
+				bestKeys.add(key);
+			}
+		}
+
+		if (bestKeys.size() == 1)
+		{
+			for(Point p : points) {
+				if (p.name.equals(bestKey) == true)
+				{
+					return p;
+				}
+			}
+		}
+		else
+		{
+			for (int i = 0; i < k; i++)
+			{
+				for (String name : bestKeys) {
+					if (kpoints[i].name.equals(name)) {
+						return kpoints[i];
+					}
+				}
+			}
+		}
+		
+		return null;
 	}
-	
+
 	private static void sortPoints(Point[] kpoints, double[] distances) {
 		Point[] sortedPoints = new Point[kpoints.length];
 		double[] sortedDistances = new double[distances.length];
-		
+
 		for (int i = 0; i < kpoints.length; i++)
 		{
 			Point closestPoint = null;
@@ -171,7 +188,7 @@ public class RadioMap {
 			sortedDistances[i] = dist;
 			kpoints[pointIndex] = null;
 		}
-		
+
 		// Det her er fucking dumt... Hvad sker der lige for Java? For real? Altså.. Common.. Tror de selv på det?
 		//kpoints = sortedPoints;
 		for (int i = 0; i < sortedPoints.length; i++)
