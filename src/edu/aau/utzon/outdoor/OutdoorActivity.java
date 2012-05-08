@@ -62,7 +62,8 @@ public class OutdoorActivity extends SherlockMapActivity implements NearPoiPubli
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		// Init locationHelper
-		this.mLocationHelper = new LocationHelper(this);
+		
+		this.mLocationHelper = new LocationHelper(getBaseContext());
 		this.mLocationHelper.setNearPoiPublisher(this);
 		mLocationHelper.onCreate(savedInstanceState);
 		
@@ -174,17 +175,17 @@ public class OutdoorActivity extends SherlockMapActivity implements NearPoiPubli
 			animateToLocation(mLocationHelper.getCurrentLocation());
 			return true;
 		case R.id.actionbar_poi_list:
-			startActivity(new Intent(this, PoiListActivity.class));
+			startActivity(new Intent(this, PoiListActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
 			return true;
 		case R.id.actionbar_search:
 			// TODO: Implement
 			onSearchRequested();
 			return true;
 		case R.id.actionbar_augmented:
-			startActivity(new Intent(this, AugmentedActivity.class));
+			startActivity(new Intent(this, AugmentedActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
 			return true;
 		case R.id.actionbar_indoor:
-			startActivity(new Intent(this, IndoorActivity.class));
+			startActivity(new Intent(this, IndoorActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);

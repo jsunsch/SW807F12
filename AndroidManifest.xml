@@ -14,16 +14,16 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.CAMERA" />
-	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-	<uses-permission android:name="android.permission.INTERNET" />
-	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
 
     <application
         android:icon="@drawable/ic_launcher"
-        android:label="@string/app_name"
+        android:label="@string/app_name" 
         android:theme="@style/Theme.Sherlock.Light" >
         <uses-library android:name="com.google.android.maps" />
 
@@ -32,12 +32,12 @@
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:uiOptions="splitActionBarWhenNarrow" >
-                        <intent-filter>
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        
         <activity android:name=".SearchableActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
@@ -49,8 +49,8 @@
         </activity>
         <activity
             android:name=".outdoor.OutdoorActivity"
-            android:uiOptions="splitActionBarWhenNarrow" >
-
+            android:uiOptions="splitActionBarWhenNarrow" 
+			 >
             <!-- enable the search dialog to send searches to SearchableActivity -->
             <meta-data
                 android:name="android.app.default_searchable"
@@ -70,7 +70,6 @@
         <activity android:name="edu.aau.utzon.indoor.LocatingActivity" />
         <activity android:name=".PoiListActivity" />
         <activity android:name=".PoiContentActivity" />
-        
 
         <provider
             android:name=".webservice.RestContentProvider"

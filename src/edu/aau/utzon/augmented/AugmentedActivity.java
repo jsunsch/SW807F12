@@ -1,13 +1,10 @@
 package edu.aau.utzon.augmented;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 
 import edu.aau.utzon.R;
-import edu.aau.utzon.R.id;
-import edu.aau.utzon.R.layout;
 import edu.aau.utzon.location.LocationHelper;
 import edu.aau.utzon.webservice.PointModel;
 import edu.aau.utzon.webservice.ProviderContract;

@@ -6,13 +6,16 @@ import java.util.List;
 import com.google.android.maps.GeoPoint;
 
 import edu.aau.utzon.webservice.PointModel;
+import edu.aau.utzon.webservice.ProviderContract;
 
 import android.app.Activity;
 import android.content.Context;
+import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.util.Log;
 
 /**
  *  Handles location operations, such as the users 
@@ -29,12 +32,13 @@ import android.os.Bundle;
  */
 public class LocationHelper {
 
-	protected Location mCurrentLoc;
-	protected LocationListener mLocationListenerGPS;
-	protected LocationListener mLocationListenerNetwork;
-	protected Context mContext;
-	protected NearPoiPublisher mPublisher;
-	PointModel mPreviusClosePoi = null;
+	private static final String TAG = "LocationHelper";
+	private Location mCurrentLoc = null;
+	private Context mContext = null;
+	private NearPoiPublisher mPublisher = null;
+	private PointModel mPreviusClosePoi = null;
+	private LocationManager mLocationManager = null;
+	private LocationListener mLocationListener = null;
 
 	public LocationHelper(Context c)
 	{
@@ -75,20 +79,7 @@ public class LocationHelper {
 
 	public void onCreate(Bundle savedInstance) {
 		// Define a listeners that responds to location updates
-		this.mLocationListenerGPS  = new LocationListener() {
-			public void onLocationChanged(Location location) {
-				// Called when a new location is found.
-				makeUseOfNewLocation(location);
-			}
-
-			public void onStatusChanged(String provider, int status, Bundle extras) {}
-
-			public void onProviderEnabled(String provider) {}
-
-			public void onProviderDisabled(String provider) {}
-		};
-
-		this.mLocationListenerNetwork  = new LocationListener() {
+		this.mLocationListener  = new LocationListener() {
 			public void onLocationChanged(Location location) {
 				// Called when a new location is found.
 				makeUseOfNewLocation(location);
@@ -102,41 +93,30 @@ public class LocationHelper {
 		};
 
 		// Enable location manager
-		LocationManager locationManager = (LocationManager) mContext.getSystemService(Context.LOCATION_SERVICE);
+		this.mLocationManager = (LocationManager) mContext.getSystemService(Context.LOCATION_SERVICE);
+
+		Criteria criteria = new Criteria();
+		criteria.setAccuracy( Criteria.ACCURACY_FINE );
+		String provider = mLocationManager.getBestProvider( criteria, true );
+		
+		if ( provider == null ) {
+			Log.e( TAG, "No location provider found!" );
+			return;
+		}
 
 		// Register the listener with the Location Manager to receive location updates
-		locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, mLocationListenerNetwork);
-		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, mLocationListenerGPS);
-
-		// Set the current position to the last known position, until we have a better fixpoint
-		Location latestGPS = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-		Location latestNetwork = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-
-		// Find best location
-		if(latestGPS == null && latestNetwork != null) { this.mCurrentLoc = latestNetwork; }
-		else if(latestGPS != null && latestNetwork == null) { this.mCurrentLoc = latestGPS; }
-		else if(latestGPS != null && latestNetwork != null) {
-			if(isBetterLocation(latestGPS, latestNetwork)) {
-				this.mCurrentLoc = latestGPS;
-			} else {
-				this.mCurrentLoc = latestNetwork;
-			}
-		}
+		mLocationManager.requestLocationUpdates(provider, 0, 0, mLocationListener);		
+		mCurrentLoc = mLocationManager.getLastKnownLocation(provider);
 	}
 
 	public void onResume() {
 		// Resume getting location updates
-		LocationManager locationManager = (LocationManager) this.mContext.getSystemService(Context.LOCATION_SERVICE);
-		locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, mLocationListenerNetwork);
-		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, mLocationListenerGPS);
+		mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, mLocationListener);
 	}
 
 	public void onPause() {
 		// Save batterylife by not aquiring location data when paused
-		LocationManager locationManager = (LocationManager) this.mContext.getSystemService(Context.LOCATION_SERVICE);
-		locationManager.removeUpdates(mLocationListenerGPS);
-		locationManager.removeUpdates(mLocationListenerNetwork);
-
+		mLocationManager.removeUpdates(mLocationListener);
 	}
 
 	private boolean isNearPoi(PointModel point, float threshholdMeters) {
@@ -212,23 +192,24 @@ public class LocationHelper {
 		return result;
 	}
 
-	public List<Location> getPOIs()
-	{
-		ArrayList<Location> pois = new ArrayList<Location>();
-		if(mCurrentLoc != null)
-		{
-			// Query webservice?
-			// FIXME: Dummy POIs
-			Location dummy = new Location(mCurrentLoc);
-			// pois.add(dummy);
-			dummy.setLatitude(dummy.getLatitude()+10);
-			pois.add(dummy);
-			dummy.setLongitude(dummy.getLongitude()+20);
-			pois.add(dummy);
-		}
-
-		return pois;
-	}
+//	public List<Location> getPOIs()
+//	{
+//		ArrayList<Location> pois = new ArrayList<Location>();
+//		if(mCurrentLoc != null)
+//		{
+//			// Query webservice?
+//			// FIXME: Dummy POIs
+//			Location dummy = new Location(mCurrentLoc);
+//			// pois.add(dummy);
+//			dummy.setLatitude(dummy.getLatitude()+10);
+//			pois.add(dummy);
+//			dummy.setLongitude(dummy.getLongitude()+20);
+//			pois.add(dummy);
+//		}
+//
+//
+//		return pois;
+//	}
 	
 	static public GeoPoint geoToE6(GeoPoint gp)
 	{
@@ -307,7 +288,7 @@ public class LocationHelper {
 		return provider1.equals(provider2);
 	}
 
-	// Callback for location sensor
+	// DEPRECATED: Callback for location sensor
 	// Subclasses should implement this to update UI when a new data is available
 	//protected abstract void locationUpdateEvent();
 
