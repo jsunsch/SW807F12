@@ -18,10 +18,10 @@ public class PointModel {
 	private double mLong;
 	private double mLat;
 
-	public PointModel()
-	{
-		
-	}
+//	public PointModel()
+//	{
+//		
+//	}
 	
 	public int getId() {
 		return mId;
