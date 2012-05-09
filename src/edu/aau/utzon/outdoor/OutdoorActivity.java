@@ -139,11 +139,11 @@ public class OutdoorActivity extends SherlockMapActivity {
 			int proximityTreshold = settings.getInt("proximity", 20);
 			double debug = mLocationHelper.distToPoi(mLocationHelper.getCurrentClosePoi());
 
-			Context context = getApplicationContext();
-			CharSequence text = "Distance to nearest POI: " + (int)debug + "m.";
+			//Context context = getApplicationContext();
+			CharSequence text = "Distance to nearest POI: " + (int)debug + "m";
 			int duration = Toast.LENGTH_LONG;
 
-			Toast toast = Toast.makeText(context, text, duration);
+			Toast toast = Toast.makeText(this, text, duration);
 			toast.show();
 
 
