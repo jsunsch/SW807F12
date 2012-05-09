@@ -35,7 +35,9 @@ public class LocationHelper {
 	
 	public double distToPoi(PointModel poi)
 	{
-		return distFrom(mCurrentLoc.getLatitude(), mCurrentLoc.getLongitude(), poi.getLat(), poi.getLong());
+		double userLat = mCurrentLoc.getLatitude()/1e6;
+		double userLong = mCurrentLoc.getLongitude()/1e6;
+		return distFrom(userLat, userLong, poi.getLat(), poi.getLong());
 	}
 	
 	public void updateUserLocation(Location l)

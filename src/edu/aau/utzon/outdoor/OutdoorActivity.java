@@ -129,8 +129,9 @@ public class OutdoorActivity extends SherlockMapActivity {
 			// Set some threshold for minimum activation distance
 			SharedPreferences settings = getSharedPreferences(PREFS_PROXIMITY, 0);
 
-			int proximityTreshold = settings.getInt("proximity", 999);
-			if(mLocationHelper.distToPoi(mLocationHelper.getCurrentClosePoi()) < proximityTreshold*1e10) {
+			int proximityTreshold = settings.getInt("proximity", 20);
+			double debug = mLocationHelper.distToPoi(mLocationHelper.getCurrentClosePoi());
+			if(mLocationHelper.distToPoi(mLocationHelper.getCurrentClosePoi()) < proximityTreshold) {
 				//StartPoiContentActivity(mLocationHelper.getCurrentClosePoi().getId());
 				AlertDialog.Builder builder = new AlertDialog.Builder(this);
 				builder.setMessage("You are near a POI. Do you wish to see the content available?")
@@ -170,7 +171,7 @@ public class OutdoorActivity extends SherlockMapActivity {
 	{
 		// Setup overlays
 		List<Overlay> mapOverlays = mMapView.getOverlays();
-		mapOverlays.clear();
+		//mapOverlays.clear();
 		Drawable drawable = this.getResources().getDrawable(R.drawable.androidmarker);
 		final BalloonOverlay itemizedoverlay = new BalloonOverlay(drawable, mMapView);
 
