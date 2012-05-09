@@ -40,8 +40,6 @@ public class UtzonActivity extends SherlockActivity {
 		}
 	}
 	
-	private LocationHelper mLocationHelper = null;
-	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -51,12 +49,6 @@ public class UtzonActivity extends SherlockActivity {
 			requestWindowFeature(Window.FEATURE_NO_TITLE);
 		}
 		setContentView(R.layout.main);
-		
-		// Energize the GPS (location manager)
-		TextView tv = (TextView) findViewById(R.id.main_text);
-		tv.setText("Energizing sensors...");
-		mLocationHelper = new LocationHelper(this);
-		mLocationHelper.onCreate(savedInstanceState);
 		
 		// Asynchornously start a REST method
 		TextView tv2 = (TextView) findViewById(R.id.main_text2);
@@ -71,13 +63,11 @@ public class UtzonActivity extends SherlockActivity {
 	@Override
 	public void onPause()	{
 		super.onPause();
-		mLocationHelper.onPause();
 	}
 	
 	@Override
 	public void onResume()	{
 		super.onResume();
-		mLocationHelper.onResume();
 	}
 	
 	@Override

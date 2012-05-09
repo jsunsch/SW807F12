@@ -4,9 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.database.Cursor;
+import android.util.Log;
+
 import com.google.android.maps.GeoPoint;
 
 public class PointModel {
+	private static final String TAG = "PointModel";
 	private GeoPoint mGeoPoint;
 	private int mId;
 	private String mDesc;
@@ -49,7 +52,7 @@ public class PointModel {
 		this.mGeoPoint = new GeoPoint((int)(lg*1e6d), (int)(lat*1e6d));
 	}
 	
-	static public List<PointModel> asPointModel (Cursor c){
+	static public List<PointModel> asPointModels (Cursor c){
 		List<PointModel> result = new ArrayList<PointModel>();
 		
 		c.moveToFirst();
@@ -74,6 +77,16 @@ public class PointModel {
 		
 		c.close();
 		return result;
+	}
+
+	public static PointModel asPointModel(Cursor query) {
+		List<PointModel> all = asPointModels(query);
+		if( all.size() > 1 )
+			Log.e(TAG, "Should use asPointModels instead of asPointModel");
+		if( all.size() == 0 )
+			Log.e(TAG, "No elements in cursor");
+		
+		return all.get(0);
 	}
 
 //	@Override

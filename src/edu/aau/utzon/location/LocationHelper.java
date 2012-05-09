@@ -1,18 +1,13 @@
 package edu.aau.utzon.location;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.google.android.maps.GeoPoint;
 
 import edu.aau.utzon.webservice.PointModel;
+import edu.aau.utzon.webservice.ProviderContract;
 import android.content.Context;
-import android.location.Criteria;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
-import android.os.Bundle;
-import android.util.Log;
 
 /**
  *  Handles location operations, such as the users 
@@ -30,112 +25,58 @@ import android.util.Log;
 public class LocationHelper {
 
 	private static final String TAG = "LocationHelper";
+	//private Context mContext = null;
+	//private LocationManager mLocationManager = null;
+	//private LocationListener mLocationListener = null;
 	private Location mCurrentLoc = null;
-	private Context mContext = null;
-	private NearPoiPublisher mPublisher = null;
+	private PointModel mCurrentClosePoi = null;
 	private PointModel mPreviusClosePoi = null;
-	private LocationManager mLocationManager = null;
-	private LocationListener mLocationListener = null;
-
-	public LocationHelper(Context c)
+	private List<PointModel> mPois = null;
+	
+	public double distToPoi(PointModel poi)
 	{
-		this.mContext = c;
+		return distFrom(mCurrentLoc.getLatitude(), mCurrentLoc.getLongitude(), poi.getLat(), poi.getLong());
+	}
+	
+	public void updateUserLocation(Location l)
+	{
+		if(isBetterLocation(l, mCurrentLoc) || mCurrentLoc == null) {
+			mCurrentLoc = l;
+			mPreviusClosePoi = mCurrentClosePoi;
+			mCurrentClosePoi = nearestPOI(mPois, mCurrentLoc);
+		}
+	}
+	
+	public LocationHelper(Context c){
+		// Get available POIs
+		//mContext = c;
+		mPois = PointModel.asPointModels(c.getContentResolver()
+				.query(	ProviderContract.Points.CONTENT_URI, 
+						ProviderContract.Points.PROJECTIONSTRING_ALL, 
+						null, null, null));
 	}
 
 	public Location getCurrentLocation(){
 		return mCurrentLoc;
 	}
-
-	private void makeUseOfNewLocation(Location location) {
+	
+	public PointModel getCurrentClosePoi(){
+		return mCurrentClosePoi;
+	}
+	
+	public void makeUseOfNewLocation(Location location) {
 		// Update our latest record of the users position
 		if(isBetterLocation(location, mCurrentLoc) || mCurrentLoc == null) {
-			this.mCurrentLoc = location;
-
-			//ArrayList<PointModel> pois = mPublisher.getPois();
-
-			//for (PointModel p : pois) {
-			//	if (isNearPoi(p, 50)) {
-			//		if (mPreviusClosePoi != null) {
-			//			if (mPreviusClosePoi.mId == p.mId) {
-			//				return;
-			//			}
-			//		}
-			//		mPublisher.userIsNearPoi(p);
-			//		mPreviusClosePoi = p;
-			//		return;
-			//	}
-			//}
-
-			mPreviusClosePoi = null;
+			mCurrentLoc = location;
+			mPreviusClosePoi = mCurrentClosePoi;
+			mCurrentClosePoi = nearestPOI(mPois, mCurrentLoc);
 		}
 	}
-
-	public void setNearPoiPublisher(NearPoiPublisher publisher) {
-		mPublisher = publisher;
+	
+	public List<PointModel> getPois() {
+		return mPois;
 	}
-
-	public void onCreate(Bundle savedInstance) {
-		// Define a listeners that responds to location updates
-		this.mLocationListener  = new LocationListener() {
-			public void onLocationChanged(Location location) {
-				// Called when a new location is found.
-				makeUseOfNewLocation(location);
-			}
-
-			public void onStatusChanged(String provider, int status, Bundle extras) {}
-
-			public void onProviderEnabled(String provider) {}
-
-			public void onProviderDisabled(String provider) {}
-		};
-
-		// Enable location manager
-		this.mLocationManager = (LocationManager) mContext.getSystemService(Context.LOCATION_SERVICE);
-
-		Criteria criteria = new Criteria();
-		criteria.setAccuracy( Criteria.ACCURACY_FINE );
-		String provider = mLocationManager.getBestProvider( criteria, true );
-		
-		if ( provider == null ) {
-			Log.e( TAG, "No location provider found!" );
-			return;
-		}
-
-		// Register the listener with the Location Manager to receive location updates
-		mLocationManager.requestLocationUpdates(provider, 0, 0, mLocationListener);		
-		mCurrentLoc = mLocationManager.getLastKnownLocation(provider);
-	}
-
-	public void onResume() {
-		// Resume getting location updates
-		mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, mLocationListener);
-	}
-
-	public void onPause() {
-		// Save batterylife by not aquiring location data when paused
-		mLocationManager.removeUpdates(mLocationListener);
-	}
-
-	private boolean isNearPoi(PointModel point, float threshholdMeters) {
-
-		double converted = (double)threshholdMeters / (double)1852; // converts the distance threshold to "longtitude/latitude" distance
-
-		//double pointLongtitude =  (double)point.mGeoPoint.getLongitudeE6() / (double)1000000;
-		//double pointLattitude = (double)point.mGeoPoint.getLatitudeE6() / (double)1000000;
-
-		double dist = distFrom(point.getLong(), point.getLat(), mCurrentLoc.getLongitude(), mCurrentLoc.getLatitude());
-
-		if (dist < threshholdMeters) {
-			return true;
-		}
-
-		//Log.e("TACO", Double.toString(dist));
-
-		//if (point.geoPoint.getLatitudeE6())
-
-		return false;
-	}
-
+	
 	static public double distFrom(double lat1, double lng1, double lat2, double lng2) {
 		double earthRadius = 3958.75;
 		double dLat = Math.toRadians(lat2-lat1);
@@ -151,63 +92,46 @@ public class LocationHelper {
 		return new Double(dist * meterConversion).doubleValue();
 	}
 
-	private List<Location> knearestPOI(List<Location> query, int k)
-	{
-		ArrayList<Location> result = new ArrayList<Location>();
-
-		List<Location> qtemp = query;
-		for(int i=0;i<=k;i++)
-		{
-			Location nearest = nearestPOI(qtemp);
-			if(nearest != null)
-			{
-				result.add(nearest);
-				// Dont allow duplicates in the resulting set
-				// i.e. dont loop on the same data so we avoid getting k equal elements in the result
-				qtemp.remove(nearest);
-			}
-		}
-		return result;
-	}
-
-	private Location nearestPOI(List<Location> query) {
-		Location result = null;
-
-		float closestDist = 1000000;
-		for(Location loc : query)
-		{
-			// In meters
-			float locDist = loc.distanceTo(mCurrentLoc);
-
-			// New closest found
-			if(locDist < closestDist ) { 
-				closestDist = locDist; 
-				result = loc; 
-			}
-		}
-
-		return result;
-	}
-
-//	public List<Location> getPOIs()
+//	private List<PointModel> knearestPOI(List<PointModel> query, int k)
 //	{
-//		ArrayList<Location> pois = new ArrayList<Location>();
-//		if(mCurrentLoc != null)
+//		//ArrayList<Location> result = new ArrayList<Location>();
+//
+//		List<PointModel> qtemp = query;
+//		for(int i=0;i<=k;i++)
 //		{
-//			// Query webservice?
-//			// FIXME: Dummy POIs
-//			Location dummy = new Location(mCurrentLoc);
-//			// pois.add(dummy);
-//			dummy.setLatitude(dummy.getLatitude()+10);
-//			pois.add(dummy);
-//			dummy.setLongitude(dummy.getLongitude()+20);
-//			pois.add(dummy);
+//			Location nearest = nearestPOI(qtemp);
+//			if(nearest != null)
+//			{
+//				result.add(nearest);
+//				// Dont allow duplicates in the resulting set
+//				// i.e. dont loop on the same data so we avoid getting k equal elements in the result
+//				qtemp.remove(nearest);
+//			}
 //		}
-//
-//
-//		return pois;
+//		return result;
 //	}
+
+	private PointModel nearestPOI(List<PointModel> pois, Location loc) {
+		//Location result = null;
+		
+		PointModel result = null;
+		double closestDist = Math.pow(2, 64);
+
+			for(PointModel p : pois)
+			{
+				// In meters
+				double locDist = distFrom(p.getLat(), p.getLong(), loc.getLatitude(), loc.getLongitude());
 	
+				// New closest found
+				if(locDist < closestDist ) { 
+					closestDist = locDist; 
+					result = p; 
+				}
+			}
+		
+		return result;
+	}
+
 	static public GeoPoint geoToE6(GeoPoint gp)
 	{
 		return new GeoPoint((int)(gp.getLatitudeE6()*1e6),(int)(gp.getLongitudeE6()*1e6));
@@ -218,16 +142,6 @@ public class LocationHelper {
 	{
 		// Location -> GeoPoint conversion
 		return new GeoPoint((int)(loc.getLatitude()*1e6),(int)(loc.getLongitude()*1e6));
-	}
-
-	private void updateUserLocation(Location loc) {
-		// Update our location
-		if(isBetterLocation(loc, mCurrentLoc))
-		{
-			mCurrentLoc = loc;
-			//locationUpdateEvent();
-		}
-		else{ /* New location not better than current */ }
 	}
 
 	/** Determines whether one Location reading is better than the current Location fix
@@ -285,8 +199,5 @@ public class LocationHelper {
 		return provider1.equals(provider2);
 	}
 
-	// DEPRECATED: Callback for location sensor
-	// Subclasses should implement this to update UI when a new data is available
-	//protected abstract void locationUpdateEvent();
 
 }

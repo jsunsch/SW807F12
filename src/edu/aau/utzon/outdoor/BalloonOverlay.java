@@ -45,7 +45,7 @@ public class BalloonOverlay extends BalloonItemizedOverlay<OverlayItem> {
 		String snippet = item.getSnippet();
 		
 		/* TODO: Do not use dummy ID */
-		PointModel poi = new PointModel(1, snippet, title, p.getLatitudeE6(), p.getLatitudeE6());
+		//PointModel poi = new PointModel(1, snippet, title, p.getLatitudeE6(), p.getLatitudeE6());
 		Intent i = new Intent(c, PoiContentActivity.class);
 		i.putExtra("_BALLOON_ID", index);
 		c.startActivity(i);

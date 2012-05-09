@@ -49,7 +49,7 @@ public class AugmentedActivity extends Activity implements SensorEventListener {
 	public void onCreate(Bundle saved) {
 		super.onCreate(saved);
 
-		mPois = PointModel.asPointModel(getContentResolver()
+		mPois = PointModel.asPointModels(getContentResolver()
 				.query(ProviderContract.Points.CONTENT_URI, 
 						ProviderContract.Points.PROJECTIONSTRING_ALL, 
 						null, 
@@ -57,8 +57,8 @@ public class AugmentedActivity extends Activity implements SensorEventListener {
 						null));
 
 		// Initialize location helper
-		this.mLocationHelper = new LocationHelper(this);
-		this.mLocationHelper.onCreate(saved);
+		mLocationHelper = new LocationHelper(this);
+		//this.mLocationHelper.onCreate();
 		
 		// Fullscreen
 		getWindow().setFormat(PixelFormat.TRANSLUCENT);
@@ -90,7 +90,7 @@ public class AugmentedActivity extends Activity implements SensorEventListener {
 	@Override
 	public void onResume() { 
 		super.onResume();
-		mLocationHelper.onResume();
+		//mLocationHelper.onResume();
 		mSensorManager.registerListener(this, mGyro, SensorManager.SENSOR_DELAY_NORMAL);
 	}
 
@@ -98,7 +98,7 @@ public class AugmentedActivity extends Activity implements SensorEventListener {
 	@Override
 	public void onPause() {
 		super.onPause();
-		mLocationHelper.onPause();
+		//mLocationHelper.onPause();
 		mSensorManager.unregisterListener(this);
 
 	}

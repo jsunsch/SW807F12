@@ -2,14 +2,18 @@ package edu.aau.utzon.outdoor;
 
 import java.util.List;
 
+import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.drawable.Drawable;
+import android.location.Criteria;
 import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.Window;
+
 import com.actionbarsherlock.app.SherlockMapActivity;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.Menu;
@@ -32,21 +36,21 @@ import edu.aau.utzon.indoor.IndoorActivity;
 import edu.aau.utzon.location.LocationHelper;
 import edu.aau.utzon.location.NearPoiPublisher;
 import edu.aau.utzon.webservice.PointModel;
-import edu.aau.utzon.webservice.ProviderContract;
 
-public class OutdoorActivity extends SherlockMapActivity implements NearPoiPublisher {
-
-	private LocationHelper mLocationHelper;
-	private Cursor mOutdoorPois;
+public class OutdoorActivity extends SherlockMapActivity {
+	private static final String TAG = null;
 	private TapControlledMapView mMapView;
 	private MyLocationOverlay mMyLocationOverlay;
+	private LocationHelper mLocationHelper;
+	private LocationManager mLocationManager;
+	private LocationListener mLocationListener;
 
 	@Override
 	public void onResume()
 	{
 		super.onResume();
 		mMyLocationOverlay.enableMyLocation();
-		mLocationHelper.onResume();
+		mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, mLocationListener);
 	}
 
 	@Override
@@ -54,24 +58,13 @@ public class OutdoorActivity extends SherlockMapActivity implements NearPoiPubli
 	{
 		super.onPause();
 		mMyLocationOverlay.disableMyLocation();
-		mLocationHelper.onPause();
+		mLocationManager.removeUpdates(mLocationListener);
 	}
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		// Init locationHelper		
-		this.mLocationHelper = new LocationHelper(getBaseContext());
-		this.mLocationHelper.setNearPoiPublisher(this);
-		mLocationHelper.onCreate(savedInstanceState);
-
-		// Get available POIs
-		mOutdoorPois = getContentResolver().query(ProviderContract.Points.CONTENT_URI, 
-				ProviderContract.Points.PROJECTIONSTRING_ALL, 
-				null, 
-				null, 
-				null);
-
+		
 		// Remove title bar
 		if( android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB ) {
 			requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -89,17 +82,54 @@ public class OutdoorActivity extends SherlockMapActivity implements NearPoiPubli
 		mMyLocationOverlay.enableMyLocation();
 		mMapView.getOverlays().add(mMyLocationOverlay);
 
-		// Draw POI
-		drawOutdoorPois(PointModel.asPointModel(mOutdoorPois));
+		// Enable location manager
+		mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+		Criteria criteria = new Criteria();
+		criteria.setAccuracy( Criteria.ACCURACY_FINE );
+		String provider = mLocationManager.getBestProvider( criteria, true );
+
+		if ( provider == null ) {
+			Log.e( TAG, "No location provider found!" );
+			return;
+		}
+		
+		// Define a listener that responds to location updates
+		mLocationListener = new LocationListener() {
+			public void onLocationChanged(Location location) {
+				// Called when a new location is found.
+				makeUseOfNewLocation(location);
+			}
+
+			public void onStatusChanged(String provider, int status, Bundle extras) {}
+
+			public void onProviderEnabled(String provider) {}
+
+			public void onProviderDisabled(String provider) {}
+		};
+		
+		// Register the listener with the Location Manager to receive location updates
+		mLocationManager.requestLocationUpdates(provider, 0, 0, mLocationListener);
+		
+		// Init LocationHelper
+		mLocationHelper = new LocationHelper(this);
+		
+		// Draw POIs
+		drawOutdoorPois();
 	}
 
-	public void userIsNearPoi(PointModel poi) {
-		Log.e("TACO", "IS NEAR POI");
-		StartPoiContentActivity();
+	protected void makeUseOfNewLocation(Location location) {
+		
+		if(location != null) {
+			mLocationHelper.makeUseOfNewLocation(location);
+			// Set some threshold for minimum activation distance
+			if(mLocationHelper.distToPoi(mLocationHelper.getCurrentClosePoi()) > 500)
+				StartPoiContentActivity(mLocationHelper.getCurrentClosePoi().getId());
+		}
+		
 	}
 
-	private void StartPoiContentActivity() {
-		startActivity(new Intent(getApplicationContext(), PoiContentActivity.class));
+	private void StartPoiContentActivity(int id) {
+		startActivity(new Intent(this, PoiContentActivity.class).putExtra("_ID", id).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
 	}
 
 	protected void animateToLocation(Location loc)
@@ -111,22 +141,17 @@ public class OutdoorActivity extends SherlockMapActivity implements NearPoiPubli
 			mc.animateTo(point);
 		}
 	}
-
-	public void updateOutdoorPois(List<PointModel> pois) {
-		drawOutdoorPois(pois);
-	}
-
-	private BalloonOverlay itemizedoverlay = null;
-	protected void drawOutdoorPois(List<PointModel> list)
+	
+	protected void drawOutdoorPois()
 	{
 		// Setup overlays
 		List<Overlay> mapOverlays = mMapView.getOverlays();
 		mapOverlays.clear();
 		Drawable drawable = this.getResources().getDrawable(R.drawable.androidmarker);
-		itemizedoverlay = new BalloonOverlay(drawable, mMapView);
+		final BalloonOverlay itemizedoverlay = new BalloonOverlay(drawable, mMapView);
 
 		// Add POI to the overlay
-		for(PointModel p : list)
+		for(PointModel p : mLocationHelper.getPois())
 		{
 			GeoPoint gp = p.getGeoPoint();
 			int id = p.getId();
@@ -139,7 +164,7 @@ public class OutdoorActivity extends SherlockMapActivity implements NearPoiPubli
 		mMapView.setOnSingleTapListener(new OnSingleTapListener() {		
 			@Override
 			public boolean onSingleTap(MotionEvent e) {
-				
+				itemizedoverlay.hideAllBalloons();
 				return true;
 			}
 		});
@@ -192,10 +217,5 @@ public class OutdoorActivity extends SherlockMapActivity implements NearPoiPubli
 		default:
 			return super.onOptionsItemSelected(item);
 		}
-	}
-
-	@Override
-	public List<PointModel> getPois() {
-		return PointModel.asPointModel(mOutdoorPois);
 	}
 }

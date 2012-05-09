@@ -68,7 +68,7 @@ public class PoiListActivity extends SherlockListActivity {
 			requestWindowFeature(Window.FEATURE_NO_TITLE);
 		}
 
-		mPois = PointModel.asPointModel(
+		mPois = PointModel.asPointModels(
 				getContentResolver().query(	ProviderContract.Points.CONTENT_URI, 
 				ProviderContract.Points.PROJECTIONSTRING_ALL, 
 				null, 
@@ -89,7 +89,7 @@ public class PoiListActivity extends SherlockListActivity {
 		  lv.setOnItemClickListener(new OnItemClickListener() {
 		    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 		    	startActivity(new Intent(getBaseContext(), PoiContentActivity.class)
-		    	.putExtra("_POILIST_ID", position).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+		    	.putExtra("_ID", position).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
 		    }
 		  });
 	}
