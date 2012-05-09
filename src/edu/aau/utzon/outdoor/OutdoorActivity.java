@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.Window;
+import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockMapActivity;
 import com.actionbarsherlock.view.MenuInflater;
@@ -131,6 +132,15 @@ public class OutdoorActivity extends SherlockMapActivity {
 
 			int proximityTreshold = settings.getInt("proximity", 20);
 			double debug = mLocationHelper.distToPoi(mLocationHelper.getCurrentClosePoi());
+			
+			Context context = getApplicationContext();
+			CharSequence text = "Distance to nearest POI: " + debug;
+			int duration = Toast.LENGTH_LONG;
+
+			Toast toast = Toast.makeText(context, text, duration);
+			toast.show();
+			
+			
 			if(mLocationHelper.distToPoi(mLocationHelper.getCurrentClosePoi()) < proximityTreshold) {
 				//StartPoiContentActivity(mLocationHelper.getCurrentClosePoi().getId());
 				AlertDialog.Builder builder = new AlertDialog.Builder(this);

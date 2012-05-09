@@ -122,7 +122,7 @@ public class LocationHelper {
 			for(PointModel p : pois)
 			{
 				// In meters
-				double locDist = distFrom(p.getLat(), p.getLong(), loc.getLatitude(), loc.getLongitude());
+				double locDist = distFrom(p.getLat(), p.getLong(), loc.getLatitude()/1e6, loc.getLongitude()/1e6);
 	
 				// New closest found
 				if(locDist < closestDist ) { 
