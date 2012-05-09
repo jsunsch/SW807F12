@@ -35,10 +35,14 @@ public class UtzonActivity extends SherlockActivity {
 		public void onChange(boolean selfChange) {
 			super.onChange(selfChange);
 			TextView tv3 = (TextView) findViewById(R.id.main_text3);
-			tv3.setText("Fetched " + ++poiCounter + " points of interest.");
+			tv3.setText("Fetched " + ++poiCounter + " point(s) of interest.");
+			TextView tv4 = (TextView) findViewById(R.id.main_text4);
+			if(++poiCounterTotal > poiCounter)
+				tv4.setText("Total POIs transferred: " + poiCounterTotal + ".");
 		}
 	}
 	private int poiCounter = 0;
+	private int poiCounterTotal = 0;
 	RestContentObserver mContentObserver = new RestContentObserver(new Handler());
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -101,6 +105,7 @@ public class UtzonActivity extends SherlockActivity {
 			onSearchRequested();
 			return true;
 		case R.id.actionbar_refresh:
+			poiCounter = 0;
 			RestServiceHelper.getServiceHelper()
 				.getLocationPoints(this);
 			return true;
