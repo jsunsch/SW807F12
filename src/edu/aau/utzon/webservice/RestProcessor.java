@@ -10,18 +10,16 @@ import android.util.Log;
 
 public class RestProcessor {
 	
+		private static final String TAG = "RestProcessor";
+
 		// Returns list of URIs with the ID of the newly inserted resource's ID
 		public static List<Uri> insertLocationPoints(List<PointModel> points, Context context) {
-			//TODO: Add logic for sending these points to the ContentProvider, so that they can be stored in the database.
 			ArrayList<Uri> uris = new ArrayList<Uri>();
-			
-			Log.e("TACO", Integer.toString(points.size()));
-			
+			Log.i(TAG, "Inserting " + points.size() + "POIs");
 			for(PointModel p : points)
 			{
 				uris.add(insertLocationPoint(p, context));
-			}
-			
+			}			
 			return uris;
 		}
 		
@@ -30,10 +28,12 @@ public class RestProcessor {
 
 			ContentValues values = new ContentValues();
 			values.put(ProviderContract.Points.ATTRIBUTE_ID, point.getId());
-			values.put(ProviderContract.Points.ATTRIBUTE_LAT, point.getLat()); // TODO: Det der getLatitude noget er jeg sq ikke helt sikker på
-			values.put(ProviderContract.Points.ATTRIBUTE_LONG, point.getLong());// TODO: Det der getLongtitude noget er jeg sq ikke helt sikker på
+			values.put(ProviderContract.Points.ATTRIBUTE_LAT, point.getLat()); 
+			values.put(ProviderContract.Points.ATTRIBUTE_LONG, point.getLong());
 			values.put(ProviderContract.Points.ATTRIBUTE_DESCRIPTION, point.getDesc());
 			values.put(ProviderContract.Points.ATTRIBUTE_NAME, point.getName());
+			values.put(ProviderContract.Points.ATTRIBUTE_LAST_MODIFIED, System.currentTimeMillis());
+			values.put(ProviderContract.Points.ATTRIBUTE_STATE, ProviderContract.Points.STATE_OK);
 			
 			Uri inserted = context.getContentResolver()
 					.insert(ProviderContract.Points.CONTENT_URI, values);

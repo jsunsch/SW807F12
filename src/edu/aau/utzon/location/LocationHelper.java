@@ -1,5 +1,6 @@
 package edu.aau.utzon.location;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.google.android.maps.GeoPoint;
@@ -9,37 +10,21 @@ import edu.aau.utzon.webservice.ProviderContract;
 import android.content.Context;
 import android.location.Location;
 
-/**
- *  Handles location operations, such as the users 
- *  current location. It offers support for following the 
- *  lifecycle of the activity through onCreate(), onResume() etc., 
- *  in addition to utility methods such as isNearPOI().
- *  
- *  TODO: Maybe a separate class to distinguish between
- *  	- Getting updates from Android/hardware
- *  	- Providing utility methods for the Activity/whoever
- *  
- *  	?
- *  	
- */
 public class LocationHelper {
 
 	private static final String TAG = "LocationHelper";
-	//private Context mContext = null;
-	//private LocationManager mLocationManager = null;
-	//private LocationListener mLocationListener = null;
 	private Location mCurrentLoc = null;
 	private PointModel mCurrentClosePoi = null;
 	private PointModel mPreviusClosePoi = null;
 	private List<PointModel> mPois = null;
-	
+
 	public double distToPoi(PointModel poi)
 	{
 		double userLat = mCurrentLoc.getLatitude()/1e6;
 		double userLong = mCurrentLoc.getLongitude()/1e6;
 		return distFrom(userLat, userLong, poi.getLat(), poi.getLong());
 	}
-	
+
 	public void updateUserLocation(Location l)
 	{
 		if(isBetterLocation(l, mCurrentLoc) || mCurrentLoc == null) {
@@ -48,24 +33,20 @@ public class LocationHelper {
 			mCurrentClosePoi = nearestPOI(mPois, mCurrentLoc);
 		}
 	}
-	
+
+	// Not saving the context in field forces us to not spam the SQLite db
 	public LocationHelper(Context c){
-		// Get available POIs
-		//mContext = c;
-		mPois = PointModel.asPointModels(c.getContentResolver()
-				.query(	ProviderContract.Points.CONTENT_URI, 
-						ProviderContract.Points.PROJECTIONSTRING_ALL, 
-						null, null, null));
+		mPois = PointModel.dbGetAll(c);
 	}
 
 	public Location getCurrentLocation(){
 		return mCurrentLoc;
 	}
-	
+
 	public PointModel getCurrentClosePoi(){
 		return mCurrentClosePoi;
 	}
-	
+
 	public void makeUseOfNewLocation(Location location) {
 		// Update our latest record of the users position
 		if(isBetterLocation(location, mCurrentLoc) || mCurrentLoc == null) {
@@ -74,14 +55,12 @@ public class LocationHelper {
 			mCurrentClosePoi = nearestPOI(mPois, mCurrentLoc);
 		}
 	}
-	
+
 	public List<PointModel> getPois() {
 		return mPois;
 	}
-	
-	static public double distFrom(double lat1, double lng1, double lat2, double lng2) {
 
-		
+	static public double distFrom(double lat1, double lng1, double lat2, double lng2) {
 		double earthRadius = 3958.75;
 		double dLat = Math.toRadians(lat2-lat1);
 		double dLng = Math.toRadians(lng2-lng1);
@@ -96,51 +75,41 @@ public class LocationHelper {
 		return new Double(dist * meterConversion).doubleValue();
 	}
 
-//	private List<PointModel> knearestPOI(List<PointModel> query, int k)
-//	{
-//		//ArrayList<Location> result = new ArrayList<Location>();
-//
-//		List<PointModel> qtemp = query;
-//		for(int i=0;i<=k;i++)
-//		{
-//			Location nearest = nearestPOI(qtemp);
-//			if(nearest != null)
-//			{
-//				result.add(nearest);
-//				// Dont allow duplicates in the resulting set
-//				// i.e. dont loop on the same data so we avoid getting k equal elements in the result
-//				qtemp.remove(nearest);
-//			}
-//		}
-//		return result;
-//	}
+	private List<PointModel> knearestPOI(List<PointModel> query, int k)
+	{
+		List<PointModel> result = new ArrayList<PointModel>();
 
-	private PointModel nearestPOI(List<PointModel> pois, Location loc) {
-		//Location result = null;
-		
-		PointModel result = null;
-		double closestDist = Math.pow(2, 64);
-
-			for(PointModel p : pois)
+		List<PointModel> qtemp = query;
+		for(int i=0;i<=k;i++)
+		{
+			PointModel nearest = nearestPOI(qtemp, mCurrentLoc);
+			if(nearest != null)
 			{
-				// In meters
-				double locDist = distFrom(p.getLat(), p.getLong(), loc.getLatitude()/1e6, loc.getLongitude()/1e6);
-	
-				// New closest found
-				if(locDist < closestDist ) { 
-					closestDist = locDist; 
-					result = p; 
-				}
+				result.add(nearest);
+				qtemp.remove(nearest);
 			}
-		
+		}
 		return result;
 	}
 
-	static public GeoPoint geoToE6(GeoPoint gp)
-	{
-		return new GeoPoint((int)(gp.getLatitudeE6()*1e6),(int)(gp.getLongitudeE6()*1e6));
+	private PointModel nearestPOI(List<PointModel> pois, Location loc) {
+		PointModel result = null;
+		double closestDist = Math.pow(2, 64);
+
+		for(PointModel p : pois)
+		{
+			// In meters
+			double locDist = distFrom(p.getLat(), p.getLong(), loc.getLatitude()/1e6, loc.getLongitude()/1e6);
+
+			// New closest found
+			if(locDist < closestDist ) { 
+				closestDist = locDist; 
+				result = p; 
+			}
+		}
+
+		return result;
 	}
-	
 
 	static public GeoPoint locToGeo(Location loc)
 	{

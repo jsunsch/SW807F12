@@ -1,13 +1,9 @@
 package edu.aau.utzon;
 
-import java.util.List;
-
 import edu.aau.utzon.webservice.PointModel;
 import edu.aau.utzon.webservice.ProviderContract;
 import android.app.Activity;
-import android.content.ContentUris;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.widget.TextView;
 
@@ -18,7 +14,6 @@ public class PoiContentActivity extends Activity{
 		Intent i = getIntent();
 
 		// Would like to unify this to _ID, but balloon is special case
-		
 		int db_id = i.getExtras().getInt("_ID");
 		int b_id = i.getExtras().getInt("_BALLOON_ID");
 		int list_id = i.getExtras().getInt("_POILIST_ID");
@@ -28,23 +23,14 @@ public class PoiContentActivity extends Activity{
 		
 		if(db_id > 0) {
 			// We have DB id
-			String selection = ProviderContract.Points.ATTRIBUTE_ID + "=" + db_id;
-			pm = PointModel.asPointModel(
-					getContentResolver()
-					.query(	ProviderContract.Points.CONTENT_URI, 
-							ProviderContract.Points.PROJECTIONSTRING_ALL, 
-							selection, null, null));
+			pm = PointModel.dbGetSingle(this, db_id);
 		}
 		else
 		{
-			pm = PointModel.asPointModels(
-					getContentResolver()
-					.query(	ProviderContract.Points.CONTENT_URI, 
-							ProviderContract.Points.PROJECTIONSTRING_ALL, 
-							null, null, null))
-							.get(_id);
+			pm = PointModel.dbGetAll(this).get(_id);
 		}
 		
+		// Fully constructed PointModel available for UI
 		setContentView(R.layout.poi_content);
 		TextView tvTitle = (TextView)findViewById(R.id.textViewName);
 		TextView tvDescription = (TextView)findViewById(R.id.textViewDescription);

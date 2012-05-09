@@ -42,7 +42,7 @@ import edu.aau.utzon.location.LocationHelper;
 import edu.aau.utzon.location.NearPoiPublisher;
 import edu.aau.utzon.webservice.PointModel;
 
-public class OutdoorActivity extends SherlockMapActivity {
+public class OutdoorActivity extends SherlockMapActivity implements NearPoiPublisher{
 	private static final String TAG = null;
 	private static final String PREFS_PROXIMITY = "proximity";
 	private TapControlledMapView mMapView;
@@ -124,7 +124,7 @@ public class OutdoorActivity extends SherlockMapActivity {
 
 		// Init LocationHelper
 		mLocationHelper = new LocationHelper(this);
-
+				
 		// Draw POIs
 		drawOutdoorPois();
 	}
@@ -133,22 +133,19 @@ public class OutdoorActivity extends SherlockMapActivity {
 
 		if(location != null) {
 			mLocationHelper.makeUseOfNewLocation(location);
+			mLocationHelper.makeUseOfNewLocation(mMyLocationOverlay.getLastFix());	// Needed?
+			
 			// Set some threshold for minimum activation distance
 			SharedPreferences settings = getSharedPreferences(PREFS_PROXIMITY, 0);
-
 			int proximityTreshold = settings.getInt("proximity", 20);
-			double debug = mLocationHelper.distToPoi(mLocationHelper.getCurrentClosePoi());
-
-			//Context context = getApplicationContext();
-			CharSequence text = "Distance to nearest POI: " + (int)debug + "m";
-			int duration = Toast.LENGTH_LONG;
-
-			Toast toast = Toast.makeText(this, text, duration);
+			double dist = mLocationHelper.distToPoi(mLocationHelper.getCurrentClosePoi());
+			CharSequence text = "Distance to nearest POI: " + (int)dist + "meter(s).";
+			Toast toast = Toast.makeText(this, text, Toast.LENGTH_SHORT);
 			toast.show();
 
 
 			if(mLocationHelper.distToPoi(mLocationHelper.getCurrentClosePoi()) < proximityTreshold) {
-				//StartPoiContentActivity(mLocationHelper.getCurrentClosePoi().getId());
+				userIsNearPoi(mLocationHelper.getCurrentClosePoi());
 				AlertDialog.Builder builder = new AlertDialog.Builder(this);
 				builder.setMessage("You are near a POI. Do you wish to see the content available?")
 				.setCancelable(false)
@@ -187,7 +184,6 @@ public class OutdoorActivity extends SherlockMapActivity {
 	{
 		// Setup overlays
 		List<Overlay> mapOverlays = mMapView.getOverlays();
-		//mapOverlays.clear();
 		Drawable drawable = this.getResources().getDrawable(R.drawable.androidmarker);
 		final BalloonOverlay itemizedoverlay = new BalloonOverlay(drawable, mMapView);
 
@@ -220,7 +216,7 @@ public class OutdoorActivity extends SherlockMapActivity {
 
 	@Override
 	protected boolean isRouteDisplayed() {
-		// TODO Auto-generated method stub
+		// Required by MapActivity
 		return false;
 	}
 
@@ -261,5 +257,16 @@ public class OutdoorActivity extends SherlockMapActivity {
 		default:
 			return super.onOptionsItemSelected(item);
 		}
+	}
+
+	@Override
+	public void userIsNearPoi(PointModel poi) {
+		Log.e(TAG, "OutdoorActivity: userIsNearPoi()");		
+	}
+
+	@Override
+	public List<PointModel> getPois() {
+		Log.i(TAG, "OutdoorActivity: getPois()");
+		return mLocationHelper.getPois();
 	}
 }

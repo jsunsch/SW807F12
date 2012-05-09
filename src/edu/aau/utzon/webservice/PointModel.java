@@ -3,6 +3,7 @@ package edu.aau.utzon.webservice;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.util.Log;
 
@@ -16,12 +17,9 @@ public class PointModel {
 	private String mName;
 	private double mLong;
 	private double mLat;
+	private long mLastModified;
+	private int mState;
 
-//	public PointModel()
-//	{
-//		
-//	}
-	
 	public int getId() {
 		return mId;
 	}
@@ -41,15 +39,40 @@ public class PointModel {
 	public GeoPoint getGeoPoint() {
 		return mGeoPoint;
 	}
-
-	public PointModel(int id, String desc, String name, double lat, double lg)
+	public long getLastModified() {
+		return mLastModified;
+	}
+	public int getState() {
+		return mState;
+	}
+	
+	public PointModel(int id, String desc, String name, double lat, double lg, long lastModified, int state)
 	{
 		this.mId = id;
 		this.mDesc = desc;
 		this.mName = name;
 		this.mLat = lat;
 		this.mLong = lg;
-		this.mGeoPoint = new GeoPoint((int)(lg*1e6d), (int)(lat*1e6d));
+		this.mGeoPoint = new GeoPoint((int)(lg*1e6), (int)(lat*1e6));
+		this.mLastModified = lastModified;
+		this.mState = state;
+	}
+	
+	static public List<PointModel> dbGetAll(Context c)
+	{
+		return asPointModels(c.getContentResolver()
+				.query(	ProviderContract.Points.CONTENT_URI, 
+						ProviderContract.Points.PROJECTIONSTRING_ALL, 
+						null, null, null));
+	}
+	
+	static public PointModel dbGetSingle(Context c, int id)
+	{
+		String selection = ProviderContract.Points.ATTRIBUTE_ID + "=" + id;
+		return asPointModel(c.getContentResolver()
+				.query(	ProviderContract.Points.CONTENT_URI, 
+						ProviderContract.Points.PROJECTIONSTRING_ALL, 
+						selection, null, null));
 	}
 	
 	static public List<PointModel> asPointModels (Cursor c){
@@ -63,14 +86,18 @@ public class PointModel {
 			int colIndexLat = c.getColumnIndex(ProviderContract.Points.ATTRIBUTE_LAT);
 			int colIndexLong = c.getColumnIndex(ProviderContract.Points.ATTRIBUTE_LONG);
 			int colIndexName = c.getColumnIndex(ProviderContract.Points.ATTRIBUTE_NAME);
+			int colIndexLastModified = c.getColumnIndex(ProviderContract.Points.ATTRIBUTE_LAST_MODIFIED);
+			int colIndexState = c.getColumnIndex(ProviderContract.Points.ATTRIBUTE_STATE);
 
 			int id = c.getInt(colIndexId);
 			String desc = c.getString(colIndexDesc);
 			double lat = c.getDouble(colIndexLat);
 			double lg = c.getDouble(colIndexLong);
 			String name = c.getString(colIndexName);
+			long lastModified = c.getLong(colIndexLastModified);
+			int state = c.getInt(colIndexState);
 			
-			PointModel p = new PointModel(id, desc, name, lat, lg);
+			PointModel p = new PointModel(id, desc, name, lat, lg, lastModified, state);
 			result.add(p);
 
 		} while (c.moveToNext() == true);
@@ -79,7 +106,7 @@ public class PointModel {
 		return result;
 	}
 
-	public static PointModel asPointModel(Cursor query) {
+	static private PointModel asPointModel(Cursor query) {
 		List<PointModel> all = asPointModels(query);
 		if( all.size() > 1 )
 			Log.e(TAG, "Should use asPointModels instead of asPointModel");

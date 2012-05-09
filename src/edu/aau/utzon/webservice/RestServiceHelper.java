@@ -2,6 +2,7 @@ package edu.aau.utzon.webservice;
 
 import android.content.Context;
 import android.content.Intent;
+import android.sax.StartElementListener;
 import android.util.Log;
 
 public class RestServiceHelper {
@@ -20,16 +21,14 @@ public class RestServiceHelper {
     
     public void getLocationPoint(Context context, int id) {
     	Intent intent = new Intent(context, RestService.class);
-    	intent.putExtra(RestService.COMMAND, RestService.COMMAND_GET_LOCATION_POINT);
-    	intent.putExtra(RestService.LOCATION_ID, id);
+    	intent.putExtra(RestService.COMMAND, RestService.COMMAND_GET_POI_ID);
+    	intent.putExtra(RestService.POI_ID, id);
     	context.startService(intent);
     }
-	
+    
 	public void getLocationPoints(Context context) {
-		Log.e("Service Example", "Niggar niggar niggar niggar niggar niggar niggar! Why you call them hoes bitches?"); 
 		Intent intent = new Intent(context, RestService.class);
-		
-		intent.putExtra(RestService.COMMAND, RestService.COMMAND_GET_LOCATION_POINTS);
+		intent.putExtra(RestService.COMMAND, RestService.COMMAND_GET_POI_ALL);
 		context.startService(intent);
 	}
 }

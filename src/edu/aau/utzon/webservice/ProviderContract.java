@@ -31,9 +31,10 @@ public final class ProviderContract {
     	public static final String ATTRIBUTE_NAME = "name";
     	
     	// Attribute states
-    	public static final int STATE_POSTING = 1;
-    	public static final int STATE_UPDATING = 2;
-    	public static final int STATE_DELETING = 3;
+    	public static final int STATE_OK = 1;
+    	public static final int STATE_POSTING = 2;
+    	public static final int STATE_UPDATING = 3;
+    	public static final int STATE_DELETING = 4;
     	
     	// Position of ID
     	public static final int ATTRIBUTE_ID_POSITION = 1;

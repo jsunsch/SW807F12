@@ -83,7 +83,10 @@ public class JRestMethod {
 								jsonObj.getString("Description"),
 								jsonObj.getString("Name"), 
 								jsonObj.getDouble("Latitude"),
-								jsonObj.getDouble("Longitude"));
+								jsonObj.getDouble("Longitude"),
+								System.currentTimeMillis(),
+								ProviderContract.Points.STATE_UPDATING
+								);
 						
 						result.add(pm);
 					}
