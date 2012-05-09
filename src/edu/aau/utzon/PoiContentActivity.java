@@ -1,7 +1,6 @@
 package edu.aau.utzon;
 
 import edu.aau.utzon.webservice.PointModel;
-import edu.aau.utzon.webservice.ProviderContract;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;

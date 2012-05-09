@@ -7,7 +7,6 @@ import com.actionbarsherlock.view.MenuItem;
 
 import edu.aau.utzon.augmented.AugmentedActivity;
 import edu.aau.utzon.indoor.IndoorActivity;
-import edu.aau.utzon.location.LocationHelper;
 import edu.aau.utzon.outdoor.OutdoorActivity;
 import edu.aau.utzon.webservice.ProviderContract;
 import edu.aau.utzon.webservice.RestServiceHelper;
@@ -31,7 +30,7 @@ public class UtzonActivity extends SherlockActivity {
 			return true;
 		}
 
-		private int poiCounter = 0;
+		
 		@Override
 		public void onChange(boolean selfChange) {
 			super.onChange(selfChange);
@@ -39,7 +38,7 @@ public class UtzonActivity extends SherlockActivity {
 			tv3.setText("Fetched " + ++poiCounter + " points of interest.");
 		}
 	}
-	
+	private int poiCounter = 0;
 	RestContentObserver mContentObserver = new RestContentObserver(new Handler());
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -100,6 +99,10 @@ public class UtzonActivity extends SherlockActivity {
 		case R.id.actionbar_search:
 			// TODO: Implement
 			onSearchRequested();
+			return true;
+		case R.id.actionbar_refresh:
+			RestServiceHelper.getServiceHelper()
+				.getLocationPoints(this);
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);

@@ -6,7 +6,6 @@ import java.util.List;
 import com.google.android.maps.GeoPoint;
 
 import edu.aau.utzon.webservice.PointModel;
-import edu.aau.utzon.webservice.ProviderContract;
 import android.content.Context;
 import android.location.Location;
 

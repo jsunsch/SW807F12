@@ -12,5 +12,6 @@
 	<string name="menu_outdoor">Display outdoor map</string>
 	<string name="menu_indoor">Display indoor map</string>
 	<string name="menu_settings">Configure settings</string>
+	<string name="menu_refresh">Re-synchronize with server</string>
 	
 </resources>

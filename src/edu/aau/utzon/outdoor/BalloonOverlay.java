@@ -11,7 +11,6 @@ import com.google.android.maps.OverlayItem;
 import com.readystatesoftware.mapviewballoons.BalloonItemizedOverlay;
 
 import edu.aau.utzon.PoiContentActivity;
-import edu.aau.utzon.webservice.PointModel;
 
 public class BalloonOverlay extends BalloonItemizedOverlay<OverlayItem> {
 	private ArrayList<OverlayItem> m_overlays = new ArrayList<OverlayItem>();
