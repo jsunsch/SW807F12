@@ -73,8 +73,8 @@ public class OutdoorActivity extends SherlockMapActivity implements NearPoiPubli
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		
-		Intent intent = new Intent(this, IndoorActivity.class);
-		startActivity(intent);
+		//Intent intent = new Intent(this, IndoorActivity.class);
+		//startActivity(intent);
 		
 		super.onCreate(savedInstanceState);
 		// Init locationHelper
