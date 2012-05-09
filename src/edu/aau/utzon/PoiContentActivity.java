@@ -25,16 +25,15 @@ public class PoiContentActivity extends Activity{
 		int _id = b_id > list_id ? b_id : list_id;
 		
 		PointModel pm;
-		// We have DB id
+		
 		if(db_id > 0) {
+			// We have DB id
 			String selection = ProviderContract.Points.ATTRIBUTE_ID + "=" + db_id;
 			pm = PointModel.asPointModel(
 					getContentResolver()
 					.query(	ProviderContract.Points.CONTENT_URI, 
 							ProviderContract.Points.PROJECTIONSTRING_ALL, 
 							selection, null, null));
-			int herpderp = 4+44;
-			int def = herpderp+4;
 		}
 		else
 		{
