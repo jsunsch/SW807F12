@@ -9,11 +9,43 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.net.wifi.ScanResult;
+import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 
 public class WifiHelper {
 	
-	public static ArrayList<WifiMeasure> getWifiMeasures(Context context, WifiManager wifi, int seconds, int signalMax) throws InterruptedException {
+	public static ArrayList<WifiMeasureCollection> getWifiMeasures(Context context, WifiManager wifi, int seconds, int signalMax) throws InterruptedException {
+		if (wifi.startScan() == true)
+		{
+			ArrayList<WifiMeasureCollection> measureCollections = new ArrayList<WifiMeasureCollection>();
+			
+			for (int i = 0; i < seconds/2; i++) {
+				
+				ArrayList<WifiMeasure> measures = new ArrayList<WifiMeasure>();
+				// Raw list of WIFI access points
+				List<ScanResult> scanResults =  wifi.getScanResults();
+
+				for (ScanResult res : scanResults) {
+					if (-res.level < signalMax) {
+						measures.add(new WifiMeasure(res.BSSID, -res.level));
+					}
+				}
+				
+				measureCollections.add(new WifiMeasureCollection(measures));
+
+				Thread.sleep(2000);
+				wifi.startScan();
+			}
+		  
+			return measureCollections;
+		}
+		else
+		{
+			return null;
+		}
+	}
+	
+	public static ArrayList<WifiMeasure> getWifiMeasuresAvg(Context context, WifiManager wifi, int seconds, int signalMax) throws InterruptedException {
 		if (wifi.startScan() == true)
 		{
 			// Contains the signal sum from each WIFI acces points
@@ -21,7 +53,7 @@ public class WifiHelper {
 			// Contains the count of how many times an access point as been measured
 			Hashtable<String, Integer> wifiCounts = new Hashtable<String, Integer> ();
 			
-			for (int i = 0; i < 2*seconds; i++) {
+			for (int i = 0; i < seconds/2; i++) {
 
 				// Raw list of WIFI access points
 				List<ScanResult> scanResults =  wifi.getScanResults();
@@ -51,7 +83,7 @@ public class WifiHelper {
 					}
 				}
 
-				Thread.sleep(500);
+				Thread.sleep(1500);
 				wifi.startScan();
 			}
 			
@@ -74,4 +106,5 @@ public class WifiHelper {
 			return null;
 		}
 	}
+	
 }
