@@ -2,7 +2,9 @@ package edu.aau.utzon.outdoor;
 
 import java.util.List;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
@@ -128,8 +130,23 @@ public class OutdoorActivity extends SherlockMapActivity {
 			SharedPreferences settings = getSharedPreferences(PREFS_PROXIMITY, 0);
 
 			int proximityTreshold = settings.getInt("proximity", 999);
-			if(mLocationHelper.distToPoi(mLocationHelper.getCurrentClosePoi()) < proximityTreshold) {
-				StartPoiContentActivity(mLocationHelper.getCurrentClosePoi().getId());
+			if(mLocationHelper.distToPoi(mLocationHelper.getCurrentClosePoi()) < proximityTreshold*1e10) {
+				//StartPoiContentActivity(mLocationHelper.getCurrentClosePoi().getId());
+				AlertDialog.Builder builder = new AlertDialog.Builder(this);
+				builder.setMessage("You are near a POI. Do you wish to see the content available?")
+				       .setCancelable(false)
+				       .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+				           public void onClick(DialogInterface dialog, int id) {
+				                StartPoiContentActivity(mLocationHelper.getCurrentClosePoi().getId());
+				           }
+				       })
+				       .setNegativeButton("No", new DialogInterface.OnClickListener() {
+				           public void onClick(DialogInterface dialog, int id) {
+				                dialog.cancel();
+				           }
+				       });
+				AlertDialog alert = builder.create();
+				alert.show();
 			}
 		}
 		
