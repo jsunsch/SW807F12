@@ -31,5 +31,19 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Number of stored points: 0" />
+    
+        <TextView
+        android:id="@+id/textView111"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Scan time:" />
+        
+        <EditText
+        android:id="@+id/editText3"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+		android:text="20">
+        <requestFocus />
+    </EditText>
 
 </LinearLayout>

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Point {
-	ArrayList<WifiMeasure> measures;
+	ArrayList<WifiMeasureCollection> measures;
 	String name;
 
 	public String getName() {
@@ -15,15 +15,15 @@ public class Point {
 		this.name = name;
 	}
 
-	public ArrayList<WifiMeasure> getMeasures() {
+	public ArrayList<WifiMeasureCollection> getMeasures() {
 		return measures;
 	}
 
-	public void setMeasures(ArrayList<WifiMeasure> measures) {
+	public void setMeasures(ArrayList<WifiMeasureCollection> measures) {
 		this.measures = measures;
 	}
 	
-	public Point(ArrayList<WifiMeasure> m, String n) {
+	public Point(ArrayList<WifiMeasureCollection> m, String n) {
 		measures = m;
 		name = n;
 	}
