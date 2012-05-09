@@ -30,6 +30,13 @@
             android:orderInCategory="4"
             android:showAsAction="ifRoom"
             android:title="@string/menu_poi_list"/>
+        
+        <item
+            android:id="@+id/actionbar_settings"
+            android:icon="@drawable/settings"
+            android:orderInCategory="5"
+            android:showAsAction="ifRoom"
+            android:title="@string/menu_settings"/>
     </group>
 
 </menu>

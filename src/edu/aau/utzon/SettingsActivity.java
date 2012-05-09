@@ -16,6 +16,8 @@ import android.widget.AdapterView.OnItemClickListener;
 
 public class SettingsActivity extends SherlockListActivity {
 
+	protected static final String PREFS_PROXIMITY = "proximity";
+
 	@Override
 	protected void onCreate(Bundle state)
 	{
@@ -31,25 +33,26 @@ public class SettingsActivity extends SherlockListActivity {
 		// Restore preferences
 
 		// File creation mode: the default mode, where the created file can only be accessed by the calling application
-		final SharedPreferences preferenceMngr = getPreferences(MODE_PRIVATE);
-		final SharedPreferences.Editor editor = preferenceMngr.edit();
+		
+		
 
 		String[] settings = new String[1];
-		settings[0] = "Proximity";
+		settings[0] = "POI Activation proximity";
 
 		setListAdapter(new ArrayAdapter<String>(this, R.layout.settings_listitem, settings));
 		ListView lv = getListView();
 
 		final Context c = this;
-		final CharSequence[] proximities = {"20", "100", "1000"};
+		final CharSequence[] proximities = {"20", "100", "1000", "500000"};
 
 		lv.setTextFilterEnabled(true);
 		lv.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 
-				int selectedItem = 20;
-				switch(preferenceMngr.getInt("proximity", 20)){
+				SharedPreferences preferenceMngr = getSharedPreferences(PREFS_PROXIMITY, MODE_PRIVATE);
+				int selectedItem = preferenceMngr.getInt("proximity", 20);
+				switch(selectedItem){
 				case 20:
 					selectedItem = 0;
 					break;
@@ -58,16 +61,23 @@ public class SettingsActivity extends SherlockListActivity {
 					break;
 				case 1000:
 					selectedItem = 2;
+					break;
+				case 500000:
+					selectedItem = 3;
+					break;
 				}
+					
 
 				AlertDialog.Builder builder = new AlertDialog.Builder(c);
 				builder.setCancelable(true)
-				.setTitle("Proximity")
+				.setTitle("Select proximity")
 				.setSingleChoiceItems(proximities, selectedItem, new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int item) {
 						int newProximity = Integer.parseInt(proximities[item].toString());
-
-						editor.putInt("proximity", newProximity);
+						
+						SharedPreferences preferenceMngr = getSharedPreferences(PREFS_PROXIMITY, MODE_PRIVATE);
+						SharedPreferences.Editor editor = preferenceMngr.edit();
+						editor.putInt(PREFS_PROXIMITY, newProximity);
 
 						// Commit the edits!
 						editor.commit();

@@ -89,7 +89,7 @@ public class PoiListActivity extends SherlockListActivity {
 		  lv.setOnItemClickListener(new OnItemClickListener() {
 		    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 		    	startActivity(new Intent(getBaseContext(), PoiContentActivity.class)
-		    	.putExtra("_ID", position).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+		    	.putExtra("_ID", mPois.get(position).getId()).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
 		    }
 		  });
 	}

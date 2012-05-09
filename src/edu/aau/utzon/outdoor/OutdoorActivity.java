@@ -4,6 +4,7 @@ import java.util.List;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.location.Criteria;
 import android.location.Location;
@@ -31,6 +32,7 @@ import com.readystatesoftware.maps.OnSingleTapListener;
 import edu.aau.utzon.PoiContentActivity;
 import edu.aau.utzon.PoiListActivity;
 import edu.aau.utzon.R;
+import edu.aau.utzon.SettingsActivity;
 import edu.aau.utzon.augmented.AugmentedActivity;
 import edu.aau.utzon.indoor.IndoorActivity;
 import edu.aau.utzon.location.LocationHelper;
@@ -39,6 +41,7 @@ import edu.aau.utzon.webservice.PointModel;
 
 public class OutdoorActivity extends SherlockMapActivity {
 	private static final String TAG = null;
+	private static final String PREFS_PROXIMITY = "proximity";
 	private TapControlledMapView mMapView;
 	private MyLocationOverlay mMyLocationOverlay;
 	private LocationHelper mLocationHelper;
@@ -122,8 +125,12 @@ public class OutdoorActivity extends SherlockMapActivity {
 		if(location != null) {
 			mLocationHelper.makeUseOfNewLocation(location);
 			// Set some threshold for minimum activation distance
-			if(mLocationHelper.distToPoi(mLocationHelper.getCurrentClosePoi()) > 500)
+			SharedPreferences settings = getSharedPreferences(PREFS_PROXIMITY, 0);
+
+			int proximityTreshold = settings.getInt("proximity", 999);
+			if(mLocationHelper.distToPoi(mLocationHelper.getCurrentClosePoi()) < proximityTreshold) {
 				StartPoiContentActivity(mLocationHelper.getCurrentClosePoi().getId());
+			}
 		}
 		
 	}
@@ -213,6 +220,9 @@ public class OutdoorActivity extends SherlockMapActivity {
 			return true;
 		case R.id.actionbar_indoor:
 			startActivity(new Intent(this, IndoorActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+			return true;
+		case R.id.actionbar_settings:
+			startActivity(new Intent(this, SettingsActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);

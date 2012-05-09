@@ -22,7 +22,7 @@ public final class ProviderContract {
         private static final String SCHEME = "content://";
     	
     	// Attributes
-    	public static final String ATTRIBUTE_ID = "_id";
+    	public static final String ATTRIBUTE_ID = "_ID"; // DONT CHANGE!
     	public static final String ATTRIBUTE_LAT = "lat";
     	public static final String ATTRIBUTE_LONG = "long";
     	public static final String ATTRIBUTE_STATE = "state";
@@ -35,18 +35,18 @@ public final class ProviderContract {
     	public static final int STATE_UPDATING = 2;
     	public static final int STATE_DELETING = 3;
     	
+    	// Position of ID
+    	public static final int ATTRIBUTE_ID_POSITION = 1;
+    	public static final int ATTRIBUTE_LAT_POSITION = 2;
+    	public static final int ATTRIBUTE_LONG_POSITION = 3;
+    	public static final int ATTRIBUTE_STATE_POSITION = 4;
+    	public static final int ATTRIBUTE_LAST_MODIFIED_POSITION = 5;
+    	public static final int ATTRIBUTE_DESCRIPTION_POSITION = 6;
+    	public static final int ATTRIBUTE_NAME_POSITION = 7;
+    	
     	// URI Paths
     	public static final String PATH_POINTS = "/points";
     	public static final String PATH_POINT_ID = "/points/";
-    	
-    	// Position of ID
-    	public static final int POINT_ID_PATH_POSITION = 1;
-    	public static final int POINT_X_PATH_POSITION = 2;
-    	public static final int POINT_Y_PATH_POSITION = 3;
-    	public static final int POINT_STATE_PATH_POSITION = 4;
-    	public static final int POINT_LAST_MODIFIED_PATH_POSITION = 5;
-    	public static final int POINT_DESCRIPTION_PATH_POSITION = 6;
-    	public static final int POINT_NAME_PATH_POSITION = 7;
     	
     	// The content:// style URL for this table
     	public static final Uri CONTENT_URI =  Uri.parse(SCHEME + AUTHORITY + PATH_POINTS);
@@ -69,7 +69,7 @@ public final class ProviderContract {
         public static final String DEFAULT_SORT_ORDER = ATTRIBUTE_ID + " ASC";
         
         public final static  String[] PROJECTIONSTRING_ALL = {
-    		ProviderContract.Points.ATTRIBUTE_ID, 
+    		ProviderContract.Points.ATTRIBUTE_ID, 	
     		ProviderContract.Points.ATTRIBUTE_LAT, 
     		ProviderContract.Points.ATTRIBUTE_LONG, 
     		ProviderContract.Points.ATTRIBUTE_DESCRIPTION,

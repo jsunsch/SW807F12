@@ -93,6 +93,10 @@ public class UtzonActivity extends SherlockActivity {
 			return true;
 		case R.id.actionbar_poi_list:
 			startActivity(new Intent(this, PoiListActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+			return true;
+		case R.id.actionbar_settings:
+			startActivity(new Intent(this, SettingsActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}

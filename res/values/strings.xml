@@ -11,5 +11,6 @@
 	<string name="menu_poi_list">List of available POIs</string>
 	<string name="menu_outdoor">Display outdoor map</string>
 	<string name="menu_indoor">Display indoor map</string>
+	<string name="menu_settings">Configure settings</string>
 	
 </resources>
