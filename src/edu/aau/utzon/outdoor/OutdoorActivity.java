@@ -56,7 +56,7 @@ public class OutdoorActivity extends SherlockMapActivity {
 	{
 		super.onResume();
 		mMyLocationOverlay.enableMyLocation();
-		mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, mLocationListener);
+		enableLocationListener();
 	}
 
 	@Override
@@ -67,10 +67,27 @@ public class OutdoorActivity extends SherlockMapActivity {
 		mLocationManager.removeUpdates(mLocationListener);
 	}
 
+	private void enableLocationListener(){
+		// Enable location manager
+		mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+		Criteria criteria = new Criteria();
+		criteria.setAccuracy( Criteria.ACCURACY_FINE );
+		String provider = mLocationManager.getBestProvider( criteria, true );
+
+		if ( provider == null ) {
+			Log.e( TAG, "No location provider found!" );
+			return;
+		}
+		
+		mLocationManager.requestLocationUpdates(provider, 0, 0, mLocationListener);
+	}
+
+
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+
 		// Remove title bar
 		if( android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB ) {
 			requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -87,17 +104,6 @@ public class OutdoorActivity extends SherlockMapActivity {
 		mMyLocationOverlay = new MyLocationOverlay(this, mMapView);
 		mMyLocationOverlay.enableMyLocation();
 		mMapView.getOverlays().add(mMyLocationOverlay);
-
-		// Enable location manager
-		mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-		Criteria criteria = new Criteria();
-		criteria.setAccuracy( Criteria.ACCURACY_FINE );
-		String provider = mLocationManager.getBestProvider( criteria, true );
-
-		if ( provider == null ) {
-			Log.e( TAG, "No location provider found!" );
-			return;
-		}
 		
 		// Define a listener that responds to location updates
 		mLocationListener = new LocationListener() {
@@ -112,19 +118,19 @@ public class OutdoorActivity extends SherlockMapActivity {
 
 			public void onProviderDisabled(String provider) {}
 		};
-		
+
 		// Register the listener with the Location Manager to receive location updates
-		mLocationManager.requestLocationUpdates(provider, 0, 0, mLocationListener);
-		
+		enableLocationListener();
+
 		// Init LocationHelper
 		mLocationHelper = new LocationHelper(this);
-		
+
 		// Draw POIs
 		drawOutdoorPois();
 	}
 
 	protected void makeUseOfNewLocation(Location location) {
-		
+
 		if(location != null) {
 			mLocationHelper.makeUseOfNewLocation(location);
 			// Set some threshold for minimum activation distance
@@ -132,35 +138,35 @@ public class OutdoorActivity extends SherlockMapActivity {
 
 			int proximityTreshold = settings.getInt("proximity", 20);
 			double debug = mLocationHelper.distToPoi(mLocationHelper.getCurrentClosePoi());
-			
+
 			Context context = getApplicationContext();
 			CharSequence text = "Distance to nearest POI: " + (int)debug + "m.";
 			int duration = Toast.LENGTH_LONG;
 
 			Toast toast = Toast.makeText(context, text, duration);
 			toast.show();
-			
-			
+
+
 			if(mLocationHelper.distToPoi(mLocationHelper.getCurrentClosePoi()) < proximityTreshold) {
 				//StartPoiContentActivity(mLocationHelper.getCurrentClosePoi().getId());
 				AlertDialog.Builder builder = new AlertDialog.Builder(this);
 				builder.setMessage("You are near a POI. Do you wish to see the content available?")
-				       .setCancelable(false)
-				       .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-				           public void onClick(DialogInterface dialog, int id) {
-				                StartPoiContentActivity(mLocationHelper.getCurrentClosePoi().getId());
-				           }
-				       })
-				       .setNegativeButton("No", new DialogInterface.OnClickListener() {
-				           public void onClick(DialogInterface dialog, int id) {
-				                dialog.cancel();
-				           }
-				       });
+				.setCancelable(false)
+				.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+						StartPoiContentActivity(mLocationHelper.getCurrentClosePoi().getId());
+					}
+				})
+				.setNegativeButton("No", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+						dialog.cancel();
+					}
+				});
 				AlertDialog alert = builder.create();
 				alert.show();
 			}
 		}
-		
+
 	}
 
 	private void StartPoiContentActivity(int id) {
@@ -176,7 +182,7 @@ public class OutdoorActivity extends SherlockMapActivity {
 			mc.animateTo(point);
 		}
 	}
-	
+
 	protected void drawOutdoorPois()
 	{
 		// Setup overlays
