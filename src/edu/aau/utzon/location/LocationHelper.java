@@ -33,7 +33,7 @@ public class LocationHelper {
 		}
 	}
 
-	// Not saving the context in field forces us to not spam the SQLite db
+	// Not saving the context in a field forces us to not spam the SQLite db
 	public LocationHelper(Context c){
 		mPois = PointModel.dbGetAll(c);
 	}

@@ -1,6 +1,5 @@
 package edu.aau.utzon;
 
-import edu.aau.utzon.webservice.ProviderContract;
 import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Intent;
