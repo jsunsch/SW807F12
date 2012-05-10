@@ -102,7 +102,7 @@ public class PointModel {
 
 		} while (c.moveToNext() == true);
 		
-		//c.close();
+		c.close();
 		return result;
 	}
 

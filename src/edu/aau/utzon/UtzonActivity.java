@@ -35,11 +35,12 @@ public class UtzonActivity extends SherlockActivity {
 		@Override
 		public void onChange(boolean selfChange) {
 			super.onChange(selfChange);
-			TextView tv3 = (TextView) findViewById(R.id.main_text3);
+			TextView tv2 = (TextView) findViewById(R.id.main_text2);
+			tv2.setText("Synchronizing POI's... Done!");
 			// Getting 2 onChange events for each inserted item. Not sure why
 			//tv3.setText("Fetched " + ++poiCounter + " point(s) of interest.");
 			//--poiCounter;
-			tv3.setText("Done!");
+
 		}
 	}
 	
@@ -53,6 +54,8 @@ public class UtzonActivity extends SherlockActivity {
 			requestWindowFeature(Window.FEATURE_NO_TITLE);
 		}
 		setContentView(R.layout.main);
+		TextView tv1 = (TextView) findViewById(R.id.main_text);
+		tv1.setText("Loading... Done!");
 		
 		// Asynchornously start a REST method
 		TextView tv2 = (TextView) findViewById(R.id.main_text2);
@@ -107,7 +110,8 @@ public class UtzonActivity extends SherlockActivity {
 			onSearchRequested();
 			return true;
 		case R.id.actionbar_refresh:
-			poiCounter = 0;
+			TextView tv2 = (TextView) findViewById(R.id.main_text2);
+			tv2.setText("Synchronizing POI's...");
 			RestServiceHelper.getServiceHelper()
 				.getLocationPoints(this);
 			return true;
