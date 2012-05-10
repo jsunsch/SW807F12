@@ -129,16 +129,17 @@ public class OutdoorActivity extends SherlockMapActivity implements NearPoiPubli
 		drawOutdoorPois();
 	}
 
+	private AlertDialog alert = null;
 	protected void makeUseOfNewLocation(Location location) {
-
-		if(location != null) {
-			mLocationHelper.makeUseOfNewLocation(mMyLocationOverlay.getLastFix());	// Needed?
+			double dist = 0;
+	
+			//mLocationHelper.makeUseOfNewLocation(mMyLocationOverlay.getLastFix());	// Needed?
 			mLocationHelper.makeUseOfNewLocation(location);			
 			
 			// Set some threshold for minimum activation distance
 			SharedPreferences settings = getSharedPreferences(PREFS_PROXIMITY, 0);
 			int proximityTreshold = settings.getInt("proximity", 20);
-			double dist = mLocationHelper.distToPoi(mLocationHelper.getCurrentClosePoi());
+			dist = mLocationHelper.distToPoi(mLocationHelper.getCurrentClosePoi());
 			
 			if(mLocationHelper.distToPoi(mLocationHelper.getCurrentClosePoi()) < proximityTreshold) {
 				userIsNearPoi(mLocationHelper.getCurrentClosePoi());
@@ -155,16 +156,25 @@ public class OutdoorActivity extends SherlockMapActivity implements NearPoiPubli
 						dialog.cancel();
 					}
 				});
-				AlertDialog alert = builder.create();
-				alert.show();
+				
+				if(alert == null) {
+					alert = builder.create();
+					alert.show();
+				}
+				else {
+					if(!alert.isShowing()) {
+						alert = builder.create();
+						alert.show();
+					}
+						
+				}
 			}
-			else {
-				CharSequence text = "Distance to nearest POI: " + dist + "meter(s).";
-				Toast toast = Toast.makeText(this, text, Toast.LENGTH_SHORT);
-				toast.show();
-			}
-		}
-
+	
+			CharSequence text = "Distance to nearest POI: " + (int)dist + " meter(s).";
+			PointModel pm = mLocationHelper.getCurrentClosePoi();
+			Toast toast = Toast.makeText(this, text, Toast.LENGTH_SHORT);
+			toast.show();
+		
 	}
 
 	private void StartPoiContentActivity(int id) {

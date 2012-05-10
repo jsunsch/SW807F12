@@ -20,8 +20,8 @@ public class LocationHelper {
 
 	public double distToPoi(PointModel poi)
 	{
-		double userLat = mCurrentLoc.getLatitude()/1e6;
-		double userLong = mCurrentLoc.getLongitude()/1e6;
+		double userLat = mCurrentLoc.getLatitude();
+		double userLong = mCurrentLoc.getLongitude();
 		return distFrom(userLat, userLong, poi.getLat(), poi.getLong());
 	}
 
@@ -99,7 +99,7 @@ public class LocationHelper {
 		for(PointModel p : pois)
 		{
 			// In meters
-			double locDist = distFrom(p.getLat(), p.getLong(), loc.getLatitude()/1e6, loc.getLongitude()/1e6);
+			double locDist = distFrom(p.getLat(), p.getLong(), loc.getLatitude(), loc.getLongitude());
 
 			// New closest found
 			if(locDist < closestDist ) { 
@@ -118,6 +118,16 @@ public class LocationHelper {
 		// Location -> GeoPoint conversion
 		return new GeoPoint((int)(loc.getLatitude()*1e6),(int)(loc.getLongitude()*1e6));
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 	/** Determines whether one Location reading is better than the current Location fix
 	 * @param location  The new Location that you want to evaluate

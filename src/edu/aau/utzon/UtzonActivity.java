@@ -30,6 +30,7 @@ import android.widget.TextView;
 public class UtzonActivity extends SherlockActivity {
 	private static final String TAG = "UtzonActivity";
 	private int poiCounter = 0;
+	private LocationHelper mLocationHelper = null;
 	private class RestContentObserver extends ContentObserver{
 		public RestContentObserver(Handler handler) {
 			super(handler);
@@ -39,8 +40,6 @@ public class UtzonActivity extends SherlockActivity {
 		public boolean deliverSelfNotifications() {
 			return true;
 		}
-
-
 
 		@Override
 		public void onChange(boolean selfChange) {
@@ -55,6 +54,7 @@ public class UtzonActivity extends SherlockActivity {
 	RestContentObserver mContentObserver = new RestContentObserver(new Handler());
 	private LocationManager mLocationManager = null;
 	private Location mLocation = null;
+	private LocationListener mLocationListener;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -75,16 +75,19 @@ public class UtzonActivity extends SherlockActivity {
 			return;
 		}
 
-		mLocationManager.requestLocationUpdates(provider, 0, 1, new LocationListener() {
+		
+		mLocationListener = new LocationListener() {
 			public void onLocationChanged(Location location) {
 				// Asynchornously start a REST method
 				// 25 should be a setting?
-				RestServiceHelper.getServiceHelper().getNearestPoints(getBaseContext(), 25, location);
-				// Only need a single location
-				mLocation = location;
-				mLocationManager.removeUpdates(this);
-				TextView tv3 = (TextView)findViewById(R.id.main_text3);
-				tv3.setText("Connecting to server...");
+				
+				// Call to webservice should be done
+				if(poiCounter == 0)
+					RestServiceHelper.getServiceHelper().getNearestPoints(getBaseContext(), 25, location);
+				
+				mLocation = location;		
+				TextView tv2 = (TextView)findViewById(R.id.main_text2);
+				tv2.setText("Connecting to server...");
 			}
 
 			public void onStatusChanged(String provider, int status, Bundle extras) {}
@@ -92,17 +95,17 @@ public class UtzonActivity extends SherlockActivity {
 			public void onProviderEnabled(String provider) {}
 
 			public void onProviderDisabled(String provider) {}
-		});
-
+		};
+		
+		mLocationManager.requestLocationUpdates(provider, 0, 1, mLocationListener);
+		getContentResolver().registerContentObserver(ProviderContract.Points.CONTENT_URI, false, mContentObserver);
+		
 		setContentView(R.layout.main);
 		TextView tv1 = (TextView) findViewById(R.id.main_text);
 		tv1.setText("Loading... Done!");
 
-		// Asynchornously start a REST method
 		TextView tv2 = (TextView) findViewById(R.id.main_text2);
-		tv2.setText("Synchronizing POI's...");
-
-		getContentResolver().registerContentObserver(ProviderContract.Points.CONTENT_URI, false, mContentObserver);
+		tv2.setText("Synchronizing POIs...");
 	}
 
 	@Override
@@ -149,9 +152,9 @@ public class UtzonActivity extends SherlockActivity {
 			onSearchRequested();
 			return true;
 		case R.id.actionbar_refresh:
+			TextView tv2 = (TextView)findViewById(R.id.main_text3);
+			tv2.setText("Getting location...");
 			if(mLocation != null ) {
-				TextView tv3 = (TextView)findViewById(R.id.main_text3);
-				tv3.setText("Connecting to server...");
 				poiCounter = 0;
 				RestServiceHelper.getServiceHelper().getNearestPoints(getBaseContext(), 25, mLocation);
 			}
