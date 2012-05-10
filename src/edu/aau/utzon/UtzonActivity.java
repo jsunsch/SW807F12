@@ -45,13 +45,10 @@ public class UtzonActivity extends SherlockActivity {
 		@Override
 		public void onChange(boolean selfChange) {
 			super.onChange(selfChange);
-			TextView tv2 = (TextView) findViewById(R.id.main_text2);
-			tv2.setText("Synchronizing POI's... Done!");
+			
 			// Getting 2 onChange events for each inserted item. Not sure why
 			TextView tv3 = (TextView)findViewById(R.id.main_text3);
 			tv3.setText("Fetched " + ++poiCounter + " point(s) of interest.");
-			//--poiCounter;
-
 		}
 	}
 	
@@ -77,12 +74,15 @@ public class UtzonActivity extends SherlockActivity {
 			return;
 		}
 		
-		// Ugh
 		mLocationManager.requestLocationUpdates(provider, 0, 1, new LocationListener() {
 				public void onLocationChanged(Location location) {
 					// Asynchornously start a REST method
 					// 25 should be a setting?
 					RestServiceHelper.getServiceHelper().getNearestPoints(getBaseContext(), 25, location);
+					// Only need a single location
+					mLocationManager.removeUpdates(this);
+					TextView tv3 = (TextView)findViewById(R.id.main_text3);
+					tv3.setText("Connecting to server...");
 				}
 
 				public void onStatusChanged(String provider, int status, Bundle extras) {}
@@ -147,8 +147,8 @@ public class UtzonActivity extends SherlockActivity {
 			onSearchRequested();
 			return true;
 		case R.id.actionbar_refresh:
-			TextView tv2 = (TextView) findViewById(R.id.main_text2);
-			tv2.setText("Synchronizing POI's...");
+			TextView tv3 = (TextView)findViewById(R.id.main_text3);
+			tv3.setText("Connecting to server...");
 			poiCounter = 0;
 			RestServiceHelper.getServiceHelper()
 				.getLocationPoints(this);
