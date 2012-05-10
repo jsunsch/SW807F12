@@ -35,9 +35,8 @@
             android:id="@+id/actionbar_augmented"
             android:icon="@drawable/augmented"
             android:orderInCategory="5"
+            android:showAsAction="ifRoom"
             android:title="@string/menu_augmented"/>
-
-        
         
         <item
             android:id="@+id/actionbar_settings"

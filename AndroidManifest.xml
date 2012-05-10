@@ -50,10 +50,6 @@
             android:name=".outdoor.OutdoorActivity"
             android:uiOptions="splitActionBarWhenNarrow" 
 			 >
-            <!-- enable the search dialog to send searches to SearchableActivity -->
-            <meta-data
-                android:name="android.app.default_searchable"
-                android:value=".SearchableActivity" />
         </activity>
         <activity
             android:name=".WebserviceActivity"
