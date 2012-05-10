@@ -40,31 +40,32 @@ public class UtzonActivity extends SherlockActivity {
 			return true;
 		}
 
-		
-		
+
+
 		@Override
 		public void onChange(boolean selfChange) {
 			super.onChange(selfChange);
-			
+
 			// Getting 2 onChange events for each inserted item. Not sure why
 			TextView tv3 = (TextView)findViewById(R.id.main_text3);
 			tv3.setText("Fetched " + ++poiCounter + " point(s) of interest.");
 		}
 	}
-	
+
 	RestContentObserver mContentObserver = new RestContentObserver(new Handler());
 	private LocationManager mLocationManager = null;
+	private Location mLocation = null;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
 		// Remove title bar
-//		if( android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB ) {
-//			requestWindowFeature(Window.FEATURE_NO_TITLE);
-//		}
-		
+		//		if( android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB ) {
+		//			requestWindowFeature(Window.FEATURE_NO_TITLE);
+		//		}
+
 		mLocationManager  = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-		
+
 		Criteria criteria = new Criteria();
 		criteria.setAccuracy( Criteria.ACCURACY_FINE );
 		String provider = mLocationManager.getBestProvider( criteria, true );
@@ -73,48 +74,49 @@ public class UtzonActivity extends SherlockActivity {
 			Log.e( TAG, "No location provider found!" );
 			return;
 		}
-		
+
 		mLocationManager.requestLocationUpdates(provider, 0, 1, new LocationListener() {
-				public void onLocationChanged(Location location) {
-					// Asynchornously start a REST method
-					// 25 should be a setting?
-					RestServiceHelper.getServiceHelper().getNearestPoints(getBaseContext(), 25, location);
-					// Only need a single location
-					mLocationManager.removeUpdates(this);
-					TextView tv3 = (TextView)findViewById(R.id.main_text3);
-					tv3.setText("Connecting to server...");
-				}
+			public void onLocationChanged(Location location) {
+				// Asynchornously start a REST method
+				// 25 should be a setting?
+				RestServiceHelper.getServiceHelper().getNearestPoints(getBaseContext(), 25, location);
+				// Only need a single location
+				mLocation = location;
+				mLocationManager.removeUpdates(this);
+				TextView tv3 = (TextView)findViewById(R.id.main_text3);
+				tv3.setText("Connecting to server...");
+			}
 
-				public void onStatusChanged(String provider, int status, Bundle extras) {}
+			public void onStatusChanged(String provider, int status, Bundle extras) {}
 
-				public void onProviderEnabled(String provider) {}
+			public void onProviderEnabled(String provider) {}
 
-				public void onProviderDisabled(String provider) {}
-			});
-		
+			public void onProviderDisabled(String provider) {}
+		});
+
 		setContentView(R.layout.main);
 		TextView tv1 = (TextView) findViewById(R.id.main_text);
 		tv1.setText("Loading... Done!");
-		
+
 		// Asynchornously start a REST method
 		TextView tv2 = (TextView) findViewById(R.id.main_text2);
 		tv2.setText("Synchronizing POI's...");
 
 		getContentResolver().registerContentObserver(ProviderContract.Points.CONTENT_URI, false, mContentObserver);
 	}
-	
+
 	@Override
 	public void onPause()	{
 		super.onPause();
 		getContentResolver().unregisterContentObserver(mContentObserver);
 	}
-	
+
 	@Override
 	public void onResume()	{
 		super.onResume();
 		getContentResolver().registerContentObserver(ProviderContract.Points.CONTENT_URI, true, mContentObserver);
 	}
-	
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
@@ -147,11 +149,12 @@ public class UtzonActivity extends SherlockActivity {
 			onSearchRequested();
 			return true;
 		case R.id.actionbar_refresh:
-			TextView tv3 = (TextView)findViewById(R.id.main_text3);
-			tv3.setText("Connecting to server...");
-			poiCounter = 0;
-			RestServiceHelper.getServiceHelper()
-				.getLocationPoints(this);
+			if(mLocation != null ) {
+				TextView tv3 = (TextView)findViewById(R.id.main_text3);
+				tv3.setText("Connecting to server...");
+				poiCounter = 0;
+				RestServiceHelper.getServiceHelper().getNearestPoints(getBaseContext(), 25, mLocation);
+			}
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
