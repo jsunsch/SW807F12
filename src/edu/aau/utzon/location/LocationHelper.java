@@ -8,6 +8,7 @@ import com.google.android.maps.GeoPoint;
 import edu.aau.utzon.webservice.PointModel;
 import android.content.Context;
 import android.location.Location;
+import android.util.Log;
 
 public class LocationHelper {
 
@@ -106,6 +107,8 @@ public class LocationHelper {
 				result = p; 
 			}
 		}
+
+		if(result == null) Log.e(TAG, "nearestPOI is NULL !");
 
 		return result;
 	}

@@ -132,18 +132,14 @@ public class OutdoorActivity extends SherlockMapActivity implements NearPoiPubli
 	protected void makeUseOfNewLocation(Location location) {
 
 		if(location != null) {
-			mLocationHelper.makeUseOfNewLocation(location);
 			mLocationHelper.makeUseOfNewLocation(mMyLocationOverlay.getLastFix());	// Needed?
+			mLocationHelper.makeUseOfNewLocation(location);			
 			
 			// Set some threshold for minimum activation distance
 			SharedPreferences settings = getSharedPreferences(PREFS_PROXIMITY, 0);
 			int proximityTreshold = settings.getInt("proximity", 20);
 			double dist = mLocationHelper.distToPoi(mLocationHelper.getCurrentClosePoi());
-			CharSequence text = "Distance to nearest POI: " + (int)dist + "meter(s).";
-			Toast toast = Toast.makeText(this, text, Toast.LENGTH_SHORT);
-			toast.show();
-
-
+			
 			if(mLocationHelper.distToPoi(mLocationHelper.getCurrentClosePoi()) < proximityTreshold) {
 				userIsNearPoi(mLocationHelper.getCurrentClosePoi());
 				AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -161,6 +157,11 @@ public class OutdoorActivity extends SherlockMapActivity implements NearPoiPubli
 				});
 				AlertDialog alert = builder.create();
 				alert.show();
+			}
+			else {
+				CharSequence text = "Distance to nearest POI: " + dist + "meter(s).";
+				Toast toast = Toast.makeText(this, text, Toast.LENGTH_SHORT);
+				toast.show();
 			}
 		}
 

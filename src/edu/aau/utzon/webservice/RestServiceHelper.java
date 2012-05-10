@@ -8,6 +8,7 @@ import android.util.Log;
 
 public class RestServiceHelper {
 	
+	private static final String TAG = "RestServiceHelper";
 	private static RestServiceHelper ref;
 
 	private RestServiceHelper() {
@@ -20,17 +21,20 @@ public class RestServiceHelper {
     }      
     
     public void getLocationPoint(Context context, int id) {
+    	Log.i(TAG, "getLocationPoint() called");
     	context.startService(new Intent(context, RestService.class)
     		.putExtra(RestService.COMMAND, RestService.COMMAND_GET_POI_ID)
     		.putExtra(RestService.POI_ID, id));
     }
     
 	public void getLocationPoints(Context context) {
+		Log.i(TAG, "getLocationPoints() called");
 		context.startService(new Intent(context, RestService.class)
 			.putExtra(RestService.COMMAND, RestService.COMMAND_GET_POI_ALL));
 	}
 	
 	public void getNearestPoints(Context context, int k, Location l) {
+		Log.i(TAG, "getNearestPoints() called");
 		context.startService(new Intent(context, RestService.class)
 			.putExtra(RestService.COMMAND, RestService.COMMAND_GET_POI_K)
 			.putExtra(RestService.POI_K, k)

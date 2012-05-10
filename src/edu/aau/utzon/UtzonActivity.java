@@ -4,21 +4,31 @@ import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.google.android.maps.MapView;
+import com.google.android.maps.MyLocationOverlay;
 
 import edu.aau.utzon.augmented.AugmentedActivity;
 import edu.aau.utzon.indoor.IndoorActivity;
+import edu.aau.utzon.location.LocationHelper;
 import edu.aau.utzon.outdoor.OutdoorActivity;
 import edu.aau.utzon.webservice.ProviderContract;
 import edu.aau.utzon.webservice.RestServiceHelper;
 
+import android.content.Context;
 import android.content.Intent;
 import android.database.ContentObserver;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.Window;
 import android.widget.TextView;
 
 public class UtzonActivity extends SherlockActivity {
+	private static final String TAG = "UtzonActivity";
 	private int poiCounter = 0;
 	private class RestContentObserver extends ContentObserver{
 		public RestContentObserver(Handler handler) {
@@ -38,21 +48,50 @@ public class UtzonActivity extends SherlockActivity {
 			TextView tv2 = (TextView) findViewById(R.id.main_text2);
 			tv2.setText("Synchronizing POI's... Done!");
 			// Getting 2 onChange events for each inserted item. Not sure why
-			//tv3.setText("Fetched " + ++poiCounter + " point(s) of interest.");
+			TextView tv3 = (TextView)findViewById(R.id.main_text3);
+			tv3.setText("Fetched " + ++poiCounter + " point(s) of interest.");
 			//--poiCounter;
 
 		}
 	}
 	
 	RestContentObserver mContentObserver = new RestContentObserver(new Handler());
+	private LocationManager mLocationManager = null;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
 		// Remove title bar
-		if( android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB ) {
-			requestWindowFeature(Window.FEATURE_NO_TITLE);
+//		if( android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB ) {
+//			requestWindowFeature(Window.FEATURE_NO_TITLE);
+//		}
+		
+		mLocationManager  = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+		
+		Criteria criteria = new Criteria();
+		criteria.setAccuracy( Criteria.ACCURACY_FINE );
+		String provider = mLocationManager.getBestProvider( criteria, true );
+
+		if ( provider == null ) {
+			Log.e( TAG, "No location provider found!" );
+			return;
 		}
+		
+		// Ugh
+		mLocationManager.requestLocationUpdates(provider, 0, 1, new LocationListener() {
+				public void onLocationChanged(Location location) {
+					// Asynchornously start a REST method
+					// 25 should be a setting?
+					RestServiceHelper.getServiceHelper().getNearestPoints(getBaseContext(), 25, location);
+				}
+
+				public void onStatusChanged(String provider, int status, Bundle extras) {}
+
+				public void onProviderEnabled(String provider) {}
+
+				public void onProviderDisabled(String provider) {}
+			});
+		
 		setContentView(R.layout.main);
 		TextView tv1 = (TextView) findViewById(R.id.main_text);
 		tv1.setText("Loading... Done!");
@@ -60,10 +99,8 @@ public class UtzonActivity extends SherlockActivity {
 		// Asynchornously start a REST method
 		TextView tv2 = (TextView) findViewById(R.id.main_text2);
 		tv2.setText("Synchronizing POI's...");
-		RestServiceHelper.getServiceHelper()
-			.getLocationPoints(this);
-			
-		getContentResolver().registerContentObserver(ProviderContract.Points.CONTENT_URI, true, mContentObserver);
+
+		getContentResolver().registerContentObserver(ProviderContract.Points.CONTENT_URI, false, mContentObserver);
 	}
 	
 	@Override
@@ -112,6 +149,7 @@ public class UtzonActivity extends SherlockActivity {
 		case R.id.actionbar_refresh:
 			TextView tv2 = (TextView) findViewById(R.id.main_text2);
 			tv2.setText("Synchronizing POI's...");
+			poiCounter = 0;
 			RestServiceHelper.getServiceHelper()
 				.getLocationPoints(this);
 			return true;
