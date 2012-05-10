@@ -12,9 +12,16 @@ public class RestService extends IntentService {
 	public static final String COMMAND = "COMMAND";
 	
 	public static final int COMMAND_GET_POI_ALL = 0;
-	/** Client must supply POI_ID with the DB id of the point **/
+	
+	/** Client must supply (int)POI_ID **/
 	public static final int COMMAND_GET_POI_ID = 1;
 	public static final String POI_ID = "_ID";
+	
+	/** Client must supply (double)LOCATION_LAT, (double)LOCATION_LONG and (int)POI_K **/
+	public static final int COMMAND_GET_POI_K = 2;
+	public static final String LOCATION_LAT = "_LOCATION_LAT";
+	public static final String LOCATION_LONG = "_LOCATION_LONG";
+	public static final String POI_K = "_K";
 	
 	public RestService() {
 		super("RestService");
@@ -32,23 +39,28 @@ public class RestService extends IntentService {
 			case COMMAND_GET_POI_ID:
 				GetLocationPoint(bundle.getInt(POI_ID));
 				break;
+			case COMMAND_GET_POI_K:
+				//GetLocationPoint(bundle.getInt(POI_ID));
+				double lat = bundle.getDouble(LOCATION_LAT);
+				double lg = bundle.getDouble(LOCATION_LONG);
+				int k = bundle.getInt(POI_K);
+				getNearestPoints(lg, lat, k);
+				break;
 		}
 	}
 
 	private static final int THIRTY_MINUTES = 1000 * 60 * 30;
 	private void GetLocationPoint(int id) {
-		PointModel pm = PointModel.dbGetSingle(this, id);
-		long timeDelta = System.currentTimeMillis() - pm.getLastModified();
-		boolean isSignificantlyOld = timeDelta > THIRTY_MINUTES;
-		
-		if(isSignificantlyOld)
-			JRestMethod.getPoint(this, id);		
+		JRestMethod.getPoint(this, id);		
 	}
 
 	private void GetLocationPoints() {
 		JRestMethod.getAllPoints(this); 
 	}
 
+	private void getNearestPoints(double longitude, double latitude, int numberOfNearestNeighbours) {
+		JRestMethod.getNearestPoints(this, longitude, latitude, numberOfNearestNeighbours);
+	}
 	/*
 	 * @return boolean return true if the application can access the internet
 	 */
