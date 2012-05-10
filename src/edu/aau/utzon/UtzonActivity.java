@@ -66,11 +66,13 @@ public class UtzonActivity extends SherlockActivity {
 	@Override
 	public void onPause()	{
 		super.onPause();
+		getContentResolver().unregisterContentObserver(mContentObserver);
 	}
 	
 	@Override
 	public void onResume()	{
 		super.onResume();
+		getContentResolver().registerContentObserver(ProviderContract.Points.CONTENT_URI, true, mContentObserver);
 	}
 	
 	@Override

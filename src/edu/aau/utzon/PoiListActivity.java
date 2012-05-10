@@ -68,12 +68,24 @@ public class PoiListActivity extends SherlockListActivity {
 			requestWindowFeature(Window.FEATURE_NO_TITLE);
 		}
 
-		mPois = PointModel.asPointModels(
-				getContentResolver().query(	ProviderContract.Points.CONTENT_URI, 
-				ProviderContract.Points.PROJECTIONSTRING_ALL, 
-				null, 
-				null, 
-				null));
+		
+		Intent intent = getIntent();
+		Bundle extras = intent.getExtras();
+		
+		
+		if(extras != null) {
+			String query = extras.getString("query");
+			String selection = ProviderContract.Points.ATTRIBUTE_NAME + " like " + "'%" + query + "%'"; // Our amazing search algorithm
+			mPois = PointModel.asPointModels(
+					getContentResolver().query(	ProviderContract.Points.CONTENT_URI, 
+					ProviderContract.Points.PROJECTIONSTRING_ALL, 
+					selection, 
+					null, 
+					null));
+		}
+		else {
+			mPois = PointModel.dbGetAll(this);
+		}
 		
 		mGuiText = new String[mPois.size()];
 		for (int i = 0; i < mPois.size(); i++) {

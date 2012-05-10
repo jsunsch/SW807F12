@@ -12,12 +12,12 @@
             android:title="@string/menu_search"
             android:actionViewClass="android.widget.SearchView" />
         
-        <item
-            android:id="@+id/actionbar_center_location"
-            android:icon="@drawable/centerlocation"
-            android:orderInCategory="2"
+              <item
+            android:id="@+id/actionbar_indoor"
+            android:icon="@drawable/indoor"
             android:showAsAction="always"
-            android:title="@string/menu_center_location"/>
+            android:orderInCategory="2"
+            android:title="@string/menu_indoor"/>
         
         <item
             android:id="@+id/actionbar_poi_list"
@@ -26,17 +26,20 @@
             android:showAsAction="always"
             android:title="@string/menu_poi_list"/>
         
-        <item
-            android:id="@+id/actionbar_indoor"
-            android:icon="@drawable/indoor"
-            android:showAsAction="always"
+ 
+        
+         <item
+            android:id="@+id/actionbar_center_location"
+            android:icon="@drawable/centerlocation"
             android:orderInCategory="4"
-            android:title="@string/menu_indoor"/>
+            android:showAsAction="always"
+            android:title="@string/menu_center_location"/>
         
         <item
             android:id="@+id/actionbar_augmented"
             android:icon="@drawable/augmented"
             android:orderInCategory="5"
+            android:showAsAction="ifRoom"
             android:title="@string/menu_augmented"/>
         
          <item

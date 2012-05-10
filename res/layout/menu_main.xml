@@ -18,32 +18,34 @@
             android:title="@string/menu_indoor"/>
         
         <item
-            android:id="@+id/actionbar_augmented"
-            android:icon="@drawable/augmented"
-            android:orderInCategory="3"
-            android:showAsAction="always"
-            android:title="@string/menu_augmented"/>
-
-        <item
             android:id="@+id/actionbar_poi_list"
             android:icon="@drawable/poilist"
-            android:orderInCategory="4"
-            android:showAsAction="ifRoom"
+            android:orderInCategory="3"
+            android:showAsAction="always"
             android:title="@string/menu_poi_list"/>
-        
-        <item
-            android:id="@+id/actionbar_settings"
-            android:icon="@drawable/settings"
-            android:orderInCategory="5"
-            android:showAsAction="ifRoom"
-            android:title="@string/menu_settings"/>
         
         <item
             android:id="@+id/actionbar_refresh"
             android:icon="@drawable/refresh"
-            android:orderInCategory="6"
+            android:orderInCategory="4"
             android:showAsAction="ifRoom"
             android:title="@string/menu_refresh"/>
+        
+        <item
+            android:id="@+id/actionbar_augmented"
+            android:icon="@drawable/augmented"
+            android:orderInCategory="5"
+            android:title="@string/menu_augmented"/>
+
+        
+        
+        <item
+            android:id="@+id/actionbar_settings"
+            android:icon="@drawable/settings"
+            android:orderInCategory="6"
+            android:title="@string/menu_settings"/>
+        
+
     </group>
 
 </menu>

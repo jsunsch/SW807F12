@@ -1,5 +1,6 @@
 package edu.aau.utzon;
 
+import edu.aau.utzon.webservice.ProviderContract;
 import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Intent;
@@ -16,7 +17,9 @@ public class SearchableActivity extends Activity {
 	    Intent intent = getIntent();
 	    if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
 	      String query = intent.getStringExtra(SearchManager.QUERY);
-	      //doMySearch(query);
+	      
+	      // Only search on name for now
+	      startActivity(new Intent(this, PoiListActivity.class).putExtra("query", query).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
 	    }
 	}
 }

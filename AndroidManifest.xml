@@ -34,7 +34,6 @@
             android:uiOptions="splitActionBarWhenNarrow" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -68,7 +67,15 @@
         <activity android:name="edu.aau.utzon.indoor.IndoorActivity" />
         <activity android:name="edu.aau.utzon.indoor.CalibrationActivity" />
         <activity android:name="edu.aau.utzon.indoor.LocatingActivity" />
-        <activity android:name=".PoiListActivity" />
+        <activity 
+            android:name=".PoiListActivity" 
+            android:uiOptions="splitActionBarWhenNarrow"
+            >
+             <!-- enable the search dialog to send searches to SearchableActivity -->
+            <meta-data
+                android:name="android.app.default_searchable"
+                android:value=".SearchableActivity" />
+        </activity>
         <activity android:name=".PoiContentActivity" />
         <activity android:name=".SettingsActivity" />
 
