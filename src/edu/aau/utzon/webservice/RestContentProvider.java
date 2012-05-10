@@ -19,11 +19,10 @@ public class RestContentProvider extends ContentProvider{
 	// SQL "backend" for the content provider
 	static class RestDB extends SQLiteOpenHelper{
 		private static final String DATABASE_NAME = "utzon.db";
-		private static final int DATABASE_VERSION = 53;
+		private static final int DATABASE_VERSION = 55;
 
 	    private static final String POINT_TABLE_CREATE =
 	                "CREATE TABLE " + ProviderContract.Points.TABLE_NAME + " (" +
-	                //ProviderContract.Points.ATTRIBUTE_ID + " INTEGER UNIQUE, " +
 	                ProviderContract.Points.ATTRIBUTE_ID + " INTEGER PRIMARY KEY, " +
 	                ProviderContract.Points.ATTRIBUTE_LAT + " REAL, " +
 	                ProviderContract.Points.ATTRIBUTE_LONG + " REAL, " +
@@ -156,17 +155,8 @@ public class RestContentProvider extends ContentProvider{
         values.put(ProviderContract.Points.ATTRIBUTE_LAST_MODIFIED, System.currentTimeMillis());
     
         SQLiteDatabase db = mDBHelper.getWritableDatabase();
-        int id = (Integer)values.get(ProviderContract.Points.ATTRIBUTE_ID);
-        
-        // Delete any previous entries with this ID
-        db.delete(ProviderContract.Points.TABLE_NAME, ProviderContract.Points.ATTRIBUTE_ID + "=?", new String[] {Integer.toString(id) });
 
-        // Persist the new entry
-        long rowId = db.insert(ProviderContract.Points.TABLE_NAME, 
-        		ProviderContract.Points.ATTRIBUTE_DESCRIPTION, // "A hack, SQLite sets this column value to null if values is empty." (c) Google <- What?
-        		values);
-        
-        
+        long rowId = db.insertWithOnConflict(ProviderContract.Points.TABLE_NAME, ProviderContract.Points.ATTRIBUTE_ID, values, SQLiteDatabase.CONFLICT_REPLACE);
         // If the insert succeeded, the row ID exists.
         if (rowId > 0) {
             // Creates a URI with the note ID pattern and the new row ID appended to it.
@@ -174,7 +164,7 @@ public class RestContentProvider extends ContentProvider{
 
             // Notifies observers registered against this provider that the data changed.
             getContext().getContentResolver().notifyChange(noteUri, null);
-            Log.i(TAG, "Inserted item with ID: " + id + " , rowId: " + rowId);           
+            Log.i(TAG, "Inserted item with ID: " + rowId);           
             return noteUri;
         }
         else {

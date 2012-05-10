@@ -36,9 +36,10 @@ public class UtzonActivity extends SherlockActivity {
 		public void onChange(boolean selfChange) {
 			super.onChange(selfChange);
 			TextView tv3 = (TextView) findViewById(R.id.main_text3);
-			tv3.setText("Fetched " + ++poiCounter + " point(s) of interest.");
 			// Getting 2 onChange events for each inserted item. Not sure why
+			//tv3.setText("Fetched " + ++poiCounter + " point(s) of interest.");
 			//--poiCounter;
+			tv3.setText("Done!");
 		}
 	}
 	
@@ -58,7 +59,7 @@ public class UtzonActivity extends SherlockActivity {
 		tv2.setText("Synchronizing POI's...");
 		RestServiceHelper.getServiceHelper()
 			.getLocationPoints(this);
-		
+			
 		getContentResolver().registerContentObserver(ProviderContract.Points.CONTENT_URI, true, mContentObserver);
 	}
 	
