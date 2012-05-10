@@ -107,13 +107,14 @@ public class PointModel {
 	}
 
 	static private PointModel asPointModel(Cursor query) {
-		List<PointModel> all = asPointModels(query);
-		if( all.size() > 1 )
-			Log.e(TAG, "Should use asPointModels instead of asPointModel");
-		if( all.size() == 0 )
+		if( query.getCount() > 1 )
+			Log.e(TAG, "Should use asPointModels instead of asPointModel for multiple POIs");
+		if( query.getCount() == 0 ) {
 			Log.e(TAG, "No elements in cursor");
+			return null;
+		}
 		
-		return all.get(0);
+		return asPointModels(query).get(0);
 	}
 
 //	@Override

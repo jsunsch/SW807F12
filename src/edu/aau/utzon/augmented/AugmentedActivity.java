@@ -49,12 +49,7 @@ public class AugmentedActivity extends Activity implements SensorEventListener {
 	public void onCreate(Bundle saved) {
 		super.onCreate(saved);
 
-		mPois = PointModel.asPointModels(getContentResolver()
-				.query(ProviderContract.Points.CONTENT_URI, 
-						ProviderContract.Points.PROJECTIONSTRING_ALL, 
-						null, 
-						null, 
-						null));
+		mPois = PointModel.dbGetAll(this);
 
 		// Initialize location helper
 		mLocationHelper = new LocationHelper(this);

@@ -17,20 +17,17 @@ public class RestServiceHelper {
       if (ref == null)
           ref = new RestServiceHelper();
       return ref;
-    }
-      
+    }      
     
     public void getLocationPoint(Context context, int id) {
-    	Intent intent = new Intent(context, RestService.class);
-    	intent.putExtra(RestService.COMMAND, RestService.COMMAND_GET_POI_ID);
-    	intent.putExtra(RestService.POI_ID, id);
-    	context.startService(intent);
+    	context.startService(new Intent(context, RestService.class)
+    		.putExtra(RestService.COMMAND, RestService.COMMAND_GET_POI_ID)
+    		.putExtra(RestService.POI_ID, id));
     }
     
 	public void getLocationPoints(Context context) {
-		Intent intent = new Intent(context, RestService.class);
-		intent.putExtra(RestService.COMMAND, RestService.COMMAND_GET_POI_ALL);
-		context.startService(intent);
+		context.startService(new Intent(context, RestService.class)
+			.putExtra(RestService.COMMAND, RestService.COMMAND_GET_POI_ALL));
 	}
 	
 	public void getNearestPoints(Context context, int k, Location l) {

@@ -6,6 +6,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.UriMatcher;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteQueryBuilder;
@@ -18,11 +19,12 @@ public class RestContentProvider extends ContentProvider{
 	// SQL "backend" for the content provider
 	static class RestDB extends SQLiteOpenHelper{
 		private static final String DATABASE_NAME = "utzon.db";
-		private static final int DATABASE_VERSION = 29;
+		private static final int DATABASE_VERSION = 53;
 
 	    private static final String POINT_TABLE_CREATE =
 	                "CREATE TABLE " + ProviderContract.Points.TABLE_NAME + " (" +
-	                ProviderContract.Points.ATTRIBUTE_ID + " INTEGER UNIQUE, " +
+	                //ProviderContract.Points.ATTRIBUTE_ID + " INTEGER UNIQUE, " +
+	                ProviderContract.Points.ATTRIBUTE_ID + " INTEGER PRIMARY KEY, " +
 	                ProviderContract.Points.ATTRIBUTE_LAT + " REAL, " +
 	                ProviderContract.Points.ATTRIBUTE_LONG + " REAL, " +
 	                ProviderContract.Points.ATTRIBUTE_STATE + " INTEGER, " +
@@ -54,6 +56,7 @@ public class RestContentProvider extends ContentProvider{
 	private static final int URI_POINT_ID = 2;
 	
 	private static final UriMatcher sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
+	private static final String TAG = "RestContentProvider";
 	
 	static{
 		 sUriMatcher.addURI(ProviderContract.AUTHORITY, "points", URI_POINT);
@@ -149,21 +152,20 @@ public class RestContentProvider extends ContentProvider{
             throw new IllegalArgumentException("Invalid insertion values " + values);
         }
 
-        // Opens the database object in "write" mode.
-        
-        SQLiteDatabase db = mDBHelper.getWritableDatabase();
-       
-        
-        int id = (Integer)values.get(ProviderContract.Points.ATTRIBUTE_ID);
-        db.delete(ProviderContract.Points.TABLE_NAME, ProviderContract.Points.ATTRIBUTE_ID +  "=?", new String[] {Integer.toString(id) });
- 
-        // set modified attribute
-        
+        // Set last updated attribute
         values.put(ProviderContract.Points.ATTRIBUTE_LAST_MODIFIED, System.currentTimeMillis());
+    
+        SQLiteDatabase db = mDBHelper.getWritableDatabase();
+        int id = (Integer)values.get(ProviderContract.Points.ATTRIBUTE_ID);
         
+        // Delete any previous entries with this ID
+        db.delete(ProviderContract.Points.TABLE_NAME, ProviderContract.Points.ATTRIBUTE_ID + "=?", new String[] {Integer.toString(id) });
+
+        // Persist the new entry
         long rowId = db.insert(ProviderContract.Points.TABLE_NAME, 
         		ProviderContract.Points.ATTRIBUTE_DESCRIPTION, // "A hack, SQLite sets this column value to null if values is empty." (c) Google <- What?
         		values);
+        
         
         // If the insert succeeded, the row ID exists.
         if (rowId > 0) {
@@ -171,17 +173,13 @@ public class RestContentProvider extends ContentProvider{
             Uri noteUri = ContentUris.withAppendedId(ProviderContract.Points.CONTENT_ID_URI_BASE, rowId);
 
             // Notifies observers registered against this provider that the data changed.
-            
             getContext().getContentResolver().notifyChange(noteUri, null);
-            Log.e("TACO", "insert notified");
+            Log.i(TAG, "Inserted item with ID: " + id + " , rowId: " + rowId);           
             return noteUri;
         }
-        
-        db.close();
-
-        return uri;
-        // If the insert didn't succeed, then the rowID is <= 0. Throws an exception.
-        // throw new SQLException("Failed to insert row into " + uri);
+        else {
+        	throw new SQLException("Failed to insert row into " + uri);
+        }
 	}
 
 	@Override
@@ -260,7 +258,7 @@ public class RestContentProvider extends ContentProvider{
          * that the incoming URI changed. The object passes this along to the resolver framework,
          * and observers that have registered themselves for the provider are notified.
          */
-        getContext().getContentResolver().notifyChange(uri, null);
+        //getContext().getContentResolver().notifyChange(uri, null);
         Log.e("TACO", "update notified");
 
         // Returns the number of rows updated.

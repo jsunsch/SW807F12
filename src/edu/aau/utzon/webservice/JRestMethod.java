@@ -60,19 +60,20 @@ public class JRestMethod {
 
 		try {
 			HttpClient client = new DefaultHttpClient();
-
 			HttpGet request = new HttpGet(query);
-			
 			HttpResponse response = client.execute(request);
 			
 			if(response.getStatusLine().getStatusCode() == 200) {
-			
 				HttpEntity entity = response.getEntity();
 				
 				if(entity != null) {
 					InputStream in = entity.getContent();
 					
-					JSONArray pointArray = new JSONArray(convertStreamToString(in));
+					String s1 = convertStreamToString(in);
+					
+					// Special case if just 1 item received
+					s1 = s1.charAt(0) == '[' ? s1 : "[" + s1 + "]"; 
+					JSONArray pointArray = new JSONArray(s1);
 
 					JSONObject jsonObj;
 					for(int i=0; i < pointArray.length(); i++){
