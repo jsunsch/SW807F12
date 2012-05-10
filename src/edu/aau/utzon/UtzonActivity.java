@@ -78,16 +78,14 @@ public class UtzonActivity extends SherlockActivity {
 		
 		mLocationListener = new LocationListener() {
 			public void onLocationChanged(Location location) {
-				// Asynchornously start a REST method
-				// 25 should be a setting?
 				
 				// Call to webservice should be done
-				if(poiCounter == 0)
-					RestServiceHelper.getServiceHelper().getNearestPoints(getBaseContext(), 25, location);
+				RestServiceHelper.getServiceHelper().getNearestPoints(getBaseContext(), 10, location);
 				
 				mLocation = location;		
 				TextView tv2 = (TextView)findViewById(R.id.main_text2);
 				tv2.setText("Connecting to server...");
+				mLocationManager.removeUpdates(this);
 			}
 
 			public void onStatusChanged(String provider, int status, Bundle extras) {}
@@ -97,15 +95,14 @@ public class UtzonActivity extends SherlockActivity {
 			public void onProviderDisabled(String provider) {}
 		};
 		
-		mLocationManager.requestLocationUpdates(provider, 0, 1, mLocationListener);
+		mLocationManager.requestLocationUpdates(provider, 0, 0, mLocationListener);
 		getContentResolver().registerContentObserver(ProviderContract.Points.CONTENT_URI, false, mContentObserver);
 		
 		setContentView(R.layout.main);
 		TextView tv1 = (TextView) findViewById(R.id.main_text);
 		tv1.setText("Loading... Done!");
-
 		TextView tv2 = (TextView) findViewById(R.id.main_text2);
-		tv2.setText("Synchronizing POIs...");
+		tv2.setText("Acquiring location...");
 	}
 
 	@Override
@@ -139,7 +136,14 @@ public class UtzonActivity extends SherlockActivity {
 			startActivity(new Intent(this, AugmentedActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
 			return true;
 		case R.id.actionbar_indoor:
-			startActivity(new Intent(this, IndoorActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+			Intent i = new Intent(this, PoiListActivity.class);
+//			if(mLocationHelper.getCurrentLocation() != null ) {
+//				Location l = mLocationHelper.getCurrentLocation();
+//				i.putExtra(PoiListActivity.LOCATION_AVAILABLE, "Yes");
+//				i.putExtra(PoiListActivity.LOCATION_LAT, l.getLatitude());
+//				i.putExtra(PoiListActivity.LOCATION_LONG, l.getLongitude());
+//			}				
+			startActivity(i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
 			return true;
 		case R.id.actionbar_poi_list:
 			startActivity(new Intent(this, PoiListActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
@@ -156,11 +160,12 @@ public class UtzonActivity extends SherlockActivity {
 			tv2.setText("Getting location...");
 			if(mLocation != null ) {
 				poiCounter = 0;
-				RestServiceHelper.getServiceHelper().getNearestPoints(getBaseContext(), 25, mLocation);
+				mLocationManager.requestLocationUpdates(mLocation.getProvider(), 0, 0, mLocationListener);
 			}
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
 	}
+	
 }
