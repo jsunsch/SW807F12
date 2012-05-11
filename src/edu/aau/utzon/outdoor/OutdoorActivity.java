@@ -38,25 +38,22 @@ import edu.aau.utzon.R;
 import edu.aau.utzon.SettingsActivity;
 import edu.aau.utzon.augmented.AugmentedActivity;
 import edu.aau.utzon.indoor.IndoorActivity;
+import edu.aau.utzon.location.LocationAwareMapActivity;
 import edu.aau.utzon.location.LocationHelper;
 import edu.aau.utzon.location.NearPoiPublisher;
 import edu.aau.utzon.webservice.PointModel;
 
-public class OutdoorActivity extends SherlockMapActivity implements NearPoiPublisher{
-	private static final String TAG = null;
+public class OutdoorActivity extends LocationAwareMapActivity{
+	private static final String TAG = "OutdoorActivity";
 	private static final String PREFS_PROXIMITY = "proximity";
 	private TapControlledMapView mMapView;
 	private MyLocationOverlay mMyLocationOverlay;
-	private LocationHelper mLocationHelper;
-	private LocationManager mLocationManager;
-	private LocationListener mLocationListener;
 
 	@Override
 	public void onResume()
 	{
 		super.onResume();
 		mMyLocationOverlay.enableMyLocation();
-		enableLocationListener();
 	}
 
 	@Override
@@ -64,25 +61,7 @@ public class OutdoorActivity extends SherlockMapActivity implements NearPoiPubli
 	{
 		super.onPause();
 		mMyLocationOverlay.disableMyLocation();
-		mLocationManager.removeUpdates(mLocationListener);
 	}
-
-	private void enableLocationListener(){
-		// Enable location manager
-		mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-		Criteria criteria = new Criteria();
-		criteria.setAccuracy( Criteria.ACCURACY_FINE );
-		String provider = mLocationManager.getBestProvider( criteria, true );
-
-		if ( provider == null ) {
-			Log.e( TAG, "No location provider found!" );
-			return;
-		}
-		
-		mLocationManager.requestLocationUpdates(provider, 0, 0, mLocationListener);
-	}
-
-
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -105,26 +84,6 @@ public class OutdoorActivity extends SherlockMapActivity implements NearPoiPubli
 		mMyLocationOverlay.enableMyLocation();
 		mMapView.getOverlays().add(mMyLocationOverlay);
 		
-		// Define a listener that responds to location updates
-		mLocationListener = new LocationListener() {
-			public void onLocationChanged(Location location) {
-				// Called when a new location is found.
-				makeUseOfNewLocation(location);
-			}
-
-			public void onStatusChanged(String provider, int status, Bundle extras) {}
-
-			public void onProviderEnabled(String provider) {}
-
-			public void onProviderDisabled(String provider) {}
-		};
-
-		// Register the listener with the Location Manager to receive location updates
-		enableLocationListener();
-
-		// Init LocationHelper
-		mLocationHelper = new LocationHelper(this);
-				
 		// Draw POIs
 		drawOutdoorPois();
 	}
@@ -132,23 +91,25 @@ public class OutdoorActivity extends SherlockMapActivity implements NearPoiPubli
 	
 	private int shownAlertId = 0;
 	private int shownToastId = 0;
-	protected void makeUseOfNewLocation(Location location) {
+	@Override
+	public void makeUseOfNewLocation(Location location) {
 			//mLocationHelper.makeUseOfNewLocation(mMyLocationOverlay.getLastFix());	// Needed?
-			mLocationHelper.makeUseOfNewLocation(location);			
+		
+			LocationHelper lh = getLocationHelper();
 			
 			// Set some threshold for minimum activation distance
 			SharedPreferences settings = getSharedPreferences(PREFS_PROXIMITY, 0);
 			int proximityTreshold = settings.getInt("proximity", 20);
-			double dist = mLocationHelper.distToPoi(mLocationHelper.getCurrentClosePoi());
+			final PointModel closePoi = lh.getCurrentClosePoi();
+			double dist = lh.distToPoi(closePoi);
 			
-			if(dist < proximityTreshold) {
-				userIsNearPoi(mLocationHelper.getCurrentClosePoi());
+			if(dist < proximityTreshold) {	
 				AlertDialog.Builder builder = new AlertDialog.Builder(this);
 				builder.setMessage("You are near a POI. Do you wish to see the content available?")
 				.setCancelable(false)
 				.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int id) {
-						StartPoiContentActivity(mLocationHelper.getCurrentClosePoi().getId());
+						StartPoiContentActivity(closePoi.getId());
 					}
 				})
 				.setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -158,16 +119,16 @@ public class OutdoorActivity extends SherlockMapActivity implements NearPoiPubli
 				});
 				
 				// Avoid spamming the user with alert dialogs
-				if(shownAlertId == 0 || (shownAlertId != mLocationHelper.getCurrentClosePoi().getId())) {
-					shownAlertId = mLocationHelper.getCurrentClosePoi().getId();
+				if(shownAlertId == 0 || (shownAlertId != closePoi.getId())) {
+					shownAlertId = closePoi.getId();
 					AlertDialog alert = builder.create();
 					alert.show();
 				}
 			}
 			else {
 				// User not close to a POI
-				if(shownToastId == 0 || (shownToastId != mLocationHelper.getCurrentClosePoi().getId())) {
-					shownToastId = mLocationHelper.getCurrentClosePoi().getId();
+				if(shownToastId == 0 || (shownToastId != closePoi.getId())) {
+					shownToastId = closePoi.getId();
 					CharSequence text = "Distance to nearest POI: " + (int)dist + " meter(s).";
 					Toast toast = Toast.makeText(this, text, Toast.LENGTH_LONG);
 					toast.show();
@@ -197,7 +158,7 @@ public class OutdoorActivity extends SherlockMapActivity implements NearPoiPubli
 		final BalloonOverlay itemizedoverlay = new BalloonOverlay(drawable, mMapView);
 
 		// Add POI to the overlay
-		for(PointModel p : mLocationHelper.getPois())
+		for(PointModel p : getLocationHelper().getPois())
 		{
 			GeoPoint gp = p.getGeoPoint();
 			int id = p.getId();
@@ -224,18 +185,12 @@ public class OutdoorActivity extends SherlockMapActivity implements NearPoiPubli
 	}
 
 	@Override
-	protected boolean isRouteDisplayed() {
-		// Required by MapActivity
-		return false;
-	}
-
-	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
 		MenuInflater inflater = getSupportMenuInflater();
 		inflater.inflate(R.layout.menu_outdoor, menu);
 
-		MenuItem searchItem = menu.findItem(R.id.actionbar_search); // TODO: Implement
+		//MenuItem searchItem = menu.findItem(R.id.actionbar_search); // TODO: Implement
 
 		return true;
 	}
@@ -245,16 +200,10 @@ public class OutdoorActivity extends SherlockMapActivity implements NearPoiPubli
 		// Handle item selection
 		switch (item.getItemId()) {
 		case R.id.actionbar_center_location:
-			animateToLocation(mLocationHelper.getCurrentLocation());
+			animateToLocation(getLocationHelper().getCurrentLocation());
 			return true;
 		case R.id.actionbar_poi_list:
-			Intent i = new Intent(this, PoiListActivity.class);
-//			if(mLocationHelper.getCurrentLocation() != null ) {
-//				Location l = mLocationHelper.getCurrentLocation();
-//				i.putExtra(PoiListActivity.LOCATION_LAT, l.getLatitude());
-//				i.putExtra(PoiListActivity.LOCATION_LONG, l.getLongitude());
-//			}				
-			startActivity(i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+			startActivity(new Intent(this, PoiListActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
 			return true;
 		case R.id.actionbar_search:
 			// TODO: Implement
@@ -272,16 +221,5 @@ public class OutdoorActivity extends SherlockMapActivity implements NearPoiPubli
 		default:
 			return super.onOptionsItemSelected(item);
 		}
-	}
-
-	@Override
-	public void userIsNearPoi(PointModel poi) {
-		Log.w(TAG, "OutdoorActivity: userIsNearPoi()");		
-	}
-
-	@Override
-	public List<PointModel> getPois() {
-		Log.i(TAG, "OutdoorActivity: getPois()");
-		return mLocationHelper.getPois();
 	}
 }
