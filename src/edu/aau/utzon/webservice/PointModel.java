@@ -77,7 +77,7 @@ public class PointModel {
 	
 	static public List<PointModel> asPointModels (Cursor c){
 		if(c.getCount() == 0) 
-			throw new IllegalAccessError("Cursor null");
+			return new ArrayList<PointModel>();
 		List<PointModel> result = new ArrayList<PointModel>();
 		
 		c.moveToFirst();

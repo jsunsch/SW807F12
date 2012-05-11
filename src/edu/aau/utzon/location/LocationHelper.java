@@ -25,13 +25,16 @@ public class LocationHelper {
 		return distFrom(userLat, userLong, poi.getLat(), poi.getLong());
 	}
 
-	public void updateUserLocation(Location l)
+	private void updateUserLocation(Location l)
 	{
 		if(isBetterLocation(l, mCurrentLoc) || mCurrentLoc == null) {
 			mCurrentLoc = l;
-			mPreviusClosePoi = mCurrentClosePoi;
-			mCurrentClosePoi = nearestPOI(mPois, mCurrentLoc);
 		}
+	}
+	
+	private void updateClosePoi() {
+		mPreviusClosePoi = mCurrentClosePoi;
+		mCurrentClosePoi = nearestPOI(mPois, mCurrentLoc);
 	}
 
 	// Not saving the context in a field forces us to not spam the SQLite db
@@ -48,12 +51,9 @@ public class LocationHelper {
 	}
 
 	public void makeUseOfNewLocation(Location location) {
-		// Update our latest record of the users position
-		if(isBetterLocation(location, mCurrentLoc) || mCurrentLoc == null) {
-			mCurrentLoc = location;
-			mPreviusClosePoi = mCurrentClosePoi;
-			mCurrentClosePoi = nearestPOI(mPois, mCurrentLoc);
-		}
+		updateUserLocation(location);
+		updateClosePoi();
+
 	}
 
 	public List<PointModel> getPois() {
@@ -118,16 +118,16 @@ public class LocationHelper {
 		// Location -> GeoPoint conversion
 		return new GeoPoint((int)(loc.getLatitude()*1e6),(int)(loc.getLongitude()*1e6));
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
+
+
+
+
 
 	/** Determines whether one Location reading is better than the current Location fix
 	 * @param location  The new Location that you want to evaluate

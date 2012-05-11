@@ -30,7 +30,7 @@ import android.widget.TextView;
 public class UtzonActivity extends SherlockActivity {
 	private static final String TAG = "UtzonActivity";
 	private int poiCounter = 0;
-	private LocationHelper mLocationHelper = null;
+	//private LocationHelper mLocationHelper = null;
 	private class RestContentObserver extends ContentObserver{
 		public RestContentObserver(Handler handler) {
 			super(handler);
