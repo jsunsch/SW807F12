@@ -48,38 +48,38 @@ public class SampleService extends Service {
 	private void initState(Context context) {
 		mLocationHelper = new LocationHelper(context);
 		mLocationListener = new LocationListener() {
-			
+
 			@Override
 			public void onStatusChanged(String provider, int status, Bundle extras) {
 				// TODO Auto-generated method stub
-				
+
 			}
-			
+
 			@Override
 			public void onProviderEnabled(String provider) {
 				// TODO Auto-generated method stub
-				
+
 			}
-			
+
 			@Override
 			public void onProviderDisabled(String provider) {
 				// TODO Auto-generated method stub
-				
+
 			}
-			
+
 			@Override
-			
+
 			public void onLocationChanged(Location location) {
 				Location old = mLocationHelper.getCurrentLocation();
 				mLocationHelper.makeUseOfNewLocation(location);
 				if(mLocationHelper.isNearPoi()) {
 					broadcastNearPoi();
 				}
-				else {
-					if(old != mLocationHelper.getCurrentLocation()) {
-						broadcastLocationUpdate();
-					}
+
+				if(old != mLocationHelper.getCurrentLocation()) {
+					broadcastLocationUpdate();
 				}
+
 			}
 		};
 	}
@@ -87,45 +87,45 @@ public class SampleService extends Service {
 	protected void broadcastNearPoi() {
 		Log.d(TAG, "broadcastNearPoi()");
 		LocalBroadcastManager.getInstance(this)
-			.sendBroadcast(CommonIntents.broadcastNearPoi(this, mLocationHelper.getCurrentClosePoi()));
+		.sendBroadcast(CommonIntents.broadcastNearPoi(this, mLocationHelper.getCurrentClosePoi()));
 	}
-	
+
 	protected void broadcastLocationUpdate() {
 		Log.i(TAG, "broadcastLocationUpdate()");
 		LocalBroadcastManager.getInstance(this)
-			.sendBroadcast(CommonIntents.broadcastLocationUpdate(this, mLocationHelper.getCurrentLocation()));
+		.sendBroadcast(CommonIntents.broadcastLocationUpdate(this, mLocationHelper.getCurrentLocation()));
 	}
 
 	private void disableLocationListener() {
 		Log.i(TAG, "disableLocationListener()");
 		mLocationManager.removeUpdates(mLocationListener);
 	}
-	
+
 	private String getBestProvider() {
 		Criteria c = new Criteria();
 		c.setAccuracy(Criteria.ACCURACY_COARSE);
 		return mLocationManager.getBestProvider(c, true);
 	}
-	
+
 	private void enableLocationListener() {
 		Log.i(TAG, "enableLocationListener()");
 		mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 		mLocationManager.requestLocationUpdates(getBestProvider(), 0, 0, mLocationListener);
 	}
-	
+
 	/** Should only be called in entry activity for the application **/
-//	@Override
-//	public int onStartCommand(Intent intent, int flags, int startID) {
-//		Log.i(TAG, "onStartCommand(intent, " + flags + startID);
-//		enableLocationListener();
-//		// TODO:
-//		while(mLocationHelper.getCurrentLocation() == null) {}
-//	    // We want this service to continue running until it is explicitly
-//	    // stopped, so return sticky.
-//	    return START_STICKY;
-//
-//	}
-	
+	//	@Override
+	//	public int onStartCommand(Intent intent, int flags, int startID) {
+	//		Log.i(TAG, "onStartCommand(intent, " + flags + startID);
+	//		enableLocationListener();
+	//		// TODO:
+	//		while(mLocationHelper.getCurrentLocation() == null) {}
+	//	    // We want this service to continue running until it is explicitly
+	//	    // stopped, so return sticky.
+	//	    return START_STICKY;
+	//
+	//	}
+
 	@Override
 	public void onCreate() {
 		super.onCreate();
@@ -138,7 +138,7 @@ public class SampleService extends Service {
 		enableLocationListener();
 		return mBinder;
 	}
-	
+
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
@@ -156,7 +156,7 @@ public class SampleService extends Service {
 		Log.d(TAG, "getLocationHelper()");
 		return mLocationHelper;
 	}
-	
+
 
 
 }
