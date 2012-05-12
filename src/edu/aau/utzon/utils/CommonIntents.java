@@ -19,9 +19,20 @@ public class CommonIntents {
 		return new Intent(context, SettingsActivity.class);
 	}
 	
+	static public Intent startSampleService(Context context) {
+		return new Intent();
+	}
+	
 	static public Intent startPoiListActivity(Context context) {
 		return new Intent(context, PoiListActivity.class)
 			.putExtra(PoiListActivity.COMMAND, PoiListActivity.COMMAND_ALL);
+	}
+	
+	static public  Intent startPoiContentActivity(Context context, Location location, PointModel poi) {
+		Intent intent = new Intent(context, PoiContentActivity.class);
+		intent.putExtra(EXTRA_LOCATION, location);
+		intent.putExtra(EXTRA_NEAR_POI, poi);
+		return intent;
 	}
 	
 	static public Intent startIndoorActivity(Context context) {
@@ -36,9 +47,7 @@ public class CommonIntents {
 		return new Intent(context, AugmentedActivity.class);
 	}
 	
-	static public  Intent startPoiContentActivity(Context context) {
-		return new Intent(context, PoiContentActivity.class);
-	}
+	
 	
 	static public Intent broadcastNearPoi(Context context, PointModel nearPOI) {
 		Intent intent = new Intent(POI_INTENTFILTER);

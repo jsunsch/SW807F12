@@ -113,6 +113,17 @@ public class SampleService extends Service {
 		mLocationManager.requestLocationUpdates(getBestProvider(), 0, 0, mLocationListener);
 	}
 	
+	/** Should only be called in entry activity for the application **/
+	@Override
+	public int onStartCommand(Intent intent, int flags, int startID) {
+		Log.i(TAG, "onStartCommand(intent, " + flags + startID);
+		enableLocationListener();
+	    // We want this service to continue running until it is explicitly
+	    // stopped, so return sticky.
+	    return START_STICKY;
+
+	}
+	
 	@Override
 	public void onCreate() {
 		super.onCreate();

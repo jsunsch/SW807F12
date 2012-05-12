@@ -36,9 +36,7 @@ public abstract class LocationAwareMapActivity extends SherlockMapActivity{
 			mBound = false;
 			serviceDisconnectedEvent();
 		}
-	};
-	
-	
+	};	
 	
 	@Override
 	protected void onStart() {
