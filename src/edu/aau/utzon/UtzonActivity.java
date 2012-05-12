@@ -12,15 +12,22 @@ import edu.aau.utzon.location.LocationAwareActivity;
 import edu.aau.utzon.location.SampleService;
 import edu.aau.utzon.outdoor.OutdoorActivity;
 import edu.aau.utzon.utils.CommonIntents;
+import edu.aau.utzon.webservice.PointModel;
 import edu.aau.utzon.webservice.ProviderContract;
 import edu.aau.utzon.webservice.RestService;
 import edu.aau.utzon.webservice.RestServiceHelper;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.ContentObserver;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 import android.widget.TextView;
 
 public class UtzonActivity extends LocationAwareActivity {
@@ -54,17 +61,41 @@ public class UtzonActivity extends LocationAwareActivity {
 		// Register content observer so that we are notified when new POIs are available
 		tv1.setText("Registering POI content observer...");
 		mContentObserver = new RestContentObserver(new Handler());
-		
+
 		getContentResolver().registerContentObserver(ProviderContract.Points.CONTENT_URI, false, mContentObserver);
-		
-//		tv1.setText("Synchronizing with webservice...");
-//		RestServiceHelper.getServiceHelper()
-//		.getLocationPoints(this);
-		
+
+		tv1.setText("Synchronizing with webservice...");
+		// Register to receive broadcasts (from the PoiNotificationService)
+		LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
+				new IntentFilter(CommonIntents.POI_INTENTFILTER));
+		//		RestServiceHelper.getServiceHelper()
+		//		.getLocationPoints(this);
+
 		tv1.setText("Starting location service...");
 		startService(CommonIntents.startSampleService(getApplicationContext()));
-		tv1.setText("Acquiring location...");
+		//tv1.setText("Acquiring location. Please click refresh button if app gets stuck here.");	// TODO: Not very good usability...
 	}
+
+	// Handler for broadcast events (Poi notification)
+	private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			// Get extra data included in the Intent
+			//String message = intent.getStringExtra("message");
+			Location loc = intent.getParcelableExtra(CommonIntents.EXTRA_LOCATION);
+			PointModel poi = intent.getParcelableExtra(CommonIntents.EXTRA_NEAR_POI);
+			TextView tv1 = (TextView) findViewById(R.id.main_text);
+			if(loc != null) {
+				tv1.setText("Got location update");
+			}
+			else if(poi != null) {
+				tv1.setText("Got nearPOI update");
+			}
+			else {
+				throw new IllegalArgumentException("Passing intent to onReceive must provide EXTRA_LOCATION or EXTRA_NEAR_POI");
+			}
+		}
+	};
 
 	@Override
 	public void onPause()	{
@@ -116,43 +147,45 @@ public class UtzonActivity extends LocationAwareActivity {
 			return super.onOptionsItemSelected(item);
 		}
 	}
-	
+
+
 	private void queryWebService() {
-		if(isBound() && mService.getLocationHelper().getCurrentLocation() != null) {
+		if(isBound()) {
 			RestServiceHelper.getServiceHelper()
 			.getNearestPoints(this, 
 					5, mService.getLocationHelper().getCurrentLocation()); // force refresh
-			
+
 		}
 	}
 
 
-//	public void makeUseOfNewNearPoi(int poi_id) {
-//		// Ignore		
-//	}
+	//	public void makeUseOfNewNearPoi(int poi_id) {
+	//		// Ignore		
+	//	}
 
-//	boolean firstRun = true;
-//	Location mLocation = null;
-//
-//	public void makeUseOfNewLocation(Location location) {
-//		if(firstRun) {
-//			mLocation = location;
-//			TextView tv1 = (TextView)findViewById(R.id.main_text);
-//			tv1.setText("Connecting to server...");
-//			RestServiceHelper.getServiceHelper()
-//				.getNearestPoints(this, 5, location);
-//			firstRun = false;
-//		}
-//	}
+	//	boolean firstRun = true;
+	//	Location mLocation = null;
+	//
+	//	public void makeUseOfNewLocation(Location location) {
+	//		if(firstRun) {
+	//			mLocation = location;
+	//			TextView tv1 = (TextView)findViewById(R.id.main_text);
+	//			tv1.setText("Connecting to server...");
+	//			RestServiceHelper.getServiceHelper()
+	//				.getNearestPoints(this, 5, location);
+	//			firstRun = false;
+	//		}
+	//	}
 
 	@Override
 	public void serviceBoundEvent(SampleService service) {
 		mService = service;
+		//queryWebService();
 	}
 
 	@Override
 	public void serviceDisconnectedEvent() {
 		mService = null;
-		
+
 	}	
 }

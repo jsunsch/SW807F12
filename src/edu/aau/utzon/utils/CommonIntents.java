@@ -11,7 +11,7 @@ import edu.aau.utzon.outdoor.OutdoorActivity;
 import edu.aau.utzon.webservice.PointModel;
 
 public class CommonIntents {
-	static private String POI_INTENTFILTER = "POI_INTENTFILTER";
+	public static String POI_INTENTFILTER = "POI_INTENTFILTER";
 	static public String EXTRA_LOCATION = "EXTRA_LOCATION";
 	static public String EXTRA_NEAR_POI = "EXTRA_NEAR_POI";
 	
