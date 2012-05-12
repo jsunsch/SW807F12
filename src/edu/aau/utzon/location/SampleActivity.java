@@ -53,6 +53,12 @@ public class SampleActivity extends Activity {
         	Toast.makeText(this, "POIs: " + lh.getPois().size(), Toast.LENGTH_SHORT).show();
         }
     }
+    
+    public void buttonLocation(View v) {
+    	LocationHelper lh = mService.getLocationHelper();
+    	if(lh.getCurrentLocation() != null)
+    		Toast.makeText(this, "Location: " + lh.getCurrentLocation().getLatitude(), Toast.LENGTH_SHORT).show();
+    }
 
     /** Defines callbacks for service binding, passed to bindService() */
     private ServiceConnection mConnection = new ServiceConnection() {

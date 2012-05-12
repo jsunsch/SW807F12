@@ -46,7 +46,7 @@ public class SampleService extends Service {
 			
 			@Override
 			public void onStatusChanged(String provider, int status, Bundle extras) {
-				
+				// TODO Auto-generated method stub
 				
 			}
 			
@@ -64,8 +64,7 @@ public class SampleService extends Service {
 			
 			@Override
 			public void onLocationChanged(Location location) {
-				mLocationHelper.makeUseOfNewLocation(location);
-				
+				mLocationHelper.makeUseOfNewLocation(location);				
 			}
 		};
 	}
