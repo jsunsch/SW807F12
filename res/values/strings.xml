@@ -14,4 +14,12 @@
 	<string name="menu_settings">Configure settings</string>
 	<string name="menu_refresh">Re-synchronize with server</string>
 	
+	
+<string name="remote_service_label">SampleServiceLabel</string>
+<string name="remote_service_started">SampleServiceStarted</string>
+<string name="remote_service_stopped">SampleServiceStopped</string>
+
+	<string name="remote_service_connected">Service connected</string>
+	<string name="remote_service_disconnected">Service disconnected</string>
+	
 </resources>

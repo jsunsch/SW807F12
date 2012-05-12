@@ -6,11 +6,13 @@ import java.util.List;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.util.Log;
 
 import com.google.android.maps.GeoPoint;
 
-public class PointModel {
+public class PointModel implements Parcelable{
 	private static final String TAG = "PointModel";
 	private GeoPoint mGeoPoint;
 	private int mId;
@@ -93,6 +95,7 @@ public class PointModel {
 			int colIndexLastModified = c.getColumnIndex(ProviderContract.Points.ATTRIBUTE_LAST_MODIFIED);
 			int colIndexState = c.getColumnIndex(ProviderContract.Points.ATTRIBUTE_STATE);
 
+			
 			int id = c.getInt(colIndexId);
 			String desc = c.getString(colIndexDesc);
 			double lat = c.getDouble(colIndexLat);
@@ -121,41 +124,44 @@ public class PointModel {
 		return asPointModels(query).get(0);
 	}
 
-//	@Override
-//	public int describeContents() {
-//		// TODO Auto-generated method stub
-//		return 0;
-//	}
-//
-//	@Override
-//	public void writeToParcel(Parcel dest, int flags) {
-//		// TODO Auto-generated method stub
-//		dest.writeInt(mGeoPoint.getLatitudeE6());
-//		dest.writeInt(mGeoPoint.getLongitudeE6());
-//		dest.writeInt(mId);
-//		dest.writeString(mDesc);
-//		dest.writeString(mName);
-//	}
-//
-//	// this is used to regenerate your object. All Parcelables must have a
-//	// CREATOR that implements these two methods
-//	public static final Parcelable.Creator<PointModel> CREATOR = new Parcelable.Creator<PointModel>() {
-//		public PointModel createFromParcel(Parcel in) {
-//			return new PointModel(in);
-//		}
-//
-//		public PointModel[] newArray(int size) {
-//			return new PointModel[size];
-//		}
-//	};
-//
-//	// Constructor that takes a Parcel and gives you an object populated with it's values
-//	private PointModel(Parcel in) {
-//		int lat = in.readInt();
-//		int longitude = in.readInt();
-//		mGeoPoint = new GeoPoint(lat, longitude);
-//		mId = in.readInt();
-//		mDesc = in.readString();
-//		mName = in.readString();
-//	}
+	@Override
+	public int describeContents() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {
+		dest.writeInt(mId);
+		dest.writeString(mDesc);
+		dest.writeString(mName);
+		dest.writeDouble(mGeoPoint.getLongitudeE6()/1e6);
+		dest.writeDouble(mGeoPoint.getLatitudeE6()/1e6);
+		dest.writeLong(mLastModified);
+		dest.writeInt(mState);
+	}
+
+	// this is used to regenerate your object. All Parcelables must have a
+	// CREATOR that implements these two methods
+	public static final Parcelable.Creator<PointModel> CREATOR = new Parcelable.Creator<PointModel>() {
+		public PointModel createFromParcel(Parcel in) {
+			return new PointModel(in);
+		}
+
+		public PointModel[] newArray(int size) {
+			return new PointModel[size];
+		}
+	};
+
+	// Constructor that takes a Parcel and gives you an object populated with it's values
+	private PointModel(Parcel in) {
+		mId = in.readInt();
+		mDesc = in.readString();
+		mName = in.readString();
+		mLong = in.readDouble();
+		mLat = in.readDouble();
+		mGeoPoint = new GeoPoint((int)(mLat*1e6), (int)(mLong*1e6));
+		mLastModified = in.readLong();
+		mState = in.readInt();
+	}
 }

@@ -23,7 +23,7 @@
 
     <application
         android:icon="@drawable/ic_launcher"
-        android:label="@string/app_name" 
+        android:label="@string/app_name"
         android:theme="@style/Theme.Sherlock.Light" >
         <uses-library android:name="com.google.android.maps" />
 
@@ -32,10 +32,6 @@
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:uiOptions="splitActionBarWhenNarrow" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity android:name=".SearchableActivity" >
             <intent-filter>
@@ -48,8 +44,7 @@
         </activity>
         <activity
             android:name=".outdoor.OutdoorActivity"
-            android:uiOptions="splitActionBarWhenNarrow" 
-			 >
+            android:uiOptions="splitActionBarWhenNarrow" >
         </activity>
         <activity
             android:name=".WebserviceActivity"
@@ -63,11 +58,11 @@
         <activity android:name="edu.aau.utzon.indoor.IndoorActivity" />
         <activity android:name="edu.aau.utzon.indoor.CalibrationActivity" />
         <activity android:name="edu.aau.utzon.indoor.LocatingActivity" />
-        <activity 
-            android:name=".PoiListActivity" 
-            android:uiOptions="splitActionBarWhenNarrow"
-            >
-             <!-- enable the search dialog to send searches to SearchableActivity -->
+        <activity
+            android:name=".PoiListActivity"
+            android:uiOptions="splitActionBarWhenNarrow" >
+
+            <!-- enable the search dialog to send searches to SearchableActivity -->
             <meta-data
                 android:name="android.app.default_searchable"
                 android:value=".SearchableActivity" />
@@ -79,8 +74,15 @@
             android:name=".webservice.RestContentProvider"
             android:authorities="edu.aau.utzon" />
 
+        <activity android:name=".location.SampleActivity" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+>        <service android:name="edu.aau.utzon.location.SampleService" />
         <service android:name="edu.aau.utzon.webservice.RestService" />
-        <service android:name="edu.aau.utzon.location.LocationAwareService" />
     </application>
 
 </manifest>
