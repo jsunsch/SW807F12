@@ -29,43 +29,21 @@ import edu.aau.utzon.R;
 import edu.aau.utzon.SettingsActivity;
 import edu.aau.utzon.augmented.AugmentedActivity;
 import edu.aau.utzon.indoor.IndoorActivity;
+import edu.aau.utzon.location.LocationAwareMapActivity;
 import edu.aau.utzon.location.LocationHelper;
 import edu.aau.utzon.location.SampleService;
 import edu.aau.utzon.location.SampleService.SampleBinder;
+import edu.aau.utzon.utils.CommonIntents;
 import edu.aau.utzon.webservice.PointModel;
 
-public class OutdoorActivity extends SherlockMapActivity {
-	SampleService mService;
-	boolean mBound = false;
-
-	/** Defines callbacks for service binding, passed to bindService() */
-	private ServiceConnection mConnection = new ServiceConnection() {
-
-		@Override
-		public void onServiceConnected(ComponentName className, IBinder service) {
-			// We've bound to LocalService, cast the IBinder and get LocalService instance
-			SampleBinder binder = (SampleBinder) service;
-			mService = binder.getService();
-			mBound = true;
-			drawOutdoorPois();
-		}
-
-		@Override
-		public void onServiceDisconnected(ComponentName arg0) {
-			mBound = false;
-		}
-	};
+public class OutdoorActivity extends LocationAwareMapActivity {
+	
 	MyLocationOverlay mMyLocationOverlay = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
-		
-		
-		// Draw POIs
 		drawMap();
-		//drawOutdoorPois();
 	}
 
 	TapControlledMapView mMapView;
@@ -83,7 +61,7 @@ public class OutdoorActivity extends SherlockMapActivity {
 	private void drawOutdoorPois()
 	{
 		// Setup overlays
-		if(mBound) {
+		if(isBound()) {
 			List<Overlay> mapOverlays = mMapView.getOverlays();
 			Drawable drawable = this.getResources().getDrawable(R.drawable.androidmarker);
 			final BalloonOverlay itemizedoverlay = new BalloonOverlay(drawable, mMapView);
@@ -115,23 +93,7 @@ public class OutdoorActivity extends SherlockMapActivity {
 		}
 	}
 
-	@Override
-	protected void onStart() {
-		super.onStart();
-		// Bind to LocalService
-		Intent intent = new Intent(this, SampleService.class);
-		bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
-	}
-
-	@Override
-	protected void onStop() {
-		super.onStop();
-		// Unbind from the service
-		if (mBound) {
-			unbindService(mConnection);
-			mBound = false;
-		}
-	}
+	
 	@Override
 	protected boolean isRouteDisplayed() {
 		// TODO Auto-generated method stub
@@ -171,20 +133,20 @@ public class OutdoorActivity extends SherlockMapActivity {
 			animateToLocation(mService.getLocationHelper().getCurrentLocation());
 			return true;
 		case R.id.actionbar_poi_list:
-			startActivity(new Intent(this, PoiListActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+			startActivity(CommonIntents.startPoiListActivity(this));
 			return true;
 		case R.id.actionbar_search:
 			// TODO: Implement
 			onSearchRequested();
 			return true;
 		case R.id.actionbar_augmented:
-			startActivity(new Intent(this, AugmentedActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+			startActivity(CommonIntents.startAugmentedActivity(this));
 			return true;
 		case R.id.actionbar_indoor:
-			startActivity(new Intent(this, IndoorActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+			startActivity(CommonIntents.startIndoorActivity(this));
 			return true;
 		case R.id.actionbar_settings:
-			startActivity(new Intent(this, SettingsActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+			startActivity(CommonIntents.startSettingsActivity(this));
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
@@ -199,6 +161,17 @@ public class OutdoorActivity extends SherlockMapActivity {
 			GeoPoint point =  LocationHelper.locToGeo(loc);
 			mc.animateTo(point);
 		}
+	}
+
+	@Override
+	public void serviceBoundEvent(SampleService service) {
+		mService = service;
+		drawOutdoorPois();
+	}
+	
+	@Override
+	public void serviceDisconnectedEvent() {
+		mService = null;
 	}
 }
 //

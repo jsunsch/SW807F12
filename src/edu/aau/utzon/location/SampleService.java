@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Random;
 
 import edu.aau.utzon.SettingsActivity;
+import edu.aau.utzon.utils.CommonIntents;
 
 import android.app.IntentService;
 import android.app.Service;
@@ -17,6 +18,7 @@ import android.location.LocationManager;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 public class SampleService extends Service {
@@ -66,10 +68,32 @@ public class SampleService extends Service {
 			}
 			
 			@Override
+			
 			public void onLocationChanged(Location location) {
-				mLocationHelper.makeUseOfNewLocation(location);				
+				Location old = mLocationHelper.getCurrentLocation();
+				mLocationHelper.makeUseOfNewLocation(location);
+				if(mLocationHelper.isNearPoi()) {
+					broadcastNearPoi();
+				}
+				else {
+					if(old != mLocationHelper.getCurrentLocation()) {
+						broadcastLocationUpdate();
+					}
+				}
 			}
 		};
+	}
+
+	protected void broadcastNearPoi() {
+		Log.d(TAG, "broadcastNearPoi()");
+		LocalBroadcastManager.getInstance(this)
+			.sendBroadcast(CommonIntents.broadcastNearPoi(this, mLocationHelper.getCurrentClosePoi()));
+	}
+	
+	protected void broadcastLocationUpdate() {
+		Log.i(TAG, "broadcastLocationUpdate()");
+		LocalBroadcastManager.getInstance(this)
+			.sendBroadcast(CommonIntents.broadcastLocationUpdate(this, mLocationHelper.getCurrentLocation()));
 	}
 
 	private void disableLocationListener() {
@@ -97,6 +121,7 @@ public class SampleService extends Service {
 
 	@Override
 	public IBinder onBind(Intent intent) {
+		Log.d(TAG, "onBind()");
 		enableLocationListener();
 		return mBinder;
 	}
@@ -110,6 +135,7 @@ public class SampleService extends Service {
 
 	/** method for clients */
 	public int getRandomNumber() {
+		Log.d(TAG, "getRandomNumber()");
 		return mGenerator.nextInt(100);
 	}
 
@@ -118,12 +144,6 @@ public class SampleService extends Service {
 		return mLocationHelper;
 	}
 	
-	public boolean isNearPoi() {
-		Log.d(TAG, "isNearPoi()");
-		SharedPreferences prefs = getSharedPreferences(SettingsActivity.PREFS_PROXIMITY, MODE_PRIVATE);
-		int prox = prefs.getInt("proximity", 20);
-		double dist = mLocationHelper.distToPoi(mLocationHelper.getCurrentClosePoi());
-		return dist > prox ? false : true;
-	}
+
 
 }

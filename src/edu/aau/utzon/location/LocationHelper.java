@@ -5,8 +5,10 @@ import java.util.List;
 
 import com.google.android.maps.GeoPoint;
 
+import edu.aau.utzon.SettingsActivity;
 import edu.aau.utzon.webservice.PointModel;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.location.Location;
 import android.util.Log;
 
@@ -25,6 +27,14 @@ public class LocationHelper {
 		return distFrom(userLat, userLong, poi.getLat(), poi.getLong());
 	}
 
+	public boolean isNearPoi() {
+		Log.d(TAG, "isNearPoi()");
+		SharedPreferences prefs = mContext.getSharedPreferences(SettingsActivity.PREFS_PROXIMITY, Context.MODE_PRIVATE);
+		int prox = prefs.getInt("proximity", 20);
+		double dist = distToPoi(getCurrentClosePoi());
+		return dist > prox ? false : true;
+	}
+	
 	private void updateUserLocation(Location l)
 	{
 		if(isBetterLocation(l, mCurrentLoc) || mCurrentLoc == null) {
@@ -37,8 +47,9 @@ public class LocationHelper {
 		mCurrentClosePoi = nearestPOI(mPois, mCurrentLoc);
 	}
 
-	// Not saving the context in a field forces us to not spam the SQLite db
+	Context mContext = null;
 	public LocationHelper(Context c){
+		mContext = c;
 		mPois = PointModel.dbGetAll(c);
 	}
 
