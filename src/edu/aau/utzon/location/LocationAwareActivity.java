@@ -2,12 +2,22 @@ package edu.aau.utzon.location;
 
 import com.actionbarsherlock.app.SherlockActivity;
 
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.location.Location;
+import android.os.Bundle;
 import android.os.IBinder;
+import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
+import android.widget.TextView;
+import edu.aau.utzon.R;
 import edu.aau.utzon.location.SampleService.SampleBinder;
+import edu.aau.utzon.utils.CommonIntents;
+import edu.aau.utzon.webservice.PointModel;
 public abstract class LocationAwareActivity extends SherlockActivity {
 	private static final String TAG = "LocationAwareMapActivity";
 	protected SampleService mService = null;
@@ -16,6 +26,8 @@ public abstract class LocationAwareActivity extends SherlockActivity {
 
 	abstract public void serviceBoundEvent(SampleService service);
 	abstract public void serviceDisconnectedEvent();
+	abstract public void serviceNewPoiBroadcast(PointModel poi);
+	abstract public void serviceNewLocationBroadcast(Location location);
 
 	/** Defines callbacks for service binding, passed to bindService() */
 	private ServiceConnection mConnection = new ServiceConnection() {
@@ -35,17 +47,51 @@ public abstract class LocationAwareActivity extends SherlockActivity {
 			serviceDisconnectedEvent();
 		}
 	};	
+	
+	// Handler for broadcast events (Poi notification)
+		private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+			@Override
+			public void onReceive(Context context, Intent intent) {
+				// Get extra data included in the Intent
+				//String message = intent.getStringExtra("message");
+				Location loc = intent.getParcelableExtra(CommonIntents.EXTRA_LOCATION);
+				PointModel poi = intent.getParcelableExtra(CommonIntents.EXTRA_NEAR_POI);
+				//TextView tv1 = (TextView) findViewById(R.id.main_text);
+				if(loc != null) {
+					Log.i(TAG, "Got location update");
+					serviceNewLocationBroadcast(loc);
+					//tv1.setText("Got location update");
+				}
+				else if(poi != null) {
+					//tv1.setText("Got nearPOI update");
+					Log.i(TAG, "Got near POI update");
+					serviceNewPoiBroadcast(poi);
+				}
+				else {
+					throw new IllegalArgumentException("Passing intent to onReceive must provide EXTRA_LOCATION or EXTRA_NEAR_POI");
+				}
+			}
+		};
 
 	@Override
-	protected void onStart() {
+	public void onStart() {
 		super.onStart();
 		// Bind to LocalService
 		Intent intent = new Intent(this, SampleService.class);
 		bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+		// Register to receive broadcasts from LocationAwareService
+		
+	}
+	
+	@Override
+	public void onCreate(Bundle bundle) {
+		super.onCreate(bundle);
+		LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, 
+				new IntentFilter(CommonIntents.POI_INTENTFILTER));
 	}
 
 	@Override
-	protected void onStop() {
+	public void onStop() {
 		super.onStop();
 		// Unbind from the service
 		if (mBound) {

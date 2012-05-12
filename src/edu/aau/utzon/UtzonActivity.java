@@ -1,34 +1,21 @@
 package edu.aau.utzon;
 
-import org.osmdroid.tileprovider.modules.MBTilesFileArchive;
-
-import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import edu.aau.utzon.augmented.AugmentedActivity;
-import edu.aau.utzon.indoor.IndoorActivity;
 import edu.aau.utzon.location.LocationAwareActivity;
 import edu.aau.utzon.location.SampleService;
-import edu.aau.utzon.outdoor.OutdoorActivity;
 import edu.aau.utzon.utils.CommonIntents;
 import edu.aau.utzon.webservice.PointModel;
 import edu.aau.utzon.webservice.ProviderContract;
-import edu.aau.utzon.webservice.RestService;
-import edu.aau.utzon.webservice.RestServiceHelper;
-
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.database.ContentObserver;
 import android.location.Location;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class UtzonActivity extends LocationAwareActivity {
 	private static final String TAG = "UtzonActivity";
@@ -66,47 +53,16 @@ public class UtzonActivity extends LocationAwareActivity {
 
 		tv1.setText("Synchronizing with webservice...");
 		// Register to receive broadcasts (from the PoiNotificationService)
-		LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
-				new IntentFilter(CommonIntents.POI_INTENTFILTER));
+//		LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
+//						new IntentFilter(CommonIntents.POI_INTENTFILTER));
+//		
 		//		RestServiceHelper.getServiceHelper()
 		//		.getLocationPoints(this);
 
-		tv1.setText("Starting location service...");
-		startService(CommonIntents.startSampleService(getApplicationContext()));
+		//tv1.setText("Starting location service...");
+		
+		//startService(CommonIntents.startSampleService(getApplicationContext()));
 		//tv1.setText("Acquiring location. Please click refresh button if app gets stuck here.");	// TODO: Not very good usability...
-	}
-
-	// Handler for broadcast events (Poi notification)
-	private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
-		@Override
-		public void onReceive(Context context, Intent intent) {
-			// Get extra data included in the Intent
-			//String message = intent.getStringExtra("message");
-			Location loc = intent.getParcelableExtra(CommonIntents.EXTRA_LOCATION);
-			PointModel poi = intent.getParcelableExtra(CommonIntents.EXTRA_NEAR_POI);
-			TextView tv1 = (TextView) findViewById(R.id.main_text);
-			if(loc != null) {
-				tv1.setText("Got location update");
-			}
-			else if(poi != null) {
-				tv1.setText("Got nearPOI update");
-			}
-			else {
-				throw new IllegalArgumentException("Passing intent to onReceive must provide EXTRA_LOCATION or EXTRA_NEAR_POI");
-			}
-		}
-	};
-
-	@Override
-	public void onPause()	{
-		super.onPause();
-		getContentResolver().unregisterContentObserver(mContentObserver);
-	}
-
-	@Override
-	public void onResume()	{
-		super.onResume();
-		getContentResolver().registerContentObserver(ProviderContract.Points.CONTENT_URI, true, mContentObserver);
 	}
 
 	@Override
@@ -141,7 +97,7 @@ public class UtzonActivity extends LocationAwareActivity {
 			onSearchRequested();
 			return true;
 		case R.id.actionbar_refresh:
-			queryWebService();
+			//queryWebService();
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
@@ -149,14 +105,14 @@ public class UtzonActivity extends LocationAwareActivity {
 	}
 
 
-	private void queryWebService() {
-		if(isBound()) {
-			RestServiceHelper.getServiceHelper()
-			.getNearestPoints(this, 
-					5, mService.getLocationHelper().getCurrentLocation()); // force refresh
-
-		}
-	}
+//	private void queryWebService() {
+//		if(isBound()) {
+//			RestServiceHelper.getServiceHelper()
+//			.getNearestPoints(this, 
+//					5, mService.getLocationHelper().getCurrentLocation()); // force refresh
+//
+//		}
+//	}
 
 
 	//	public void makeUseOfNewNearPoi(int poi_id) {
@@ -187,5 +143,44 @@ public class UtzonActivity extends LocationAwareActivity {
 	public void serviceDisconnectedEvent() {
 		mService = null;
 
+	}
+
+	private int shownAlertId = 0;
+	private int shownToastId = 0;
+	@Override
+	public void serviceNewPoiBroadcast(final PointModel poi) {
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setMessage("You are near a POI. Do you wish to see the content available?")
+		.setCancelable(false)
+		.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int id) {
+				startActivity(CommonIntents.startPoiContentActivity(getBaseContext(), mService.getLocationHelper().getCurrentLocation(), poi));
+			}
+		})
+		.setNegativeButton("No", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int id) {
+				dialog.cancel();
+			}
+		});
+
+		// Avoid spamming the user with alert dialogs
+		if(shownAlertId == 0 || (shownAlertId != mService.getLocationHelper().getCurrentClosePoi().getId())) {
+			shownAlertId = mService.getLocationHelper().getCurrentClosePoi().getId();
+			AlertDialog alert = builder.create();
+			alert.show();
+		}
+	}
+
+
+
+	@Override
+	public void serviceNewLocationBroadcast(Location location) {
+		if(shownToastId == 0 || (shownToastId != mService.getLocationHelper().getCurrentClosePoi().getId())) {
+			shownToastId = mService.getLocationHelper().getCurrentClosePoi().getId();
+			double dist = mService.getLocationHelper().distToPoi(mService.getLocationHelper().getCurrentClosePoi());
+			CharSequence text = "Distance to nearest POI: " + (int)dist + " meter(s).";
+			Toast toast = Toast.makeText(this, text, Toast.LENGTH_LONG);
+			toast.show();
+		}
 	}	
 }
