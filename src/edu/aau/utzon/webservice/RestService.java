@@ -3,6 +3,7 @@ package edu.aau.utzon.webservice;
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -15,13 +16,15 @@ public class RestService extends IntentService {
 	
 	/** Client must supply (int)POI_ID **/
 	public static final int COMMAND_GET_POI_ID = 1;
-	public static final String POI_ID = "_ID";
+	public static final String EXTRAS_POI_ID = "_ID";
 	
-	/** Client must supply (double)LOCATION_LAT, (double)LOCATION_LONG and (int)POI_K **/
+	/** Client must supply Location and (int)POI_K **/
 	public static final int COMMAND_GET_POI_K = 2;
-	public static final String LOCATION_LAT = "_LOCATION_LAT";
-	public static final String LOCATION_LONG = "_LOCATION_LONG";
-	public static final String POI_K = "_K";
+	public static final String EXTRAS_LOCATION = "_LOCATION";
+	public static final String EXTRAS_LOCATION_LAT = "_LOCATION_LAT";
+	public static final String EXTRAS_LOCATION_LONG = "_LOCATION_LONG";
+	public static final String EXTRAS_POI_K = "_K";
+	
 	
 	public RestService() {
 		super("RestService");
@@ -37,13 +40,13 @@ public class RestService extends IntentService {
 				GetLocationPoints();
 				break;
 			case COMMAND_GET_POI_ID:
-				GetLocationPoint(bundle.getInt(POI_ID));
+				GetLocationPoint(bundle.getInt(EXTRAS_POI_K));
 				break;
 			case COMMAND_GET_POI_K:
-				//GetLocationPoint(bundle.getInt(POI_ID));
-				double lat = bundle.getDouble(LOCATION_LAT);
-				double lg = bundle.getDouble(LOCATION_LONG);
-				int k = bundle.getInt(POI_K);
+				//Location l 	= bundle.getParcelable(EXTRAS_LOCATION);
+				int k 		= bundle.getInt(EXTRAS_POI_K);
+				double lat	= bundle.getDouble(EXTRAS_LOCATION_LAT);
+				double lg	= bundle.getDouble(EXTRAS_LOCATION_LONG);
 				getNearestPoints(lg, lat, k);
 				break;
 		}
@@ -61,6 +64,7 @@ public class RestService extends IntentService {
 	private void getNearestPoints(double longitude, double latitude, int numberOfNearestNeighbours) {
 		JRestMethod.getNearestPoints(this, longitude, latitude, numberOfNearestNeighbours);
 	}
+	
 	/*
 	 * @return boolean return true if the application can access the internet
 	 */

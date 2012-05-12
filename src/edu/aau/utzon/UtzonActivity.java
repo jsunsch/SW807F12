@@ -6,8 +6,10 @@ import com.actionbarsherlock.view.MenuItem;
 import edu.aau.utzon.augmented.AugmentedActivity;
 import edu.aau.utzon.indoor.IndoorActivity;
 import edu.aau.utzon.location.LocationAwareActivity;
+import edu.aau.utzon.location.LocationAwareService;
 import edu.aau.utzon.outdoor.OutdoorActivity;
 import edu.aau.utzon.webservice.ProviderContract;
+import edu.aau.utzon.webservice.RestService;
 import edu.aau.utzon.webservice.RestServiceHelper;
 
 import android.content.Intent;
@@ -21,7 +23,7 @@ public class UtzonActivity extends LocationAwareActivity {
 	private static final String TAG = "UtzonActivity";
 	private int poiCounter = 0;
 
-	private RestContentObserver mContentObserver = new RestContentObserver(new Handler());
+	private RestContentObserver mContentObserver; 
 	private class RestContentObserver extends ContentObserver{
 		public RestContentObserver(Handler handler) {
 			super(handler);
@@ -39,37 +41,23 @@ public class UtzonActivity extends LocationAwareActivity {
 			tv1.setText("Fetched " + ++poiCounter + " point(s) of interest.");
 		}
 	}
-	
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
-		// Remove title bar
-		//		if( android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB ) {
-		//			requestWindowFeature(Window.FEATURE_NO_TITLE);
-		//		}
-
+		setContentView(R.layout.main);
 		// Register content observer so that we are notified when new POIs are available
+		mContentObserver = new RestContentObserver(new Handler());
 		getContentResolver().registerContentObserver(ProviderContract.Points.CONTENT_URI, false, mContentObserver);
 		
-		setContentView(R.layout.main);
+		
+		RestServiceHelper.getServiceHelper()
+		.getLocationPoints(this);
+		
 		TextView tv1 = (TextView) findViewById(R.id.main_text);
 		tv1.setText("Acquiring location...");
 	}
 
-	
-	boolean firstLocation = true;
-	@Override
-	public void makeUseOfNewLocation(Location loc) {
-		if(firstLocation) {
-			TextView tv1 = (TextView) findViewById(R.id.main_text);
-			tv1.setText("Connecting to server...");
-			RestServiceHelper.getServiceHelper()
-				.getNearestPoints(this, 5, getLocationHelper().getCurrentLocation());
-			firstLocation = false;
-		}
-	}
-	
 	@Override
 	public void onPause()	{
 		super.onPause();
@@ -104,7 +92,9 @@ public class UtzonActivity extends LocationAwareActivity {
 			startActivity(new Intent(this, IndoorActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
 			return true;
 		case R.id.actionbar_poi_list:
-			startActivity(new Intent(this, PoiListActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+			startActivity(new Intent(this, PoiListActivity.class)
+			.putExtra(PoiListActivity.COMMAND, PoiListActivity.COMMAND_ALL)
+			.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
 			return true;
 		case R.id.actionbar_settings:
 			startActivity(new Intent(this, SettingsActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
@@ -114,18 +104,29 @@ public class UtzonActivity extends LocationAwareActivity {
 			onSearchRequested();
 			return true;
 		case R.id.actionbar_refresh:
-			TextView tv1 = (TextView)findViewById(R.id.main_text);
-			tv1.setText("Location not yet available. Please try again.");
-			if(getLocationHelper().getCurrentLocation() != null ) {
-				poiCounter = 0;
-				tv1.setText("Connecting to server...");
-				RestServiceHelper.getServiceHelper()
-					.getNearestPoints(this, 5, getLocationHelper().getCurrentLocation());
-			}
+			firstRun = true; // force refresh
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
 	}
-	
+
+	@Override
+	public void makeUseOfNewNearPoi(int poi_id) {
+		// Ignore		
+	}
+
+	boolean firstRun = true;
+	Location mLocation = null;
+	@Override
+	public void makeUseOfNewLocation(Location location) {
+		if(firstRun) {
+			mLocation = location;
+			TextView tv1 = (TextView)findViewById(R.id.main_text);
+			tv1.setText("Connecting to server...");
+			RestServiceHelper.getServiceHelper()
+				.getNearestPoints(this, 5, location);
+			firstRun = false;
+		}
+	}	
 }

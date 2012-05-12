@@ -24,7 +24,7 @@ public class RestServiceHelper {
     	Log.i(TAG, "getLocationPoint() called");
     	context.startService(new Intent(context, RestService.class)
     		.putExtra(RestService.COMMAND, RestService.COMMAND_GET_POI_ID)
-    		.putExtra(RestService.POI_ID, id));
+    		.putExtra(RestService.EXTRAS_POI_ID, id));
     }
     
 	public void getLocationPoints(Context context) {
@@ -37,9 +37,9 @@ public class RestServiceHelper {
 		Log.i(TAG, "getNearestPoints() called");
 		context.startService(new Intent(context, RestService.class)
 			.putExtra(RestService.COMMAND, RestService.COMMAND_GET_POI_K)
-			.putExtra(RestService.POI_K, k)
-			.putExtra(RestService.LOCATION_LAT, l.getLatitude())
-			.putExtra(RestService.LOCATION_LONG, l.getLongitude())
+			.putExtra(RestService.EXTRAS_POI_K, k)
+			.putExtra(RestService.EXTRAS_LOCATION_LAT, l.getLatitude())
+			.putExtra(RestService.EXTRAS_LOCATION_LONG, l.getLongitude())
 			);
 	}
 }

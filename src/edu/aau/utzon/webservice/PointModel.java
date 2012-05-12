@@ -3,6 +3,7 @@ package edu.aau.utzon.webservice;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.util.Log;
@@ -60,6 +61,7 @@ public class PointModel {
 	
 	static public List<PointModel> dbGetAll(Context c)
 	{
+		ContentResolver cr = c.getContentResolver();
 		return asPointModels(c.getContentResolver()
 				.query(	ProviderContract.Points.CONTENT_URI, 
 						ProviderContract.Points.PROJECTIONSTRING_ALL, 

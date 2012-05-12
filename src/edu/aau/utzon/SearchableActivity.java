@@ -18,7 +18,10 @@ public class SearchableActivity extends Activity {
 	      String query = intent.getStringExtra(SearchManager.QUERY);
 	      
 	      // Only search on name for now
-	      startActivity(new Intent(this, PoiListActivity.class).putExtra("query", query).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+	      startActivity(new Intent(this, PoiListActivity.class)
+	      	.putExtra(PoiListActivity.COMMAND, PoiListActivity.COMMAND_QUERY)
+	      	.putExtra(PoiListActivity.EXTRAS_QUERY, query)
+	      	.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
 	    }
 	}
 }

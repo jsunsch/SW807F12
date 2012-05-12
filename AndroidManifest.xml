@@ -80,6 +80,7 @@
             android:authorities="edu.aau.utzon" />
 
         <service android:name="edu.aau.utzon.webservice.RestService" />
+        <service android:name="edu.aau.utzon.location.LocationAwareService" />
     </application>
 
 </manifest>
