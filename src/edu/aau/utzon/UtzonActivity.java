@@ -8,6 +8,7 @@ import edu.aau.utzon.location.SampleService;
 import edu.aau.utzon.utils.CommonIntents;
 import edu.aau.utzon.webservice.PointModel;
 import edu.aau.utzon.webservice.ProviderContract;
+import edu.aau.utzon.webservice.RestServiceHelper;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.database.ContentObserver;
@@ -147,6 +148,7 @@ public class UtzonActivity extends LocationAwareActivity {
 
 	private int shownAlertId = 0;
 	private int shownToastId = 0;
+	
 	@Override
 	public void serviceNewPoiBroadcast(final PointModel poi) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -171,7 +173,7 @@ public class UtzonActivity extends LocationAwareActivity {
 		}
 	}
 
-
+	private boolean firstLocationUpdate = true;
 
 	@Override
 	public void serviceNewLocationBroadcast(Location location) {
@@ -181,6 +183,13 @@ public class UtzonActivity extends LocationAwareActivity {
 			CharSequence text = "Distance to nearest POI: " + (int)dist + " meter(s).";
 			Toast toast = Toast.makeText(this, text, Toast.LENGTH_LONG);
 			toast.show();
+			
+			if(firstLocationUpdate) {
+				RestServiceHelper.getServiceHelper().getNearestPoints(this, 10, location);
+				firstLocationUpdate = false;
+				TextView tv = (TextView)findViewById(R.id.main_text);
+				tv.setText("Done.");
+			}
 		}
 	}	
 }
