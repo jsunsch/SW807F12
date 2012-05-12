@@ -1,12 +1,11 @@
 package edu.aau.utzon;
 
+import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import edu.aau.utzon.augmented.AugmentedActivity;
 import edu.aau.utzon.indoor.IndoorActivity;
-import edu.aau.utzon.location.LocationAwareActivity;
-import edu.aau.utzon.location.LocationAwareService;
 import edu.aau.utzon.outdoor.OutdoorActivity;
 import edu.aau.utzon.webservice.ProviderContract;
 import edu.aau.utzon.webservice.RestService;
@@ -19,7 +18,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.widget.TextView;
 
-public class UtzonActivity extends LocationAwareActivity {
+public class UtzonActivity extends SherlockActivity {
 	private static final String TAG = "UtzonActivity";
 	private int poiCounter = 0;
 
@@ -111,14 +110,14 @@ public class UtzonActivity extends LocationAwareActivity {
 		}
 	}
 
-	@Override
+
 	public void makeUseOfNewNearPoi(int poi_id) {
 		// Ignore		
 	}
 
 	boolean firstRun = true;
 	Location mLocation = null;
-	@Override
+
 	public void makeUseOfNewLocation(Location location) {
 		if(firstRun) {
 			mLocation = location;
