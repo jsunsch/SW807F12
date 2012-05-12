@@ -7,19 +7,29 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.graphics.drawable.Drawable;
+import android.location.Location;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.view.MotionEvent;
 
 import com.actionbarsherlock.app.SherlockMapActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import com.google.android.maps.GeoPoint;
+import com.google.android.maps.MapController;
 import com.google.android.maps.MyLocationOverlay;
 import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
 import com.readystatesoftware.maps.OnSingleTapListener;
 import com.readystatesoftware.maps.TapControlledMapView;
 
+import edu.aau.utzon.PoiListActivity;
 import edu.aau.utzon.R;
+import edu.aau.utzon.SettingsActivity;
+import edu.aau.utzon.augmented.AugmentedActivity;
+import edu.aau.utzon.indoor.IndoorActivity;
+import edu.aau.utzon.location.LocationHelper;
 import edu.aau.utzon.location.SampleService;
 import edu.aau.utzon.location.SampleService.SampleBinder;
 import edu.aau.utzon.webservice.PointModel;
@@ -37,6 +47,7 @@ public class OutdoorActivity extends SherlockMapActivity {
 			SampleBinder binder = (SampleBinder) service;
 			mService = binder.getService();
 			mBound = true;
+			drawOutdoorPois();
 		}
 
 		@Override
@@ -50,26 +61,27 @@ public class OutdoorActivity extends SherlockMapActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		
+		
+		// Draw POIs
+		drawMap();
+		//drawOutdoorPois();
+	}
+
+	TapControlledMapView mMapView;
+	private void drawMap() {
 		// Display Google maps to the user
 		setContentView(R.layout.mapview);
 		mMapView = (TapControlledMapView) findViewById(R.id.mapview);
 		mMyLocationOverlay = new MyLocationOverlay(this, mMapView);
-		// Draw POIs
-		drawMap();
-		drawOutdoorPois();
-	}
-
-	TapControlledMapView mMapView = null;
-	private void drawMap() {
+		mMyLocationOverlay.enableMyLocation();
+		mMapView.getOverlays().add(mMyLocationOverlay);
 		mMapView.setBuiltInZoomControls(true);
+		
 	}
 
 	private void drawOutdoorPois()
 	{
-		// Draw the user position on map
-		mMyLocationOverlay.enableMyLocation();
-		mMapView.getOverlays().add(mMyLocationOverlay);
-
 		// Setup overlays
 		if(mBound) {
 			List<Overlay> mapOverlays = mMapView.getOverlays();
@@ -124,6 +136,69 @@ public class OutdoorActivity extends SherlockMapActivity {
 	protected boolean isRouteDisplayed() {
 		// TODO Auto-generated method stub
 		return false;
+	}
+	
+	@Override
+	public void onResume()
+	{
+		super.onResume();
+		mMyLocationOverlay.enableMyLocation();
+	}
+
+	@Override
+	public void onPause()
+	{
+		super.onPause();
+		mMyLocationOverlay.disableMyLocation();
+	}
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu)
+	{
+		MenuInflater inflater = getSupportMenuInflater();
+		inflater.inflate(R.layout.menu_outdoor, menu);
+
+		//MenuItem searchItem = menu.findItem(R.id.actionbar_search); // TODO: Implement
+
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// Handle item selection
+		switch (item.getItemId()) {
+		case R.id.actionbar_center_location:
+			animateToLocation(mService.getLocationHelper().getCurrentLocation());
+			return true;
+		case R.id.actionbar_poi_list:
+			startActivity(new Intent(this, PoiListActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+			return true;
+		case R.id.actionbar_search:
+			// TODO: Implement
+			onSearchRequested();
+			return true;
+		case R.id.actionbar_augmented:
+			startActivity(new Intent(this, AugmentedActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+			return true;
+		case R.id.actionbar_indoor:
+			startActivity(new Intent(this, IndoorActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+			return true;
+		case R.id.actionbar_settings:
+			startActivity(new Intent(this, SettingsActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
+	}
+	
+	private void animateToLocation(Location loc)
+	{
+		// Only animate if its a valid location
+		if(loc != null){
+			MapController mc = mMapView.getController();
+			GeoPoint point =  LocationHelper.locToGeo(loc);
+			mc.animateTo(point);
+		}
 	}
 }
 //
