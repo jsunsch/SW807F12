@@ -1,4 +1,6 @@
-//package edu.aau.utzon.location;
+package edu.aau.utzon.location;
+
+
 //
 //import android.content.BroadcastReceiver;
 //import android.content.Context;

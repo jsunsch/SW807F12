@@ -16,7 +16,7 @@ import android.widget.AdapterView.OnItemClickListener;
 
 public class SettingsActivity extends SherlockListActivity {
 
-	protected static final String PREFS_PROXIMITY = "proximity";
+	public static final String PREFS_PROXIMITY = "proximity";
 
 	@Override
 	protected void onCreate(Bundle state)
@@ -51,7 +51,7 @@ public class SettingsActivity extends SherlockListActivity {
 					int position, long id) {
 
 				SharedPreferences preferenceMngr = getSharedPreferences(PREFS_PROXIMITY, MODE_PRIVATE);
-				int selectedItem = preferenceMngr.getInt("proximity", 20);
+				int selectedItem = preferenceMngr.getInt(PREFS_PROXIMITY, 20);
 				switch(selectedItem){
 				case 20:
 					selectedItem = 0;

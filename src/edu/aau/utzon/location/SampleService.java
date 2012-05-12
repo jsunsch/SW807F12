@@ -3,10 +3,13 @@ package edu.aau.utzon.location;
 import java.util.List;
 import java.util.Random;
 
+import edu.aau.utzon.SettingsActivity;
+
 import android.app.IntentService;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -28,11 +31,11 @@ public class SampleService extends Service {
 	 * runs in the same process as its clients, we don't need to deal with IPC.
 	 */
 	public class SampleBinder extends Binder {
-		SampleService getService() {
+		public SampleService getService() {
 			return SampleService.this;
 		}
 
-		LocationHelper getLocationHelper() {
+		public LocationHelper getLocationHelper() {
 			return mLocationHelper;
 		}
 	}
@@ -70,6 +73,7 @@ public class SampleService extends Service {
 	}
 
 	private void disableLocationListener() {
+		Log.i(TAG, "disableLocationListener()");
 		mLocationManager.removeUpdates(mLocationListener);
 	}
 	
@@ -80,6 +84,7 @@ public class SampleService extends Service {
 	}
 	
 	private void enableLocationListener() {
+		Log.i(TAG, "enableLocationListener()");
 		mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 		mLocationManager.requestLocationUpdates(getBestProvider(), 0, 0, mLocationListener);
 	}
@@ -92,10 +97,15 @@ public class SampleService extends Service {
 
 	@Override
 	public IBinder onBind(Intent intent) {
-		
 		enableLocationListener();
-		
 		return mBinder;
+	}
+	
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		Log.i(TAG, "onDestroy()");
+		disableLocationListener();
 	}
 
 	/** method for clients */
@@ -106,6 +116,14 @@ public class SampleService extends Service {
 	public LocationHelper getLocationHelper() {
 		Log.d(TAG, "getLocationHelper()");
 		return mLocationHelper;
+	}
+	
+	public boolean isNearPoi() {
+		Log.d(TAG, "isNearPoi()");
+		SharedPreferences prefs = getSharedPreferences(SettingsActivity.PREFS_PROXIMITY, MODE_PRIVATE);
+		int prox = prefs.getInt("proximity", 20);
+		double dist = mLocationHelper.distToPoi(mLocationHelper.getCurrentClosePoi());
+		return dist > prox ? false : true;
 	}
 
 }

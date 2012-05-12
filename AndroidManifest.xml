@@ -45,6 +45,11 @@
         <activity
             android:name=".outdoor.OutdoorActivity"
             android:uiOptions="splitActionBarWhenNarrow" >
+                        <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".WebserviceActivity"
@@ -75,11 +80,7 @@
             android:authorities="edu.aau.utzon" />
 
         <activity android:name=".location.SampleActivity" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
 >        <service android:name="edu.aau.utzon.location.SampleService" />
         <service android:name="edu.aau.utzon.webservice.RestService" />
