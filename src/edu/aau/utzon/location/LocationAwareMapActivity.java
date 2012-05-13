@@ -50,7 +50,8 @@ public abstract class LocationAwareMapActivity extends SherlockMapActivity imple
 		.setCancelable(false)
 		.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int id) {
-				startActivity(CommonIntents.startPoiContentActivity(getBaseContext(), mService.getLocationHelper().getCurrentLocation(), poi));
+				//startActivity(CommonIntents.startPoiContentActivity(getBaseContext(), mService.getLocationHelper().getCurrentLocation(), poi));
+				startActivity(CommonIntents.startPoiContentActivity(getBaseContext(), id));
 			}
 		})
 		.setNegativeButton("No", new DialogInterface.OnClickListener() {

@@ -22,7 +22,7 @@ public final class ProviderContract {
 		private static final String SCHEME = "content://";
 
 		// Attributes
-		public static final String ATTRIBUTE_ID = "id"; // DONT CHANGE!
+		public static final String ATTRIBUTE_ID = "_ID"; // DONT CHANGE!
 		public static final String ATTRIBUTE_LAT = "lat";
 		public static final String ATTRIBUTE_LONG = "long";
 		public static final String ATTRIBUTE_STATE = "state";

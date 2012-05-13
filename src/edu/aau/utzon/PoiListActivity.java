@@ -8,6 +8,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 
+import edu.aau.utzon.utils.CommonIntents;
 import edu.aau.utzon.webservice.PointModel;
 import edu.aau.utzon.webservice.ProviderContract;
 
@@ -134,8 +135,10 @@ public class PoiListActivity extends SherlockListActivity {
 
 		lv.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				startActivity(new Intent(getBaseContext(), PoiContentActivity.class)
-				.putExtra("_ID", mPois.get(position).getId()).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+				startActivity(CommonIntents.startPoiContentActivity(getBaseContext(), mPois.get(position).getId()));
+				//startActivity(CommonIntents.startPoiContentActivityFromBubbleTap(getBaseContext(), position));
+//				startActivity(new Intent(getBaseContext(), PoiContentActivity.class)
+//				.putExtra("_ID", mPois.get(position).getId()).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
 			}
 		});
 	}

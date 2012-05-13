@@ -17,11 +17,11 @@ import android.location.Location;
 import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
-import android.widget.Toast;
 import edu.aau.utzon.R;
 import edu.aau.utzon.location.SampleService.SampleBinder;
 import edu.aau.utzon.utils.CommonIntents;
 import edu.aau.utzon.webservice.PointModel;
+
 public abstract class LocationAwareActivity extends SherlockActivity implements ILocationAware {
 	private static final String TAG = "LocationAwareMapActivity";
 	private SampleService mService = null;
@@ -37,7 +37,8 @@ public abstract class LocationAwareActivity extends SherlockActivity implements 
 		.setCancelable(false)
 		.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int id) {
-				startActivity(CommonIntents.startPoiContentActivity(getBaseContext(), mService.getLocationHelper().getCurrentLocation(), poi));
+				//startActivity(CommonIntents.startPoiContentActivity(getBaseContext(), mService.getLocationHelper().getCurrentLocation(), poi));
+				startActivity(CommonIntents.startPoiContentActivity(getBaseContext(), id));
 			}
 		})
 		.setNegativeButton("No", new DialogInterface.OnClickListener() {

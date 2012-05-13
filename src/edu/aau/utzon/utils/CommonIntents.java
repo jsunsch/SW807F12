@@ -14,19 +14,15 @@ public class CommonIntents {
 	public static String POI_INTENTFILTER = "POI_INTENTFILTER";
 	static public String EXTRA_LOCATION = "EXTRA_LOCATION";
 	static public String EXTRA_NEAR_POI = "EXTRA_NEAR_POI";
-	
+
 	static public Intent startSettingsActivity(Context context) {
 		return new Intent(context, SettingsActivity.class);
 	}
 	
-	static public Intent startSampleService(Context context) {
-		return new Intent();
-	}
-	
 	static public Intent startPoiListActivity(Context context) {
 		return new Intent(context, PoiListActivity.class)
-			.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-			.putExtra(PoiListActivity.COMMAND, PoiListActivity.COMMAND_ALL);
+			.putExtra(PoiListActivity.COMMAND, PoiListActivity.COMMAND_ALL)
+			.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 	}
 	
 	static public Intent startPoiListActivityQuery(Context context, String query) {
@@ -36,10 +32,10 @@ public class CommonIntents {
 			.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 	}
 	
-	static public Intent startPoiContentActivity(Context context, Location location, PointModel poi) {
+	static public Intent startPoiContentActivity(Context context, int id) {
 		Intent intent = new Intent(context, PoiContentActivity.class);
-		intent.putExtra(EXTRA_LOCATION, location);
-		intent.putExtra(EXTRA_NEAR_POI, poi);
+		intent.putExtra(PoiContentActivity.COMMAND, PoiContentActivity.COMMAND_NORMAL_ID);
+		intent.putExtra(PoiContentActivity.EXTRAS_NORMAL_ID, id);
 		return intent;
 	}
 	
