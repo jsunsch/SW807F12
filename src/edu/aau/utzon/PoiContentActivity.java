@@ -8,27 +8,33 @@ import android.os.Bundle;
 import android.widget.TextView;
 
 public class PoiContentActivity extends Activity{	
+	public static final String COMMAND = "PoiContentActivity_COMMAND";
+	public static final String EXTRAS_NORMAL_ID = "PoiContentActivity_NORMAL_ID";
+	public static final String EXTRAS_BUBBLETAP_ID = "PoiContentActivity_BUBBLETAP_ID";
+	public static final int COMMAND_NORMAL_ID = 1;
+	public static final int COMMAND_BUBBLETAP_ID = 2;
+	
+	
 	
 	@Override
 	public void onCreate(Bundle saved){
 		super.onCreate(saved);
 		Intent i = getIntent();
-
-		// Would like to unify this to _ID, but balloon is special case
-		int db_id = i.getExtras().getInt("_ID");
-		int b_id = i.getExtras().getInt("_BALLOON_ID");
-		int list_id = i.getExtras().getInt("_POILIST_ID");
-		int _id = b_id > list_id ? b_id : list_id;
+		Bundle extras = i.getExtras();
+		int command = extras.getInt(COMMAND);
 		
-		PointModel pm;
+		int id;
+		PointModel pm = null;
 		
-		if(db_id > 0) {
-			// We have DB id
-			pm = PointModel.dbGetSingle(this, db_id);
-		}
-		else
-		{
-			pm = PointModel.dbGetAll(this).get(_id);
+		switch(command) {
+		case COMMAND_NORMAL_ID:
+			id = i.getExtras().getInt(EXTRAS_NORMAL_ID);
+			pm = PointModel.dbGetSingle(this, id);
+			break;
+		case COMMAND_BUBBLETAP_ID:
+			id = i.getExtras().getInt(EXTRAS_BUBBLETAP_ID);
+			pm = PointModel.dbGetAll(this).get(id);
+			break;
 		}
 		
 		// Fully constructed PointModel available for UI

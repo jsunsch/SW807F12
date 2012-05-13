@@ -1,18 +1,12 @@
 package edu.aau.utzon.location;
 
-import java.util.List;
 import java.util.Random;
 
-import edu.aau.utzon.SettingsActivity;
 import edu.aau.utzon.utils.CommonIntents;
 import edu.aau.utzon.webservice.PointModel;
-import edu.aau.utzon.webservice.RestServiceHelper;
-
-import android.app.IntentService;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;

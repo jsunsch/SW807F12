@@ -36,11 +36,17 @@ public class CommonIntents {
 			.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 	}
 	
-	static public  Intent startPoiContentActivity(Context context, Location location, PointModel poi) {
+	static public Intent startPoiContentActivity(Context context, Location location, PointModel poi) {
 		Intent intent = new Intent(context, PoiContentActivity.class);
 		intent.putExtra(EXTRA_LOCATION, location);
 		intent.putExtra(EXTRA_NEAR_POI, poi);
 		return intent;
+	}
+	
+	static public Intent startPoiContentActivityFromBubbleTap(Context context, int bubbleID) {
+		return new Intent(context, PoiContentActivity.class)
+			.putExtra(PoiContentActivity.COMMAND, PoiContentActivity.COMMAND_BUBBLETAP_ID)
+			.putExtra(PoiContentActivity.EXTRAS_BUBBLETAP_ID, bubbleID);
 	}
 	
 	static public Intent startIndoorActivity(Context context) {

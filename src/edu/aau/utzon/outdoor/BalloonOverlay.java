@@ -3,16 +3,16 @@ package edu.aau.utzon.outdoor;
 import java.util.ArrayList;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapView;
 import com.google.android.maps.OverlayItem;
 import com.readystatesoftware.mapviewballoons.BalloonItemizedOverlay;
 
-import edu.aau.utzon.PoiContentActivity;
+import edu.aau.utzon.utils.CommonIntents;
 
 public class BalloonOverlay extends BalloonItemizedOverlay<OverlayItem> {
+
 	private ArrayList<OverlayItem> m_overlays = new ArrayList<OverlayItem>();
 	private Context c;
 
@@ -42,12 +42,14 @@ public class BalloonOverlay extends BalloonItemizedOverlay<OverlayItem> {
 		GeoPoint p = item.getPoint();
 		String title = item.getTitle();
 		String snippet = item.getSnippet();
+		c.startActivity(CommonIntents.startPoiContentActivityFromBubbleTap(c, index));
 		
+		//c.startActivity(CommonIntents.startPoiListActivityQuery(c, title));
 		/* TODO: Do not use dummy ID */
 		//PointModel poi = new PointModel(1, snippet, title, p.getLatitudeE6(), p.getLatitudeE6());
-		Intent i = new Intent(c, PoiContentActivity.class);
-		i.putExtra("_BALLOON_ID", index);
-		c.startActivity(i);
+//		Intent i = new Intent(c, PoiContentActivity.class);
+//		i.putExtra("_BALLOON_ID", index);
+//		c.startActivity(i);
 		return true;
 	}
 }

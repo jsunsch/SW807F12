@@ -8,7 +8,6 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 
-import edu.aau.utzon.location.LocationHelper;
 import edu.aau.utzon.webservice.PointModel;
 import edu.aau.utzon.webservice.ProviderContract;
 
@@ -24,7 +23,7 @@ import android.view.View;
 import android.view.Window;
 
 public class PoiListActivity extends SherlockListActivity {
-	public static final String COMMAND = "PoiListActivity_LOCATION";
+	public static final String COMMAND = "PoiListActivity_COMMAND";
 
 	/** Clients must provide (String) EXTRAS_QUERY **/
 	public static final int COMMAND_ALL = 1;
@@ -32,6 +31,8 @@ public class PoiListActivity extends SherlockListActivity {
 	public static final int COMMAND_QUERY = 2;
 	public static final String EXTRAS_QUERY = "PoiListActivity_QUERY";
 	//public static final String EXTRAS_LOCATION = "PoiListActivity_LOCATION";
+//	public static final int COMMAND_LIST = 3;
+//	public static final String EXTRAS_LIST = "PoiListActivity_LIST";
 
 	Location mLocation = null;
 	String[] mGuiText = null;

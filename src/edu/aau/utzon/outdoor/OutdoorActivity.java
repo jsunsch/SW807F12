@@ -66,7 +66,7 @@ public class OutdoorActivity extends LocationAwareMapActivity implements ILocati
 			final BalloonOverlay itemizedoverlay = new BalloonOverlay(drawable, mMapView);
 	
 			// Get the POIs to draw
-			List<PointModel> pmlist = getSampleService().getLocationHelper().knearestPOI(20);
+			List<PointModel> pmlist = getSampleService().getLocationHelper().getPois();
 			// Add POI to the overlay
 			for(PointModel p : pmlist)
 			{
