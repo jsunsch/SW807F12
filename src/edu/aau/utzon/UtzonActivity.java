@@ -1,6 +1,7 @@
 package edu.aau.utzon;
 
 import edu.aau.utzon.location.LocationAwareActivity;
+import edu.aau.utzon.utils.CommonIntents;
 import edu.aau.utzon.webservice.RestServiceHelper;
 import android.location.Location;
 import android.os.Bundle;

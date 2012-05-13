@@ -5,6 +5,7 @@ import java.util.Random;
 
 import edu.aau.utzon.SettingsActivity;
 import edu.aau.utzon.utils.CommonIntents;
+import edu.aau.utzon.webservice.PointModel;
 import edu.aau.utzon.webservice.RestServiceHelper;
 
 import android.app.IntentService;
@@ -22,7 +23,7 @@ import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
-public class SampleService extends Service {
+public class SampleService extends Service implements ILocationAware{
 	private static final String TAG = "SampleService";
 	// Binder given to clients
 	private final IBinder mBinder = new SampleBinder();
@@ -47,6 +48,7 @@ public class SampleService extends Service {
 	LocationListener mLocationListener = null;
 	LocationManager mLocationManager = null;
 	private void initState() {
+		mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 		mLocationHelper = new LocationHelper(this);
 		mLocationListener = new LocationListener() {
 
@@ -75,24 +77,26 @@ public class SampleService extends Service {
 				if(location != null) {
 					mLocationHelper.makeUseOfNewLocation(location);
 					if(location == mLocationHelper.getCurrentLocation()) {
-						broadcastLocationUpdate();
+						serviceNewLocationBroadcast(location);
 					}
 					if(mLocationHelper.isNearPoi()) {
-						broadcastNearPoi();
+						serviceNewPoiBroadcast(mLocationHelper.getCurrentClosePoi());
 					}
 				}
 			}
 		};
 	}
 
-	protected void broadcastNearPoi() {
-		Log.d(TAG, "broadcastNearPoi()");
+	@Override
+	public void serviceNewPoiBroadcast(PointModel poi) {
+		Log.d(TAG, "serviceNewPoiBroadcast()");
 		LocalBroadcastManager.getInstance(this)
-		.sendBroadcast(CommonIntents.broadcastNearPoi(this, mLocationHelper.getCurrentClosePoi()));
+		.sendBroadcast(CommonIntents.broadcastNearPoi(this, poi));
 	}
 
-	protected void broadcastLocationUpdate() {
-		Log.i(TAG, "broadcastLocationUpdate()");
+	@Override
+	public void serviceNewLocationBroadcast(Location location) {
+		Log.i(TAG, "serviceNewLocationBroadcast()");
 		LocalBroadcastManager.getInstance(this)
 		.sendBroadcast(CommonIntents.broadcastLocationUpdate(this, mLocationHelper.getCurrentLocation()));
 	}
@@ -105,42 +109,54 @@ public class SampleService extends Service {
 	private String getBestProvider() {
 		Criteria c = new Criteria();
 		c.setAccuracy(Criteria.ACCURACY_COARSE);
+		c.setPowerRequirement(Criteria.POWER_LOW);
 		return mLocationManager.getBestProvider(c, true);
 	}
 
 	private void enableLocationListener() {
 		Log.i(TAG, "enableLocationListener()");
-		mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-		mLocationManager.requestLocationUpdates(getBestProvider(), 0, 0, mLocationListener);
+		
+		if(getBestProvider() != null)
+			mLocationManager.requestLocationUpdates(getBestProvider(), 0, 0, mLocationListener);
 	}
 
 	/** Should only be called in entry activity for the application **/
-	//	@Override
-	//	public int onStartCommand(Intent intent, int flags, int startID) {
-	//		Log.i(TAG, "onStartCommand(intent, " + flags + startID);
-	//		enableLocationListener();
-	//		// TODO:
-	//		while(mLocationHelper.getCurrentLocation() == null) {}
-	//	    // We want this service to continue running until it is explicitly
-	//	    // stopped, so return sticky.
-	//	    return START_STICKY;
-	//
-	//	}
+//		@Override
+//		public int onStartCommand(Intent intent, int flags, int startID) {
+//			Log.i(TAG, "onStartCommand(intent, " + flags + startID);
+//			initState();
+//			//enableLocationListener();
+//			// TODO:
+//			//while(mLocationHelper.getCurrentLocation() == null) {}
+//		    // We want this service to continue running until it is explicitly
+//		    // stopped, so return sticky.
+//		    return START_NOT_STICKY;
+//	
+//		}
 
-	@Override
-	public void onCreate() {
-		super.onCreate();
-		initState();
-		enableLocationListener();
-	}
+//	@Override
+//	public void onCreate() {
+//		super.onCreate();
+//		initState();
+//		
+//	}
 
 	@Override
 	public IBinder onBind(Intent intent) {
 		Log.d(TAG, "onBind()");
-
+		initState();
+		enableLocationListener();
 		return mBinder;
 	}
-
+	
+	//Called when all clients have disconnected from a particular interface published by the service.
+	@Override
+	public boolean onUnbind(Intent intent) {
+		Log.d(TAG, "onUnbind()");
+		disableLocationListener();
+		return false;
+	}
+	
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
