@@ -1,5 +1,6 @@
 package edu.aau.utzon;
 
+import edu.aau.utzon.utils.CommonIntents;
 import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Intent;
@@ -16,12 +17,12 @@ public class SearchableActivity extends Activity {
 	    Intent intent = getIntent();
 	    if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
 	      String query = intent.getStringExtra(SearchManager.QUERY);
-	      
+	      startActivity(CommonIntents.startPoiListActivityQuery(this, query));
 	      // Only search on name for now
-	      startActivity(new Intent(this, PoiListActivity.class)
-	      	.putExtra(PoiListActivity.COMMAND, PoiListActivity.COMMAND_QUERY)
-	      	.putExtra(PoiListActivity.EXTRAS_QUERY, query)
-	      	.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+//	      startActivity(new Intent(this, PoiListActivity.class)
+//	      	.putExtra(PoiListActivity.COMMAND, PoiListActivity.COMMAND_QUERY)
+//	      	.putExtra(PoiListActivity.EXTRAS_QUERY, query)
+//	      	.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
 	    }
 	}
 }

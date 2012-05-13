@@ -1,6 +1,9 @@
 package edu.aau.utzon.location;
 
 import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
@@ -15,6 +18,7 @@ import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.widget.Toast;
+import edu.aau.utzon.R;
 import edu.aau.utzon.location.SampleService.SampleBinder;
 import edu.aau.utzon.utils.CommonIntents;
 import edu.aau.utzon.webservice.PointModel;
@@ -147,6 +151,45 @@ public abstract class LocationAwareActivity extends SherlockActivity {
 		if (mBound) {
 			unbindService(mConnection);
 			mBound = false;
+		}
+	}
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu)
+	{
+		MenuInflater inflater = getSupportMenuInflater();
+		inflater.inflate(R.layout.menu_main, menu);
+		return true;
+	}	
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// Handle item selection
+		switch (item.getItemId()) {
+		case R.id.actionbar_outdoor:
+			startActivity(CommonIntents.startOutdoorActivity(this));
+			return true;
+		case R.id.actionbar_augmented:
+			startActivity(CommonIntents.startAugmentedActivity(this));
+			return true;
+		case R.id.actionbar_indoor:
+			startActivity(CommonIntents.startIndoorActivity(this));
+			return true;
+		case R.id.actionbar_poi_list:
+			startActivity(CommonIntents.startPoiListActivity(this));
+			return true;
+		case R.id.actionbar_settings:
+			startActivity(CommonIntents.startSettingsActivity(this));
+			return true;
+		case R.id.actionbar_search:
+			// TODO: Implement
+			onSearchRequested();
+			return true;
+		case R.id.actionbar_refresh:
+			//queryWebService();
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
 		}
 	}
 }

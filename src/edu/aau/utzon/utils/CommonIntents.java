@@ -25,7 +25,15 @@ public class CommonIntents {
 	
 	static public Intent startPoiListActivity(Context context) {
 		return new Intent(context, PoiListActivity.class)
+			.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
 			.putExtra(PoiListActivity.COMMAND, PoiListActivity.COMMAND_ALL);
+	}
+	
+	static public Intent startPoiListActivityQuery(Context context, String query) {
+		return new Intent(context, PoiListActivity.class)
+			.putExtra(PoiListActivity.COMMAND, PoiListActivity.COMMAND_QUERY)
+			.putExtra(PoiListActivity.EXTRAS_QUERY, query)		
+			.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 	}
 	
 	static public  Intent startPoiContentActivity(Context context, Location location, PointModel poi) {

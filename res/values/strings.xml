@@ -17,5 +17,6 @@
     <string name="remote_service_stopped">SampleServiceStopped</string>
     <string name="remote_service_connected">Service connected</string>
     <string name="remote_service_disconnected">Service disconnected</string>
+    <string name="main_screen_text">Welcome to TACO! The best location thingie around.</string>
 
 </resources>

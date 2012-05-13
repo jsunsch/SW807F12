@@ -105,7 +105,7 @@ public class PoiListActivity extends SherlockListActivity {
 			mPois = PointModel.dbGetAll(this);
 			break;
 		case COMMAND_QUERY:
-			String query = extras.getString("query");
+			String query = extras.getString(EXTRAS_QUERY);
 			String selection = ProviderContract.Points.ATTRIBUTE_NAME + " like " + "'%" + query + "%'"; // Our amazing search algorithm
 			Cursor c = 
 					getContentResolver().query(	ProviderContract.Points.CONTENT_URI, 
