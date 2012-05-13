@@ -22,6 +22,7 @@ public class LocationHelper {
 
 	public double distToPoi(PointModel poi)
 	{
+		//poi = poi == null ? mCurrentClosePoi : poi;
 		double userLat = mCurrentLoc.getLatitude();
 		double userLong = mCurrentLoc.getLongitude();
 		return distFrom(userLat, userLong, poi.getLat(), poi.getLong());
@@ -31,8 +32,11 @@ public class LocationHelper {
 		Log.d(TAG, "isNearPoi()");
 		SharedPreferences prefs = mContext.getSharedPreferences(SettingsActivity.PREFS_PROXIMITY, Context.MODE_PRIVATE);
 		int prox = prefs.getInt("proximity", 20);
-		double dist = distToPoi(getCurrentClosePoi());
-		return dist > prox ? false : true;
+		if(getCurrentClosePoi() != null) {
+			double dist = distToPoi(getCurrentClosePoi());
+			return dist > prox ? false : true;
+		}
+		else return false;
 	}
 	
 	private void updateUserLocation(Location l)

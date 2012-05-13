@@ -118,7 +118,6 @@ public class PointModel implements Parcelable{
 			Log.e(TAG, "Should use asPointModels instead of asPointModel for multiple POIs");
 		if( query.getCount() == 0 ) {
 			Log.e(TAG, "No elements in cursor");
-			return null;
 		}
 		
 		return asPointModels(query).get(0);

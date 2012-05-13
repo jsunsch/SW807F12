@@ -11,31 +11,28 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.location.Location;
-import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
-import android.widget.TextView;
 import android.widget.Toast;
-import edu.aau.utzon.R;
 import edu.aau.utzon.location.SampleService.SampleBinder;
 import edu.aau.utzon.utils.CommonIntents;
 import edu.aau.utzon.webservice.PointModel;
-import edu.aau.utzon.webservice.RestServiceHelper;
 public abstract class LocationAwareActivity extends SherlockActivity {
 	private static final String TAG = "LocationAwareMapActivity";
-	protected SampleService mService = null;
+	private SampleService mService = null;
 	private boolean mBound = false;
 	public boolean isBound() { return mBound; }
+	
 
-	abstract public void serviceBoundEvent(SampleService service);
-	abstract public void serviceDisconnectedEvent();
+//	abstract public void serviceBoundEvent(SampleService service);
+//	abstract public void serviceDisconnectedEvent();
 //	abstract public void serviceNewPoiBroadcast(PointModel poi);
 //	abstract public void serviceNewLocationBroadcast(Location location);
 
 	private int shownAlertId = 0;
-	private int shownToastId = 0;
-	private boolean firstLocationUpdate = true;
+	//private int shownToastId = 0;
+	
 	public void serviceNewPoiBroadcast(final PointModel poi) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setMessage("You are near a POI. Do you wish to see the content available?")
@@ -59,22 +56,18 @@ public abstract class LocationAwareActivity extends SherlockActivity {
 		}
 	}
 	
+	private Location old = null;
 	public void serviceNewLocationBroadcast(Location location) {
-		if(shownToastId == 0 || (shownToastId != mService.getLocationHelper().getCurrentClosePoi().getId())) {
-			shownToastId = mService.getLocationHelper().getCurrentClosePoi().getId();
-			double dist = mService.getLocationHelper().distToPoi(mService.getLocationHelper().getCurrentClosePoi());
-			CharSequence text = "Distance to nearest POI: " + (int)dist + " meter(s).";
-			Toast toast = Toast.makeText(this, text, Toast.LENGTH_LONG);
-			toast.show();
-			
-			if(firstLocationUpdate) {
-				RestServiceHelper.getServiceHelper().getNearestPoints(this, 10, location);
-				firstLocationUpdate = false;
-				TextView tv = (TextView)findViewById(R.id.main_text);
-				tv.setText("Synchronization done.");
-			}
-		}
-	}	
+		mService.getLocationHelper().makeUseOfNewLocation(location);
+	}
+//		if(location != null &&  ) {
+//			shownToastId = mService.getLocationHelper().getCurrentClosePoi().getId();
+//			double dist = mService.getLocationHelper().distToPoi(mService.getLocationHelper().getCurrentClosePoi());
+//			CharSequence text = "Distance to nearest POI: " + (int)dist + " meter(s).";
+//			Toast toast = Toast.makeText(this, text, Toast.LENGTH_LONG);
+//			toast.show();
+//		}
+	//}	
 	
 	/** Defines callbacks for service binding, passed to bindService() */
 	private ServiceConnection mConnection = new ServiceConnection() {
@@ -85,13 +78,13 @@ public abstract class LocationAwareActivity extends SherlockActivity {
 			SampleBinder binder = (SampleBinder) service;
 			mService = binder.getService();
 			mBound = true;
-			serviceBoundEvent(mService);
+			//serviceBoundEvent(mService);
 		}
 
 		@Override
 		public void onServiceDisconnected(ComponentName arg0) {
 			mBound = false;
-			serviceDisconnectedEvent();
+			//serviceDisconnectedEvent();
 		}
 	};	
 	

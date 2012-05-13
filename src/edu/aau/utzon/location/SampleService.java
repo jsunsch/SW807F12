@@ -5,6 +5,7 @@ import java.util.Random;
 
 import edu.aau.utzon.SettingsActivity;
 import edu.aau.utzon.utils.CommonIntents;
+import edu.aau.utzon.webservice.RestServiceHelper;
 
 import android.app.IntentService;
 import android.app.Service;
@@ -45,8 +46,8 @@ public class SampleService extends Service {
 	LocationHelper mLocationHelper = null;
 	LocationListener mLocationListener = null;
 	LocationManager mLocationManager = null;
-	private void initState(Context context) {
-		mLocationHelper = new LocationHelper(context);
+	private void initState() {
+		mLocationHelper = new LocationHelper(this);
 		mLocationListener = new LocationListener() {
 
 			@Override
@@ -67,19 +68,19 @@ public class SampleService extends Service {
 
 			}
 
+			//boolean isFirstLocation = true;
+
 			@Override
-
 			public void onLocationChanged(Location location) {
-				Location old = mLocationHelper.getCurrentLocation();
-				mLocationHelper.makeUseOfNewLocation(location);
-				if(mLocationHelper.isNearPoi()) {
-					broadcastNearPoi();
+				if(location != null) {
+					mLocationHelper.makeUseOfNewLocation(location);
+					if(location == mLocationHelper.getCurrentLocation()) {
+						broadcastLocationUpdate();
+					}
+					if(mLocationHelper.isNearPoi()) {
+						broadcastNearPoi();
+					}
 				}
-
-				if(old != mLocationHelper.getCurrentLocation()) {
-					broadcastLocationUpdate();
-				}
-
 			}
 		};
 	}
@@ -129,13 +130,14 @@ public class SampleService extends Service {
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		initState(this);
+		initState();
+		enableLocationListener();
 	}
 
 	@Override
 	public IBinder onBind(Intent intent) {
 		Log.d(TAG, "onBind()");
-		enableLocationListener();
+
 		return mBinder;
 	}
 
