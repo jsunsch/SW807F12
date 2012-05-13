@@ -90,11 +90,11 @@ public class LocationHelper {
 		return new Double(dist * meterConversion).doubleValue();
 	}
 
-	private List<PointModel> knearestPOI(List<PointModel> query, int k)
+	public List<PointModel> knearestPOI(int k)
 	{
 		List<PointModel> result = new ArrayList<PointModel>();
 
-		List<PointModel> qtemp = query;
+		List<PointModel> qtemp = mPois;
 		for(int i=0;i<=k;i++)
 		{
 			PointModel nearest = nearestPOI(qtemp, mCurrentLoc);

@@ -2,17 +2,11 @@ package edu.aau.utzon.outdoor;
 
 import java.util.List;
 
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.Intent;
-import android.content.ServiceConnection;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.view.MotionEvent;
 
-import com.actionbarsherlock.app.SherlockMapActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
@@ -24,19 +18,24 @@ import com.google.android.maps.OverlayItem;
 import com.readystatesoftware.maps.OnSingleTapListener;
 import com.readystatesoftware.maps.TapControlledMapView;
 
-import edu.aau.utzon.PoiListActivity;
 import edu.aau.utzon.R;
-import edu.aau.utzon.SettingsActivity;
-import edu.aau.utzon.augmented.AugmentedActivity;
-import edu.aau.utzon.indoor.IndoorActivity;
+import edu.aau.utzon.location.ILocationAware;
 import edu.aau.utzon.location.LocationAwareMapActivity;
 import edu.aau.utzon.location.LocationHelper;
-import edu.aau.utzon.location.SampleService;
-import edu.aau.utzon.location.SampleService.SampleBinder;
 import edu.aau.utzon.utils.CommonIntents;
 import edu.aau.utzon.webservice.PointModel;
 
-public class OutdoorActivity extends LocationAwareMapActivity {
+public class OutdoorActivity extends LocationAwareMapActivity implements ILocationAware{
+	
+	boolean isFirstLocation = true;
+	@Override
+	public void serviceNewLocationBroadcast(Location location) {
+		getSampleService().getLocationHelper().makeUseOfNewLocation(location);
+		if(isFirstLocation && location != null && getSampleService().getLocationHelper().getCurrentLocation() != null) {
+			drawOutdoorPois();
+			isFirstLocation = false;
+		}
+	}
 	
 	MyLocationOverlay mMyLocationOverlay = null;
 
@@ -44,7 +43,6 @@ public class OutdoorActivity extends LocationAwareMapActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		drawMap();
-		drawOutdoorPois();
 	}
 
 	TapControlledMapView mMapView;
@@ -67,8 +65,10 @@ public class OutdoorActivity extends LocationAwareMapActivity {
 			Drawable drawable = this.getResources().getDrawable(R.drawable.androidmarker);
 			final BalloonOverlay itemizedoverlay = new BalloonOverlay(drawable, mMapView);
 	
+			// Get the POIs to draw
+			List<PointModel> pmlist = getSampleService().getLocationHelper().knearestPOI(20);
 			// Add POI to the overlay
-			for(PointModel p : getSampleService().getLocationHelper().getPois())
+			for(PointModel p : pmlist)
 			{
 				GeoPoint gp = p.getGeoPoint();
 				int id = p.getId();
