@@ -79,8 +79,7 @@
             android:name=".webservice.RestContentProvider"
             android:authorities="edu.aau.utzon" />
 
-        <activity android:name=".location.SampleActivity" >
-        </activity>
+     
 >        
         <service android:name="edu.aau.utzon.location.SampleService" />
         <service android:name="edu.aau.utzon.webservice.RestService" />
