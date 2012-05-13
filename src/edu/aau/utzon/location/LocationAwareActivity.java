@@ -22,21 +22,15 @@ import edu.aau.utzon.R;
 import edu.aau.utzon.location.SampleService.SampleBinder;
 import edu.aau.utzon.utils.CommonIntents;
 import edu.aau.utzon.webservice.PointModel;
-public abstract class LocationAwareActivity extends SherlockActivity {
+public abstract class LocationAwareActivity extends SherlockActivity implements ILocationAware {
 	private static final String TAG = "LocationAwareMapActivity";
 	private SampleService mService = null;
 	private boolean mBound = false;
-	public boolean isBound() { return mBound; }
-	
-
-//	abstract public void serviceBoundEvent(SampleService service);
-//	abstract public void serviceDisconnectedEvent();
-//	abstract public void serviceNewPoiBroadcast(PointModel poi);
-//	abstract public void serviceNewLocationBroadcast(Location location);
+	//public boolean isBound() { return mBound; }
 
 	private int shownAlertId = 0;
 	//private int shownToastId = 0;
-	
+
 	public void serviceNewPoiBroadcast(final PointModel poi) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setMessage("You are near a POI. Do you wish to see the content available?")
@@ -59,20 +53,12 @@ public abstract class LocationAwareActivity extends SherlockActivity {
 			alert.show();
 		}
 	}
-	
+
 	private Location old = null;
 	public void serviceNewLocationBroadcast(Location location) {
 		mService.getLocationHelper().makeUseOfNewLocation(location);
 	}
-//		if(location != null &&  ) {
-//			shownToastId = mService.getLocationHelper().getCurrentClosePoi().getId();
-//			double dist = mService.getLocationHelper().distToPoi(mService.getLocationHelper().getCurrentClosePoi());
-//			CharSequence text = "Distance to nearest POI: " + (int)dist + " meter(s).";
-//			Toast toast = Toast.makeText(this, text, Toast.LENGTH_LONG);
-//			toast.show();
-//		}
-	//}	
-	
+
 	/** Defines callbacks for service binding, passed to bindService() */
 	private ServiceConnection mConnection = new ServiceConnection() {
 
@@ -91,31 +77,27 @@ public abstract class LocationAwareActivity extends SherlockActivity {
 			//serviceDisconnectedEvent();
 		}
 	};	
-	
+
 	// Handler for broadcast events (Poi notification)
-		private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
-			@Override
-			public void onReceive(Context context, Intent intent) {
-				// Get extra data included in the Intent
-				//String message = intent.getStringExtra("message");
-				Location loc = intent.getParcelableExtra(CommonIntents.EXTRA_LOCATION);
-				PointModel poi = intent.getParcelableExtra(CommonIntents.EXTRA_NEAR_POI);
-				//TextView tv1 = (TextView) findViewById(R.id.main_text);
-				if(loc != null) {
-					Log.i(TAG, "Got location update");
-					serviceNewLocationBroadcast(loc);
-					//tv1.setText("Got location update");
-				}
-				else if(poi != null) {
-					//tv1.setText("Got nearPOI update");
-					Log.i(TAG, "Got near POI update");
-					serviceNewPoiBroadcast(poi);
-				}
-				else {
-					throw new IllegalArgumentException("Passing intent to onReceive must provide EXTRA_LOCATION or EXTRA_NEAR_POI");
-				}
+	private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			// Get extra data included in the Intent
+			Location loc = intent.getParcelableExtra(CommonIntents.EXTRA_LOCATION);
+			PointModel poi = intent.getParcelableExtra(CommonIntents.EXTRA_NEAR_POI);
+			if(loc != null) {
+				Log.i(TAG, "Got location update");
+				serviceNewLocationBroadcast(loc);
 			}
-		};
+			else if(poi != null) {
+				Log.i(TAG, "Got near POI update");
+				serviceNewPoiBroadcast(poi);
+			}
+			else {
+				throw new IllegalArgumentException("Passing intent to onReceive must provide EXTRA_LOCATION or EXTRA_NEAR_POI");
+			}
+		}
+	};
 
 	@Override
 	public void onStart() {
@@ -137,14 +119,14 @@ public abstract class LocationAwareActivity extends SherlockActivity {
 			mBound = false;
 		}
 	}
-	
+
 	@Override
 	public void onResume() {
 		super.onResume();
 		Intent intent = new Intent(this, SampleService.class);
 		bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
 	}
-	
+
 	@Override
 	public void onPause() {
 		super.onPause();
@@ -153,7 +135,7 @@ public abstract class LocationAwareActivity extends SherlockActivity {
 			mBound = false;
 		}
 	}
-	
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
@@ -182,11 +164,7 @@ public abstract class LocationAwareActivity extends SherlockActivity {
 			startActivity(CommonIntents.startSettingsActivity(this));
 			return true;
 		case R.id.actionbar_search:
-			// TODO: Implement
 			onSearchRequested();
-			return true;
-		case R.id.actionbar_refresh:
-			//queryWebService();
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);

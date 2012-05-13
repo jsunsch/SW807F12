@@ -44,6 +44,7 @@ public class OutdoorActivity extends LocationAwareMapActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		drawMap();
+		drawOutdoorPois();
 	}
 
 	TapControlledMapView mMapView;
@@ -67,7 +68,7 @@ public class OutdoorActivity extends LocationAwareMapActivity {
 			final BalloonOverlay itemizedoverlay = new BalloonOverlay(drawable, mMapView);
 	
 			// Add POI to the overlay
-			for(PointModel p : mService.getLocationHelper().getPois())
+			for(PointModel p : getSampleService().getLocationHelper().getPois())
 			{
 				GeoPoint gp = p.getGeoPoint();
 				int id = p.getId();
@@ -94,11 +95,7 @@ public class OutdoorActivity extends LocationAwareMapActivity {
 	}
 
 	
-	@Override
-	protected boolean isRouteDisplayed() {
-		// TODO Auto-generated method stub
-		return false;
-	}
+
 	
 	@Override
 	public void onResume()
@@ -118,26 +115,16 @@ public class OutdoorActivity extends LocationAwareMapActivity {
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
 		MenuInflater inflater = getSupportMenuInflater();
-		inflater.inflate(R.layout.menu_outdoor, menu);
-
-		//MenuItem searchItem = menu.findItem(R.id.actionbar_search); // TODO: Implement
-
+		inflater.inflate(R.layout.menu_main, menu);
 		return true;
-	}
+	}	
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Handle item selection
 		switch (item.getItemId()) {
-		case R.id.actionbar_center_location:
-			animateToLocation(mService.getLocationHelper().getCurrentLocation());
-			return true;
-		case R.id.actionbar_poi_list:
-			startActivity(CommonIntents.startPoiListActivity(this));
-			return true;
-		case R.id.actionbar_search:
-			// TODO: Implement
-			onSearchRequested();
+		case R.id.actionbar_outdoor:
+			startActivity(CommonIntents.startOutdoorActivity(this));
 			return true;
 		case R.id.actionbar_augmented:
 			startActivity(CommonIntents.startAugmentedActivity(this));
@@ -145,34 +132,33 @@ public class OutdoorActivity extends LocationAwareMapActivity {
 		case R.id.actionbar_indoor:
 			startActivity(CommonIntents.startIndoorActivity(this));
 			return true;
+		case R.id.actionbar_poi_list:
+			startActivity(CommonIntents.startPoiListActivity(this));
+			return true;
 		case R.id.actionbar_settings:
 			startActivity(CommonIntents.startSettingsActivity(this));
 			return true;
+		case R.id.actionbar_center_location:
+			animateToLocation();
+			return true;
+		case R.id.actionbar_search:
+			onSearchRequested();
+			return true;
+		
 		default:
 			return super.onOptionsItemSelected(item);
 		}
 	}
 	
-	private void animateToLocation(Location loc)
+	private void animateToLocation()
 	{
-		// Only animate if its a valid location
-		if(loc != null){
+		if(isBound()) {
 			MapController mc = mMapView.getController();
-			GeoPoint point =  LocationHelper.locToGeo(loc);
+			GeoPoint point =  LocationHelper.locToGeo(mMyLocationOverlay.getLastFix());
 			mc.animateTo(point);
 		}
 	}
 
-	@Override
-	public void serviceBoundEvent(SampleService service) {
-		mService = service;
-		drawOutdoorPois();
-	}
-	
-	@Override
-	public void serviceDisconnectedEvent() {
-		mService = null;
-	}
 }
 //
 //import java.util.List;

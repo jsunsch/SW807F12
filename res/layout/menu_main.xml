@@ -25,13 +25,6 @@
             android:title="@string/menu_poi_list"/>
         
         <item
-            android:id="@+id/actionbar_refresh"
-            android:icon="@drawable/refresh"
-            android:orderInCategory="4"
-            android:showAsAction="ifRoom"
-            android:title="@string/menu_refresh"/>
-        
-        <item
             android:id="@+id/actionbar_augmented"
             android:icon="@drawable/augmented"
             android:orderInCategory="5"
