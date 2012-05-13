@@ -27,15 +27,15 @@ import edu.aau.utzon.webservice.PointModel;
 
 public class OutdoorActivity extends LocationAwareMapActivity implements ILocationAware{
 	
-	boolean isFirstLocation = true;
-	@Override
-	public void serviceNewLocationBroadcast(Location location) {
-		getSampleService().getLocationHelper().makeUseOfNewLocation(location);
-		if(isFirstLocation && location != null && getSampleService().getLocationHelper().getCurrentLocation() != null) {
-			drawOutdoorPois();
-			isFirstLocation = false;
-		}
-	}
+//	boolean isFirstLocation = true;
+//	@Override
+//	public void serviceNewLocationBroadcast(Location location) {
+//		getSampleService().getLocationHelper().makeUseOfNewLocation(location);
+//		if(isFirstLocation && location != null && getSampleService().getLocationHelper().getCurrentLocation() != null) {
+//			drawOutdoorPois();
+//			isFirstLocation = false;
+//		}
+//	}
 	
 	MyLocationOverlay mMyLocationOverlay = null;
 
@@ -43,6 +43,7 @@ public class OutdoorActivity extends LocationAwareMapActivity implements ILocati
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		drawMap();
+		drawOutdoorPois();
 	}
 
 	TapControlledMapView mMapView;
@@ -60,13 +61,13 @@ public class OutdoorActivity extends LocationAwareMapActivity implements ILocati
 	private void drawOutdoorPois()
 	{
 		// Setup overlays
-		if(isBound()) {
+		//if(isBound()) {
 			List<Overlay> mapOverlays = mMapView.getOverlays();
 			Drawable drawable = this.getResources().getDrawable(R.drawable.androidmarker);
 			final BalloonOverlay itemizedoverlay = new BalloonOverlay(drawable, mMapView);
 	
 			// Get the POIs to draw
-			List<PointModel> pmlist = getSampleService().getLocationHelper().getPois();
+			List<PointModel> pmlist = PointModel.dbGetAll(this);
 			// Add POI to the overlay
 			for(PointModel p : pmlist)
 			{
@@ -91,7 +92,7 @@ public class OutdoorActivity extends LocationAwareMapActivity implements ILocati
 			itemizedoverlay.setSnapToCenter(false);
 
 			mapOverlays.add(itemizedoverlay);
-		}
+		//}
 	}
 
 	
@@ -115,7 +116,7 @@ public class OutdoorActivity extends LocationAwareMapActivity implements ILocati
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
 		MenuInflater inflater = getSupportMenuInflater();
-		inflater.inflate(R.layout.menu_main, menu);
+		inflater.inflate(R.layout.menu_outdoor, menu);
 		return true;
 	}	
 

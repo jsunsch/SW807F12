@@ -1,7 +1,5 @@
 package edu.aau.utzon.location;
 
-import java.util.List;
-
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -16,19 +14,14 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.actionbarsherlock.app.SherlockMapActivity;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
-import com.google.android.maps.GeoPoint;
-import com.google.android.maps.MapController;
-
-import edu.aau.utzon.R;
 import edu.aau.utzon.location.SampleService.SampleBinder;
 import edu.aau.utzon.utils.CommonIntents;
 import edu.aau.utzon.webservice.PointModel;
+import edu.aau.utzon.webservice.RestServiceHelper;
 
 public abstract class LocationAwareMapActivity extends SherlockMapActivity implements ILocationAware{
 	private static final String TAG = "LocationAwareMapActivity";
+	private static final int PRELOAD_COUNT = 20;
 	private SampleService mService = null;
 	private boolean mBound = false;
 	public boolean isBound() {
@@ -68,9 +61,13 @@ public abstract class LocationAwareMapActivity extends SherlockMapActivity imple
 		}
 	}
 
-	private Location old = null;
+	boolean firstLocation = true;
 	public void serviceNewLocationBroadcast(Location location) {
 		mService.getLocationHelper().makeUseOfNewLocation(location);
+		if(firstLocation && location != null) {
+			RestServiceHelper.getServiceHelper().getNearestPoints(this, PRELOAD_COUNT, location);
+			firstLocation = false;
+		}
 	}
 
 	/** Defines callbacks for service binding, passed to bindService() */

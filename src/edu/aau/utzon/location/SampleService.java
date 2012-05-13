@@ -115,6 +115,13 @@ public class SampleService extends Service implements ILocationAware{
 	}
 
 	/** Should only be called in entry activity for the application **/
+	@Override
+	public int onStartCommand(Intent intent, int flags, int startID) {
+		super.onStartCommand(intent, flags, startID);
+		Log.i(TAG, "onStartCommand");
+		initState();
+		return START_STICKY;
+	}
 //		@Override
 //		public int onStartCommand(Intent intent, int flags, int startID) {
 //			Log.i(TAG, "onStartCommand(intent, " + flags + startID);
@@ -137,8 +144,7 @@ public class SampleService extends Service implements ILocationAware{
 
 	@Override
 	public IBinder onBind(Intent intent) {
-		Log.d(TAG, "onBind()");
-		initState();
+		Log.i(TAG, "onBind()");
 		enableLocationListener();
 		return mBinder;
 	}
@@ -146,7 +152,7 @@ public class SampleService extends Service implements ILocationAware{
 	//Called when all clients have disconnected from a particular interface published by the service.
 	@Override
 	public boolean onUnbind(Intent intent) {
-		Log.d(TAG, "onUnbind()");
+		Log.i(TAG, "onUnbind()");
 		disableLocationListener();
 		return false;
 	}
@@ -154,7 +160,7 @@ public class SampleService extends Service implements ILocationAware{
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		Log.i(TAG, "onDestroy()");
+		Log.w(TAG, "onDestroy()");
 		disableLocationListener();
 	}
 
@@ -165,7 +171,6 @@ public class SampleService extends Service implements ILocationAware{
 	}
 
 	public LocationHelper getLocationHelper() {
-		Log.d(TAG, "getLocationHelper()");
 		return mLocationHelper;
 	}
 
