@@ -87,7 +87,8 @@ public class JRestMethod {
 						
 						pm.mId = jsonObj.getInt("Id");
 						pm.mName = jsonObj.getString("Name");
-						pm.mDesc = jsonObj.getString("Text");
+						pm.mDesc = jsonObj.getString("Description");
+						pm.mDesc = pm.mDesc == "null" ? "" : pm.mDesc;
 						
 						pm.mGeoPoint = new GeoPoint((int)jsonObj.getDouble("Longitude"), (int)jsonObj.getDouble("Latitude"));
 						pm.mGeoPoint = LocationHelper.geoToE6(pm.mGeoPoint);

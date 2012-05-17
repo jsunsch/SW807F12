@@ -1,6 +1,7 @@
 package edu.aau.utzon.webservice;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -12,6 +13,7 @@ public class PointModel implements Parcelable {
 	public int mId;
 	public String mDesc;
 	public String mName;
+	public ArrayList<String> mTexts;
 
 	public PointModel() {
 	}
@@ -30,6 +32,7 @@ public class PointModel implements Parcelable {
 		dest.writeInt(mId);
 		dest.writeString(mDesc);
 		dest.writeString(mName);
+		dest.writeList(mTexts);
 	}
 
 	// this is used to regenerate your object. All Parcelables must have a
@@ -52,5 +55,6 @@ public class PointModel implements Parcelable {
 		mId = in.readInt();
 		mDesc = in.readString();
 		mName = in.readString();
+		in.readList(mTexts, null);
 	}
 }
