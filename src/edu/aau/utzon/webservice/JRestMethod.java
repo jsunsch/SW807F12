@@ -22,11 +22,12 @@ import android.content.Context;
 
 public class JRestMethod {
 	private static final String K_NEAREST_URL = "http://62.243.46.141:12345";
-	private static final DecimalFormat mDm = new DecimalFormat("###.################################");
+	private static final DecimalFormat mDm = new DecimalFormat("################.################################");
 	
 	public static void getNearestPoints(Context context, double longitude, double latitude, int numberOfNearestNeighbours)
 	{	
 		String q = K_NEAREST_URL + "/KNearestPOI/" + mDm.format(longitude) + "/" + mDm.format(latitude) + "/" + numberOfNearestNeighbours;
+		q = q.replace(",", ".");
 		getPoints(context, q);
 	}
 	
