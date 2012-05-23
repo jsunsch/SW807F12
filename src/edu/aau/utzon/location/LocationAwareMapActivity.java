@@ -146,6 +146,7 @@ public abstract class LocationAwareMapActivity extends SherlockMapActivity imple
 			mBound = false;
 		}
 	}
+
 	
 	@Override
 	protected boolean isRouteDisplayed() {
