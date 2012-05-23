@@ -80,8 +80,10 @@ public class PointModel implements Parcelable{
 	}
 	
 	static public List<PointModel> asPointModels (Cursor c){
-		if(c.getCount() == 0) 
+		if(c.getCount() == 0) {
+			c.close();
 			return new ArrayList<PointModel>();
+		}
 		List<PointModel> result = new ArrayList<PointModel>();
 		
 		c.moveToFirst();

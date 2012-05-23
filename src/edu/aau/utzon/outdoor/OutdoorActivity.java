@@ -25,18 +25,18 @@ import edu.aau.utzon.location.LocationHelper;
 import edu.aau.utzon.utils.CommonIntents;
 import edu.aau.utzon.webservice.PointModel;
 
-public class OutdoorActivity extends LocationAwareMapActivity implements ILocationAware{
-	
-//	boolean isFirstLocation = true;
-//	@Override
-//	public void serviceNewLocationBroadcast(Location location) {
-//		getSampleService().getLocationHelper().makeUseOfNewLocation(location);
-//		if(isFirstLocation && location != null && getSampleService().getLocationHelper().getCurrentLocation() != null) {
-//			drawOutdoorPois();
-//			isFirstLocation = false;
-//		}
-//	}
-	
+public class OutdoorActivity extends LocationAwareMapActivity {
+
+	//	boolean isFirstLocation = true;
+	//	@Override
+	//	public void serviceNewLocationBroadcast(Location location) {
+	//		getSampleService().getLocationHelper().makeUseOfNewLocation(location);
+	//		if(isFirstLocation && location != null && getSampleService().getLocationHelper().getCurrentLocation() != null) {
+	//			drawOutdoorPois();
+	//			isFirstLocation = false;
+	//		}
+	//	}
+
 	MyLocationOverlay mMyLocationOverlay = null;
 
 	@Override
@@ -55,49 +55,69 @@ public class OutdoorActivity extends LocationAwareMapActivity implements ILocati
 		mMyLocationOverlay.enableMyLocation();
 		mMapView.getOverlays().add(mMyLocationOverlay);
 		mMapView.setBuiltInZoomControls(true);
-		
+
+	}
+
+	boolean firstLocation = true;
+	@Override
+	public void serviceNewLocationBroadcast(Location location) {
+		super.serviceNewLocationBroadcast(location);
+
+		drawOutdoorPois();
+
 	}
 
 	private void drawOutdoorPois()
 	{
 		// Setup overlays
 		//if(isBound()) {
-			List<Overlay> mapOverlays = mMapView.getOverlays();
-			Drawable drawable = this.getResources().getDrawable(R.drawable.androidmarker);
-			final BalloonOverlay itemizedoverlay = new BalloonOverlay(drawable, mMapView);
-	
-			// Get the POIs to draw
-			List<PointModel> pmlist = PointModel.dbGetAll(this);
-			// Add POI to the overlay
-			for(PointModel p : pmlist)
-			{
-				GeoPoint gp = p.getGeoPoint();
-				int id = p.getId();
-				String n = p.getName();
-				String d = p.getDesc();
-				itemizedoverlay.addOverlay(new OverlayItem(gp, n, d));
-			}
-	
-			// Balloon stuff
-			mMapView.setOnSingleTapListener(new OnSingleTapListener() {		
-				@Override
-				public boolean onSingleTap(MotionEvent e) {
-					itemizedoverlay.hideAllBalloons();
-					return true;
-				}
-			});
-			// set iOS behavior attributes for overlay (?)
-			itemizedoverlay.setShowClose(false);
-			itemizedoverlay.setShowDisclosure(true);
-			itemizedoverlay.setSnapToCenter(false);
 
-			mapOverlays.add(itemizedoverlay);
+		// Get the POIs to draw
+		List<PointModel> pmlist = PointModel.dbGetAll(this);
+		if(pmlist.size() == 0) return;
+
+		List<Overlay> mapOverlays = mMapView.getOverlays();
+
+		// Remove old overlay
+		if(mapOverlays.size() > 1) {
+			// More overlays than just MyLocationOverlay means we have already drawn the POI's
+			//mapOverlays.remove(1);
+			return;
+		}
+
+		Drawable drawable = this.getResources().getDrawable(R.drawable.androidmarker);
+		final BalloonOverlay itemizedoverlay = new BalloonOverlay(drawable, mMapView);
+
+		// Add POI to the overlay
+		for(PointModel p : pmlist)
+		{
+			GeoPoint gp = p.getGeoPoint();
+			int id = p.getId();
+			String n = p.getName();
+			String d = p.getDesc();
+			itemizedoverlay.addOverlay(new OverlayItem(gp, n, d));
+		}
+
+		// Balloon stuff
+		mMapView.setOnSingleTapListener(new OnSingleTapListener() {		
+			@Override
+			public boolean onSingleTap(MotionEvent e) {
+				itemizedoverlay.hideAllBalloons();
+				return true;
+			}
+		});
+		// set iOS behavior attributes for overlay (?)
+		itemizedoverlay.setShowClose(false);
+		itemizedoverlay.setShowDisclosure(true);
+		itemizedoverlay.setSnapToCenter(false);
+
+		mapOverlays.add(itemizedoverlay);
 		//}
 	}
 
-	
 
-	
+
+
 	@Override
 	public void onResume()
 	{
@@ -111,7 +131,7 @@ public class OutdoorActivity extends LocationAwareMapActivity implements ILocati
 		super.onPause();
 		mMyLocationOverlay.disableMyLocation();
 	}
-	
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
@@ -145,12 +165,12 @@ public class OutdoorActivity extends LocationAwareMapActivity implements ILocati
 		case R.id.actionbar_search:
 			onSearchRequested();
 			return true;
-		
+
 		default:
 			return super.onOptionsItemSelected(item);
 		}
 	}
-	
+
 	private void animateToLocation()
 	{
 		if(isBound()) {

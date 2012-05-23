@@ -20,6 +20,6 @@ public class UtzonActivity extends LocationAwareActivity {
 		TextView tv = (TextView)findViewById(R.id.main_text);
 		tv.setText(R.string.main_screen_text);
 		
-		startService(new Intent(this, SampleService.class));
+		
 	}	
 }

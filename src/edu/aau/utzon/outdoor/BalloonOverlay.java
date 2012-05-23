@@ -52,4 +52,9 @@ public class BalloonOverlay extends BalloonItemizedOverlay<OverlayItem> {
 //		c.startActivity(i);
 		return true;
 	}
+	
+	public void clear() {
+		m_overlays.clear();
+		populate();
+	}
 }
