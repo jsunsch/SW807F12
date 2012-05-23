@@ -47,6 +47,7 @@ public class LocationHelper {
 	}
 	
 	private void updateClosePoi() {
+		mPois = PointModel.dbGetAll(mContext);
 		mPreviusClosePoi = mCurrentClosePoi;
 		mCurrentClosePoi = nearestPOI(mPois, mCurrentLoc);
 	}
