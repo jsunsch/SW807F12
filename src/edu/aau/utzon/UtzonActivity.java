@@ -1,7 +1,7 @@
 package edu.aau.utzon;
 
 import edu.aau.utzon.location.LocationAwareActivity;
-import edu.aau.utzon.location.SampleService;
+import edu.aau.utzon.location.LocationService;
 import edu.aau.utzon.utils.CommonIntents;
 import edu.aau.utzon.webservice.RestServiceHelper;
 import android.content.Intent;
@@ -19,7 +19,5 @@ public class UtzonActivity extends LocationAwareActivity {
 		setContentView(R.layout.main);
 		TextView tv = (TextView)findViewById(R.id.main_text);
 		tv.setText(R.string.main_screen_text);
-		
-		startService(new Intent(this, SampleService.class));
 	}	
 }

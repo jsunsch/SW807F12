@@ -81,7 +81,7 @@
 
      
 >        
-        <service android:name="edu.aau.utzon.location.SampleService" />
+        <service android:name=".location.LocationService" />
         <service android:name="edu.aau.utzon.webservice.RestService" />
     </application>
 

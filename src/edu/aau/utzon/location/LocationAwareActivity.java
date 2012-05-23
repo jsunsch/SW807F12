@@ -18,7 +18,7 @@ import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import edu.aau.utzon.R;
-import edu.aau.utzon.location.SampleService.SampleBinder;
+import edu.aau.utzon.location.LocationService.SampleBinder;
 import edu.aau.utzon.utils.CommonIntents;
 import edu.aau.utzon.webservice.PointModel;
 import edu.aau.utzon.webservice.RestServiceHelper;
@@ -26,7 +26,7 @@ import edu.aau.utzon.webservice.RestServiceHelper;
 public abstract class LocationAwareActivity extends SherlockActivity implements ILocationAware {
 	private static final String TAG = "LocationAwareMapActivity";
 	private static final int PRELOAD_COUNT = 20;
-	private SampleService mService = null;
+	private LocationService mService = null;
 	private boolean mBound = false;
 	//public boolean isBound() { return mBound; }
 
@@ -110,7 +110,7 @@ public abstract class LocationAwareActivity extends SherlockActivity implements 
 	public void onStart() {
 		super.onStart();
 		// Bind to LocalService
-		Intent intent = new Intent(this, SampleService.class);
+		Intent intent = new Intent(this, LocationService.class);
 		bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
 		// Register to receive broadcasts from LocationAwareService
 		LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, 
@@ -130,7 +130,7 @@ public abstract class LocationAwareActivity extends SherlockActivity implements 
 	@Override
 	public void onResume() {
 		super.onResume();
-		Intent intent = new Intent(this, SampleService.class);
+		Intent intent = new Intent(this, LocationService.class);
 		bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
 	}
 
