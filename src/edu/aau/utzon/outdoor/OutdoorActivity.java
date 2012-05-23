@@ -69,21 +69,15 @@ public class OutdoorActivity extends LocationAwareMapActivity {
 
 	private void drawOutdoorPois()
 	{
-		// Setup overlays
-		//if(isBound()) {
-
+		List<Overlay> mapOverlays = mMapView.getOverlays();
+		if(mapOverlays.size() > 1) {
+			// More overlays than just MyLocationOverlay means we have already drawn the POI's
+			return;
+		}
+		
 		// Get the POIs to draw
 		List<PointModel> pmlist = PointModel.dbGetAll(this);
 		if(pmlist.size() == 0) return;
-
-		List<Overlay> mapOverlays = mMapView.getOverlays();
-
-		// Remove old overlay
-		if(mapOverlays.size() > 1) {
-			// More overlays than just MyLocationOverlay means we have already drawn the POI's
-			//mapOverlays.remove(1);
-			return;
-		}
 
 		Drawable drawable = this.getResources().getDrawable(R.drawable.androidmarker);
 		final BalloonOverlay itemizedoverlay = new BalloonOverlay(drawable, mMapView);
