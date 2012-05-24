@@ -18,5 +18,6 @@
     <string name="remote_service_connected">Service connected</string>
     <string name="remote_service_disconnected">Service disconnected</string>
     <string name="main_screen_text">Welcome to TACO! The best location thingie around.</string>
+    <string name="spinner_prompt">Choose an audio file</string>
 
 </resources>

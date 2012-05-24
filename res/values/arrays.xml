@@ -1,0 +1,8 @@
+<resources>
+
+    <string-array name="planets">
+        <item>t34.mp3</item>
+        <item>tiger_tank.mp3</item>
+    </string-array>
+    
+</resources>
