@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Utzon</string>
+    <string name="app_name">TACO</string>
     <string name="maps_apikey_debug">0fMYQWA7ahuZ_tS6tvDLZEzZyJOfYAwyAtPRJtQ</string>
     <string name="search_hint">Search points of interest</string>
     <string name="menu_search">Search</string>

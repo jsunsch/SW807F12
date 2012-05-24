@@ -14,6 +14,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.location.Location;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
@@ -105,16 +106,18 @@ public abstract class LocationAwareActivity extends SherlockActivity implements 
 			}
 		}
 	};
-
+	
 	@Override
-	public void onStart() {
-		super.onStart();
-		// Bind to LocalService
-		Intent intent = new Intent(this, SampleService.class);
-		bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+	public void onCreate(Bundle bundle) {
+		super.onCreate(bundle);
 		// Register to receive broadcasts from LocationAwareService
 		LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, 
 				new IntentFilter(CommonIntents.POI_INTENTFILTER));
+		if(!mBound) {
+		// Bind to LocalService
+		Intent intent = new Intent(this, SampleService.class);
+		bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+		}
 	}
 
 	@Override
