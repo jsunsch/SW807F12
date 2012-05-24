@@ -41,7 +41,7 @@ public abstract class LocationAwareActivity extends SherlockActivity implements 
 		.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int id) {
 				//startActivity(CommonIntents.startPoiContentActivity(getBaseContext(), mService.getLocationHelper().getCurrentLocation(), poi));
-				startActivity(CommonIntents.startPoiContentActivity(getBaseContext(), id));
+				startActivity(CommonIntents.startPoiContentActivity(getBaseContext(), poi.getId()));
 			}
 		})
 		.setNegativeButton("No", new DialogInterface.OnClickListener() {
