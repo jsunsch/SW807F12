@@ -25,7 +25,7 @@ public class LocationHelper {
 		//poi = poi == null ? mCurrentClosePoi : poi;
 		double userLat = mCurrentLoc.getLatitude();
 		double userLong = mCurrentLoc.getLongitude();
-		return distFrom(userLat, userLong, poi.getLat(), poi.getLong());
+		return distFrom(userLat, userLong, poi.getLong(), poi.getLat());
 	}
 
 	public boolean isNearPoi() {
