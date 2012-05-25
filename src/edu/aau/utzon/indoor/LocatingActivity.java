@@ -2,6 +2,8 @@ package edu.aau.utzon.indoor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import edu.aau.utzon.R;
 
@@ -10,6 +12,7 @@ import android.content.Context;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -21,6 +24,23 @@ public class LocatingActivity extends Activity {
 	EditText _textViewTime;
 	EditText _textViewActivation;
 	EditText _textViewStop;
+	Timer _timer;
+
+	class LocatingTask extends TimerTask
+	{
+		Context _context;
+
+		public LocatingTask(Context context)
+		{
+			_context = context;
+		}
+
+		@Override
+		public void run() {
+			Log.e("TACO", "YO");
+			
+		}
+	}
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -31,9 +51,17 @@ public class LocatingActivity extends Activity {
 		_textViewTime = (EditText)findViewById(R.id.editText5);
 		_textViewActivation = (EditText)findViewById(R.id.editText6);
 		_textViewStop = (EditText)findViewById(R.id.editText7);
-		
+
 		String connectivity_context = Context.WIFI_SERVICE;
 		_wifi = (WifiManager)getSystemService(connectivity_context);
+
+	}
+
+	@Override
+	public void onDestroy()
+	{
+		SoundPlayer.Stop();
+		_timer.cancel();
 	}
 
 	int stopCounter = 0;
@@ -48,7 +76,7 @@ public class LocatingActivity extends Activity {
 			long timeBefore = System.currentTimeMillis();
 			Point p = RadioMap.FindPosition(measures, 1, Integer.parseInt(_textViewK.getText().toString()));
 			long timeAfter = System.currentTimeMillis();
-			
+
 			long timeBeforeOld = System.currentTimeMillis();
 			Point pOld = OldRadioMap.FindPosition(measures, 1);
 			long timeAfterOld = System.currentTimeMillis();
