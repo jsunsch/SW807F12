@@ -1,9 +1,10 @@
-package edu.aau.utzon.indoor.old;
+package edu.aau.utzon.indoor;
 
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
+
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -11,7 +12,7 @@ import android.content.DialogInterface;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 
-public class WifiHelper {
+public class OldWifiHelper {
 	
 	public static ArrayList<WifiMeasure> getWifiMeasures(Context context, WifiManager wifi, int seconds, int signalMax) throws InterruptedException {
 		if (wifi.startScan() == true)

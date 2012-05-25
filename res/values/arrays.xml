@@ -2,7 +2,10 @@
 
     <string-array name="planets">
         <item>t34.mp3</item>
-        <item>tiger_tank.mp3</item>
+        <item>tiger1.mp3</item>
+        <item>m26pershing.mp3</item>
+        <item>m4sherman.mp3</item>
+        <item>panther.mp3</item>
     </string-array>
     
 </resources>

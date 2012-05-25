@@ -32,7 +32,7 @@ public class IndoorActivity extends Activity {
 			e.printStackTrace();
 		}
 		
-		SoundPlayer.playSound("tiger_tank.mp3", this);
+		//SoundPlayer.playSound("tiger_tank.mp3", this);
 		
 		String connectivity_context = Context.WIFI_SERVICE;
 		_wifi = (WifiManager)getSystemService(connectivity_context);

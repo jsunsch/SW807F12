@@ -3,8 +3,11 @@ package edu.aau.utzon.indoor;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class Point {
 	ArrayList<WifiMeasureCollection> measures;
+	ArrayList<WifiMeasure> measuresOld;
+	
 	String name;
 	double dist;
 
@@ -35,7 +38,8 @@ public class Point {
 		this.dist = dist;
 	}
 	
-	public Point(ArrayList<WifiMeasureCollection> m, String n, String sound) {
+	public Point(ArrayList<WifiMeasureCollection> m, ArrayList<WifiMeasure> mOld, String n, String sound) {
+		measuresOld = mOld;
 		measures = m;
 		name = n;
 		soundFilePath = sound;

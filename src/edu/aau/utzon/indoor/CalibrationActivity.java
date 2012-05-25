@@ -25,6 +25,7 @@ public class CalibrationActivity extends Activity  {
 	WifiManager _wifi;
 	EditText _editText;
 	EditText _editTextTime;
+	EditText _editTextSs;
 	TextView _textView;
 	Spinner _s;
 
@@ -35,6 +36,7 @@ public class CalibrationActivity extends Activity  {
 		_editText = (EditText)findViewById(R.id.editText2);  
 		_textView = (TextView)findViewById(R.id.textView1);
 		_editTextTime = (EditText)findViewById(R.id.editText3);  
+		_editTextSs = (EditText)findViewById(R.id.editText8);  
 		
 		_s = (Spinner) findViewById(R.id.spinner);
 	    ArrayAdapter adapter = ArrayAdapter.createFromResource(
@@ -50,13 +52,14 @@ public class CalibrationActivity extends Activity  {
 
 	public void addPoint(View view) throws InterruptedException {
 
-		//ArrayList<WifiMeasureCollection> realMeasures = WifiHelper.getWifiMeasures(this, _wifi, Integer.parseInt(_editTextTime.getText().toString()), 200);
-		ArrayList<WifiMeasureCollection> realMeasures = null;
+		ArrayList<WifiMeasureCollection> realMeasures = WifiHelper.getWifiMeasures(this, _wifi, Integer.parseInt(_editTextTime.getText().toString()), -Integer.parseInt(_editTextSs.getText().toString()));
+		ArrayList<WifiMeasure> oldRealMeasures = OldWifiHelper.getWifiMeasures(this, _wifi, Integer.parseInt(_editTextTime.getText().toString()), -Integer.parseInt(_editTextSs.getText().toString()));
+		//ArrayList<WifiMeasureCollection> realMeasures = null;
 		//if (realMeasures == null)
 		//	return;
 		Log.e("TACO", _s.toString());
-		RadioMap.addPoint(new Point(realMeasures, _editText.getText().toString(), _s.toString()));
-
+		RadioMap.addPoint(new Point(realMeasures, oldRealMeasures, _editText.getText().toString(), _s.getSelectedItem().toString()));
+		OldRadioMap.addPoint(new Point(realMeasures, oldRealMeasures, _editText.getText().toString(), _s.getSelectedItem().toString()));
 		new AlertDialog.Builder(this)
 		.setTitle("Done")
 		.setMessage("Point added!")
