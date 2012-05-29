@@ -25,7 +25,7 @@ public class LocationHelper {
 		//poi = poi == null ? mCurrentClosePoi : poi;
 		double userLat = mCurrentLoc.getLatitude();
 		double userLong = mCurrentLoc.getLongitude();
-		return distFrom(userLat, userLong, poi.getLat(), poi.getLong());
+		return distFrom(userLat, userLong, poi.getLong(), poi.getLat());
 	}
 
 	public boolean isNearPoi() {
@@ -34,9 +34,15 @@ public class LocationHelper {
 		int prox = prefs.getInt("proximity", 20);
 		if(getCurrentClosePoi() != null) {
 			double dist = distToPoi(getCurrentClosePoi());
-			return dist > prox ? false : true;
+			if(dist > prox) {
+				return false;
+			}
+			else {
+				return true;
+			}
 		}
-		else return false;
+		else 
+			return false;
 	}
 	
 	private void updateUserLocation(Location l)
@@ -115,7 +121,7 @@ public class LocationHelper {
 		for(PointModel p : pois)
 		{
 			// In meters
-			double locDist = distFrom(p.getLat(), p.getLong(), loc.getLatitude(), loc.getLongitude());
+			double locDist = distFrom(p.getLat(), p.getLong(), loc.getLongitude(), loc.getLatitude());
 
 			// New closest found
 			if(locDist < closestDist ) { 
