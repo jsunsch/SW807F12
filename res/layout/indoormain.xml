@@ -18,28 +18,4 @@
         android:text="Location Finding"
         android:onClick="locationFinding"/>
 
-    <Button
-        android:id="@+id/button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="readSignals"
-        android:text="Read signal strength" />
-
-    <Button
-        android:id="@+id/button1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="showPoints"
-        android:text="Show Points" />
-
-    <EditText
-        android:id="@+id/editText1"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="0.59"
-        android:inputType="textMultiLine" >
-
-        <requestFocus />
-    </EditText>
-
 </LinearLayout>

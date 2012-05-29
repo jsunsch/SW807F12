@@ -7,6 +7,7 @@ import edu.aau.utzon.PoiContentActivity;
 import edu.aau.utzon.PoiListActivity;
 import edu.aau.utzon.SettingsActivity;
 import edu.aau.utzon.augmented.AugmentedActivity;
+import edu.aau.utzon.indoor.IndoorActivity;
 import edu.aau.utzon.outdoor.OutdoorActivity;
 import edu.aau.utzon.webservice.PointModel;
 
@@ -46,7 +47,7 @@ public class CommonIntents {
 	}
 	
 	static public Intent startIndoorActivity(Context context) {
-		return new Intent(context, SettingsActivity.class);
+		return new Intent(context, IndoorActivity.class);//SettingsActivity.class);
 	}
 	
 	static public Intent startOutdoorActivity(Context context) {
