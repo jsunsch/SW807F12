@@ -3,6 +3,7 @@ package edu.aau.utzon.indoor;
 import java.util.List;
 
 import edu.aau.utzon.R;
+import edu.aau.utzon.location.LocationAwareActivity;
 
 import android.app.Activity;
 import android.content.Context;
@@ -13,7 +14,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 
-public class IndoorActivity extends Activity {
+public class IndoorActivity extends LocationAwareActivity {
 
 	EditText _editText;
 	WifiManager _wifi;

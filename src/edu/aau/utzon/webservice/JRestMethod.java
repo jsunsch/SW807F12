@@ -26,7 +26,7 @@ public class JRestMethod {
 	
 	public static void getNearestPoints(Context context, double longitude, double latitude, int numberOfNearestNeighbours)
 	{	
-		String q = K_NEAREST_URL + "/KNearestPOI/" + mDm.format(longitude) + "/" + mDm.format(latitude) + "/" + numberOfNearestNeighbours;
+		String q = K_NEAREST_URL + "/KNearestPOI/" + "/" + mDm.format(latitude) + "/" + mDm.format(longitude) + "/" + numberOfNearestNeighbours;
 		q = q.replace(",", ".");
 		getPoints(context, q);
 	}
@@ -44,7 +44,7 @@ public class JRestMethod {
 	}
 	
 	public static void getAllPoints(Context context)
-	{
+	{ 
 		String q = K_NEAREST_URL + "/AllPoints";
 		getPoints(context, q);
 	}
