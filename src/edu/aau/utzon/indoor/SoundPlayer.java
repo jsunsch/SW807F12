@@ -13,13 +13,13 @@ public class SoundPlayer {
 	
 	public static void playSound(String name, Context context){
 		
+		if (name.equals(currentlyPlaying))
+			return;
+		
 		if (mp != null)
 		{
 			mp.stop();
 		}
-		
-		if (name.equals(currentlyPlaying))
-			return;
 		
 		if (name.equals("t34.mp3"))
 			mp = MediaPlayer.create(context, R.raw.t34);

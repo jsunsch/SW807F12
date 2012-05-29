@@ -24,7 +24,7 @@ public class LocatingActivity extends Activity {
 	EditText _textViewTime;
 	EditText _textViewActivation;
 	EditText _textViewStop;
-	Timer _timer;
+	//Timer _timer;
 
 	class LocatingTask extends TimerTask
 	{
@@ -57,12 +57,11 @@ public class LocatingActivity extends Activity {
 
 	}
 
-	@Override
-	public void onDestroy()
-	{
-		SoundPlayer.Stop();
-		_timer.cancel();
-	}
+	//@Override
+	//public void onDestroy()
+	//{
+	//	SoundPlayer.Stop();
+	//}
 
 	int stopCounter = 0;
 	public void findLocation(View view) throws InterruptedException {

@@ -28,6 +28,8 @@ public class CalibrationActivity extends Activity  {
 	EditText _editTextSs;
 	TextView _textView;
 	Spinner _s;
+	int x = 0;
+	int y = 0;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -48,6 +50,13 @@ public class CalibrationActivity extends Activity  {
 		_wifi = (WifiManager)getSystemService(connectivity_context);
 
 		_textView.setText("Number of points: " + RadioMap.getPoints().size());
+		
+		setE();
+	}
+	
+	private void setE()
+	{
+		_editText.setText(x + "-" + y);
 	}
 
 	public void addPoint(View view) throws InterruptedException {
@@ -63,7 +72,7 @@ public class CalibrationActivity extends Activity  {
 		new AlertDialog.Builder(this)
 		.setTitle("Done")
 		.setMessage("Point added!")
-		.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+		.setPositiveButton("OKKk", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) { 
 
 			}
@@ -73,11 +82,20 @@ public class CalibrationActivity extends Activity  {
 		//PointData.AddPoint(new Point())
 
 		_textView.setText("Number of points: " + RadioMap.getPoints().size());
+		
+		y++;
+		
+		if (y == 6)
+		{
+			y = 0;
+			x++;
+		}
+		setE();
 	}
 
 	public void deleteAllPoints(View view)  {
-		RadioMap.deleteAllPoints();
+		//RadioMap.deleteAllPoints();
 
-		_textView.setText("Number of points: " + RadioMap.getPoints().size());
+		//_textView.setText("Number of points: " + RadioMap.getPoints().size());
 	}
 }
