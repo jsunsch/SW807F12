@@ -70,7 +70,7 @@ public class SettingsActivity extends SherlockListActivity {
 
 				AlertDialog.Builder builder = new AlertDialog.Builder(c);
 				builder.setCancelable(true)
-				.setTitle("Select proximity")
+				.setTitle("Select proximity (meters)")
 				.setSingleChoiceItems(proximities, selectedItem, new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int item) {
 						int newProximity = Integer.parseInt(proximities[item].toString());

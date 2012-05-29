@@ -39,8 +39,9 @@ public class OutdoorActivity extends LocationAwareMapActivity {
 
 	MyLocationOverlay mMyLocationOverlay = null;
 
+	
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		drawMap();
 		drawOutdoorPois();
@@ -167,7 +168,7 @@ public class OutdoorActivity extends LocationAwareMapActivity {
 
 	private void animateToLocation()
 	{
-		if(isBound()) {
+		if(isBound() && mMyLocationOverlay.getLastFix() != null) {
 			MapController mc = mMapView.getController();
 			GeoPoint point =  LocationHelper.locToGeo(mMyLocationOverlay.getLastFix());
 			mc.animateTo(point);
