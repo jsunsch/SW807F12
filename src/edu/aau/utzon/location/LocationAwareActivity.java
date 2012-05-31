@@ -19,7 +19,7 @@ import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import edu.aau.utzon.R;
-import edu.aau.utzon.location.SampleService.SampleBinder;
+import edu.aau.utzon.location.LocationService.SampleBinder;
 import edu.aau.utzon.utils.CommonIntents;
 import edu.aau.utzon.webservice.PointModel;
 import edu.aau.utzon.webservice.RestServiceHelper;
@@ -27,44 +27,54 @@ import edu.aau.utzon.webservice.RestServiceHelper;
 public abstract class LocationAwareActivity extends SherlockActivity implements ILocationAware {
 	private static final String TAG = "LocationAwareMapActivity";
 	private static final int PRELOAD_COUNT = 20;
-	private SampleService mService = null;
+	private LocationService mService = null;
 	private boolean mBound = false;
-	//public boolean isBound() { return mBound; }
+	public boolean isBound() { return mBound; }
 
 	private int shownAlertId = 0;
 	//private int shownToastId = 0;
 
-	public void serviceNewPoiBroadcast(final PointModel poi) {
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setMessage("You are near a POI. Do you wish to see the content available?")
-		.setCancelable(false)
-		.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int id) {
-				//startActivity(CommonIntents.startPoiContentActivity(getBaseContext(), mService.getLocationHelper().getCurrentLocation(), poi));
-				startActivity(CommonIntents.startPoiContentActivity(getBaseContext(), poi.getId()));
-			}
-		})
-		.setNegativeButton("No", new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int id) {
-				dialog.cancel();
-			}
-		});
-
-		// Avoid spamming the user with alert dialogs
-		if(shownAlertId == 0 || (shownAlertId != mService.getLocationHelper().getCurrentClosePoi().getId())) {
-			shownAlertId = mService.getLocationHelper().getCurrentClosePoi().getId();
-			AlertDialog alert = builder.create();
-			alert.show();
-		}
+	public void serviceNewPoiBroadcast(PointModel poi) {
+//		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//		builder.setMessage("You are near a POI. Do you wish to see the content available?")
+//		.setCancelable(false)
+//		.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+//			public void onClick(DialogInterface dialog, int id) {
+//				//startActivity(CommonIntents.startPoiContentActivity(getBaseContext(), mService.getLocationHelper().getCurrentLocation(), poi));
+//				startActivity(CommonIntents.startPoiContentActivity(getBaseContext(), poi.getId()));
+//			}
+//		})
+//		.setNegativeButton("No", new DialogInterface.OnClickListener() {
+//			public void onClick(DialogInterface dialog, int id) {
+//				dialog.cancel();
+//			}
+//		});
+//
+//		// Avoid spamming the user with alert dialogs
+//		if(shownAlertId == 0 || (shownAlertId != mService.getLocationHelper().getCurrentClosePoi().getId())) {
+//			shownAlertId = mService.getLocationHelper().getCurrentClosePoi().getId();
+//			AlertDialog alert = builder.create();
+//			alert.show();
+//		}
 	}
 
-	boolean firstLocation = true;
+	//boolean firstLocation = true;
+	Location firstLocation = null;
 	public void serviceNewLocationBroadcast(Location location) {
-		mService.getLocationHelper().makeUseOfNewLocation(location);
-		if(firstLocation && location != null) {
-			RestServiceHelper.getServiceHelper().getNearestPoints(this, PRELOAD_COUNT, location);
-			firstLocation = false;
+		if(firstLocation == null && location != null) {
+			firstLocation = location;
+		}			
+	}
+	
+	public Location getFirstLocationForActivity() {
+		return firstLocation;
+	}
+	
+	public LocationService getLocationService() {
+		if(mBound) {
+			return mService;
 		}
+		return null;
 	}
 
 	/** Defines callbacks for service binding, passed to bindService() */
@@ -115,7 +125,7 @@ public abstract class LocationAwareActivity extends SherlockActivity implements 
 				new IntentFilter(CommonIntents.POI_INTENTFILTER));
 		if(!mBound) {
 		// Bind to LocalService
-		Intent intent = new Intent(this, SampleService.class);
+		Intent intent = new Intent(this, LocationService.class);
 		bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
 		}
 	}
@@ -133,8 +143,10 @@ public abstract class LocationAwareActivity extends SherlockActivity implements 
 	@Override
 	public void onResume() {
 		super.onResume();
-		Intent intent = new Intent(this, SampleService.class);
-		bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+		if(!mBound) {
+			Intent intent = new Intent(this, LocationService.class);
+			bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+		}
 	}
 
 	@Override

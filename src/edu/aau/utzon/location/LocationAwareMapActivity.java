@@ -15,7 +15,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.actionbarsherlock.app.SherlockMapActivity;
-import edu.aau.utzon.location.SampleService.SampleBinder;
+import edu.aau.utzon.location.LocationService.SampleBinder;
 import edu.aau.utzon.utils.CommonIntents;
 import edu.aau.utzon.webservice.PointModel;
 import edu.aau.utzon.webservice.RestServiceHelper;
@@ -23,29 +23,26 @@ import edu.aau.utzon.webservice.RestServiceHelper;
 public abstract class LocationAwareMapActivity extends SherlockMapActivity implements ILocationAware{
 	private static final String TAG = "LocationAwareMapActivity";
 	private static final int PRELOAD_COUNT = 20;
-	private SampleService mService = null;
+	private LocationService mService = null;
 	private boolean mBound = false;
-	public boolean isBound() {
-		return mBound;
-	}
-	public SampleService getSampleService() {
+	public boolean isBound() { return mBound; }
+
+	public LocationService getLocationService() {
 		if(mBound) {
 			return mService;
 		}
 		return null;
 	}
 
-	private int shownAlertId = 0;
-	//private int shownToastId = 0;
-
-	public void serviceNewPoiBroadcast(final PointModel poi) {
+	
+	private void promptUserNearPoi(PointModel poi) {
+		final int poiId = poi.getId();
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setMessage("You are near a POI. Do you wish to see the content available?")
 		.setCancelable(false)
 		.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int id) {
-				//startActivity(CommonIntents.startPoiContentActivity(getBaseContext(), mService.getLocationHelper().getCurrentLocation(), poi));
-				startActivity(CommonIntents.startPoiContentActivity(getBaseContext(), poi.getId()));
+				startActivity(CommonIntents.startPoiContentActivity(getBaseContext(), poiId));
 			}
 		})
 		.setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -54,11 +51,16 @@ public abstract class LocationAwareMapActivity extends SherlockMapActivity imple
 			}
 		});
 
+		AlertDialog alert = builder.create();
+		alert.show();
+		shownAlertId = mService.getLocationHelper().getCurrentClosePoi().getId();
+	}
+
+	private int shownAlertId = 0;
+	public void serviceNewPoiBroadcast(PointModel poi) {
 		// Avoid spamming the user with alert dialogs
 		if(shownAlertId == 0 || (shownAlertId != mService.getLocationHelper().getCurrentClosePoi().getId())) {
-			shownAlertId = mService.getLocationHelper().getCurrentClosePoi().getId();
-			AlertDialog alert = builder.create();
-			alert.show();
+			promptUserNearPoi(poi);
 		}
 	}
 
@@ -88,7 +90,10 @@ public abstract class LocationAwareMapActivity extends SherlockMapActivity imple
 			mBound = false;
 			//serviceDisconnectedEvent();
 		}
-	};	
+	};
+	
+
+	
 
 	// Handler for broadcast events (Poi notification)
 	private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
@@ -118,9 +123,9 @@ public abstract class LocationAwareMapActivity extends SherlockMapActivity imple
 		LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, 
 				new IntentFilter(CommonIntents.POI_INTENTFILTER));
 		if(!mBound) {
-		// Bind to LocalService
-		Intent intent = new Intent(this, SampleService.class);
-		bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+			// Bind to LocalService
+			Intent intent = new Intent(this, LocationService.class);
+			bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
 		}
 	}
 
@@ -138,8 +143,8 @@ public abstract class LocationAwareMapActivity extends SherlockMapActivity imple
 	public void onResume() {
 		super.onResume();
 		if(!mBound) {
-		Intent intent = new Intent(this, SampleService.class);
-		bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+			Intent intent = new Intent(this, LocationService.class);
+			bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
 		}
 	}
 
@@ -152,15 +157,15 @@ public abstract class LocationAwareMapActivity extends SherlockMapActivity imple
 		}
 	}
 
-	
+
 	@Override
 	protected boolean isRouteDisplayed() {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	
-	
+
+
 
 }
 

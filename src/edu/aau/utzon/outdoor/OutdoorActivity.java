@@ -19,7 +19,6 @@ import com.readystatesoftware.maps.OnSingleTapListener;
 import com.readystatesoftware.maps.TapControlledMapView;
 
 import edu.aau.utzon.R;
-import edu.aau.utzon.location.ILocationAware;
 import edu.aau.utzon.location.LocationAwareMapActivity;
 import edu.aau.utzon.location.LocationHelper;
 import edu.aau.utzon.utils.CommonIntents;
@@ -45,6 +44,7 @@ public class OutdoorActivity extends LocationAwareMapActivity {
 		super.onCreate(savedInstanceState);
 		drawMap();
 		drawOutdoorPois();
+		animateToLocation();
 	}
 
 	TapControlledMapView mMapView;
@@ -56,16 +56,48 @@ public class OutdoorActivity extends LocationAwareMapActivity {
 		mMyLocationOverlay.enableMyLocation();
 		mMapView.getOverlays().add(mMyLocationOverlay);
 		mMapView.setBuiltInZoomControls(true);
-
+	}
+	
+	private void zoomToAccuracy(Location location) {
+		int acc = (int)location.getAccuracy();
+		MapController mc = mMapView.getController();
+		
+		if(acc < 10) {
+			mc.setZoom(21); // max zoom
+		} 
+		else if(acc < 20) {
+			mc.setZoom(19);
+		}
+		else if(acc < 30) {
+			mc.setZoom(15);
+		}
+		else if(acc < 50) {
+			mc.setZoom(5);
+		}
+		else if(acc < 70) {
+			mc.setZoom(1);
+		}
 	}
 
 	boolean firstLocation = true;
 	@Override
 	public void serviceNewLocationBroadcast(Location location) {
 		super.serviceNewLocationBroadcast(location);
-
-		drawOutdoorPois();
-
+		if(firstLocation && location != null) {
+			drawOutdoorPois();
+			animateToLocation();
+			zoomToAccuracy(getLocationService().getLocationHelper().getCurrentLocation());
+			firstLocation = false;
+		}
+	}
+	PointModel prevPoi = null;
+	@Override
+	public void serviceNewPoiBroadcast(PointModel poi) {
+		super.serviceNewPoiBroadcast(poi);
+		if(poi == null || prevPoi == poi)
+			return;
+		animateToPoint(poi);
+		prevPoi = poi;		
 	}
 
 	private void drawOutdoorPois()
@@ -168,11 +200,24 @@ public class OutdoorActivity extends LocationAwareMapActivity {
 
 	private void animateToLocation()
 	{
-		if(isBound() && mMyLocationOverlay.getLastFix() != null) {
+		if(	getLocationService() != null && 
+			getLocationService().getLocationHelper().getCurrentLocation() != null) {
+			
 			MapController mc = mMapView.getController();
-			GeoPoint point =  LocationHelper.locToGeo(mMyLocationOverlay.getLastFix());
+			Location loc = getLocationService().getLocationHelper().getCurrentLocation();
+			GeoPoint point =  LocationHelper.locToGeo(loc);
 			mc.animateTo(point);
 		}
+	}
+	
+	private void animateToPoint(PointModel poi) {
+		MapController mc = mMapView.getController();
+		Location loc = getLocationService().getLocationHelper().getCurrentLocation();
+		int lat = (int) (poi.getLat()*1e6);
+		int lg = (int) (poi.getLong()*1e6);
+		GeoPoint point =  new GeoPoint(lat, lg);
+		mc.animateTo(point);
+		zoomToAccuracy(loc);
 	}
 
 }

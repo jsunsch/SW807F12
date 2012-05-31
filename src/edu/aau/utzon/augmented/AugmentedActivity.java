@@ -5,6 +5,7 @@ import java.util.List;
 
 
 import edu.aau.utzon.R;
+import edu.aau.utzon.location.LocationAwareActivity;
 import edu.aau.utzon.location.LocationHelper;
 import edu.aau.utzon.webservice.PointModel;
 import edu.aau.utzon.webservice.ProviderContract;
@@ -18,6 +19,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.Camera.Size;
 import android.hardware.SensorEvent;
 import android.hardware.SensorManager;
+import android.location.Location;
 import android.os.Bundle; 
 import android.util.Log;
 import android.view.SurfaceHolder; 
@@ -27,34 +29,27 @@ import android.view.ViewGroup.LayoutParams;
 import android.view.WindowManager;
 import android.widget.TextView;
 
-public class AugmentedActivity extends Activity implements SensorEventListener {
+public class AugmentedActivity extends LocationAwareActivity implements SensorEventListener {
 	private Preview mPreview;
 	//private int numberOfCameras;
 	//private int cameraCurrentlyLocked;
-	
+
 	private SensorManager mSensorManager;
-    private Sensor mGyro;
+	private Sensor mGyro;
 
 	// The first rear facing camera
 	private SurfaceView mSurfaceView;
 	private SurfaceHolder mSurfaceHolder;
 	private AugmentedOverlay mDraw;
 
-	private LocationHelper mLocationHelper;
-	private List<PointModel> mPois;
-	
-	
-
 	@Override
 	public void onCreate(Bundle saved) {
 		super.onCreate(saved);
 
-		mPois = PointModel.dbGetAll(this);
-
-		// Initialize location helper
-		mLocationHelper = new LocationHelper(this);
-		//this.mLocationHelper.onCreate();
-		
+		//		// Initialize location helper
+		//		mLocationHelper = new LocationHelper(this);
+		//		//this.mLocationHelper.onCreate();
+		//		
 		// Fullscreen
 		getWindow().setFormat(PixelFormat.TRANSLUCENT);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -65,21 +60,23 @@ public class AugmentedActivity extends Activity implements SensorEventListener {
 
 		// Gyro
 		mSensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
-        mGyro = mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION);
-        mSensorManager.registerListener(this, mGyro, SensorManager.SENSOR_DELAY_NORMAL);
-		
+		mGyro = mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION);
+		mSensorManager.registerListener(this, mGyro, SensorManager.SENSOR_DELAY_NORMAL);
+
+		//drawAugmented();
+	}
+
+	private void drawAugmented() {
 		// Camera
 		mSurfaceView = (SurfaceView) findViewById(R.id.surface_camera);
-		
+
 		// Create a RelativeLayout container that will hold a SurfaceView
 		mPreview = new Preview(this);
-
-		// Create layout for the overlay
-		mDraw = new AugmentedOverlay(this, mPois); 
-		addContentView(mDraw, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)); 
-
 		mSurfaceHolder = mSurfaceView.getHolder();
 		mSurfaceHolder.addCallback(mPreview);
+		
+		mDraw = new AugmentedOverlay(this, getLocationService().getLocationHelper().getPois()); 
+		addContentView(mDraw, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)); 
 	}
 
 	@Override
@@ -99,11 +96,23 @@ public class AugmentedActivity extends Activity implements SensorEventListener {
 	}
 
 	/** GYRO SENSOR CALLBACKS **/
+	boolean isFirstLocation = true;
 	@Override
 	public void onSensorChanged(SensorEvent e) {
 		// New data from gyro available
 		TextView tv = (TextView)findViewById(R.id.textViewDebug);
-		mDraw.updateOverlay(e, this.mLocationHelper.getCurrentLocation());
+		if(isBound()) {
+			Location location = getLocationService().getLocationHelper().getCurrentLocation();
+
+			if(getFirstLocationForActivity() != null && isFirstLocation) {
+				drawAugmented();
+				isFirstLocation = false;
+			}
+			//Location location = getFirstLocationForActivity();
+			if(location != null && mDraw != null) {
+				mDraw.updateOverlay(e, location);
+			}
+		}
 		if(tv != null)
 		{
 			tv.setText("Azimuth: " + (int)e.values[0] + "\n" +
