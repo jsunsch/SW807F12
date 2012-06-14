@@ -14,7 +14,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 
-public class IndoorActivity extends LocationAwareActivity {
+public class IndoorActivity extends Activity {
 
 	EditText _editText;
 	WifiManager _wifi;

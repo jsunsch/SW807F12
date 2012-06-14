@@ -54,8 +54,10 @@ public class CommonIntents {
 		return new Intent(context, OutdoorActivity.class);
 	}
 
-	static public  Intent startAugmentedActivity(Context context) {
-		return new Intent(context, AugmentedActivity.class);
+	static public  Intent startAugmentedActivity(Context context, Location loc) {
+		return new Intent(context, AugmentedActivity.class)
+			.putExtra(EXTRA_LOCATION, loc)
+			.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 	}
 	
 	

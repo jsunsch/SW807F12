@@ -31,33 +31,6 @@ public abstract class LocationAwareActivity extends SherlockActivity implements 
 	private boolean mBound = false;
 	//public boolean isBound() { return mBound; }
 
-	private int shownAlertId = 0;
-	//private int shownToastId = 0;
-
-	public void serviceNewPoiBroadcast(final PointModel poi) {
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setMessage("You are near a POI. Do you wish to see the content available?")
-		.setCancelable(false)
-		.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int id) {
-				//startActivity(CommonIntents.startPoiContentActivity(getBaseContext(), mService.getLocationHelper().getCurrentLocation(), poi));
-				startActivity(CommonIntents.startPoiContentActivity(getBaseContext(), poi.getId()));
-			}
-		})
-		.setNegativeButton("No", new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int id) {
-				dialog.cancel();
-			}
-		});
-
-		// Avoid spamming the user with alert dialogs
-		if(shownAlertId == 0 || (shownAlertId != mService.getLocationHelper().getCurrentClosePoi().getId())) {
-			shownAlertId = mService.getLocationHelper().getCurrentClosePoi().getId();
-			AlertDialog alert = builder.create();
-			alert.show();
-		}
-	}
-
 	boolean firstLocation = true;
 	public void serviceNewLocationBroadcast(Location location) {
 		mService.getLocationHelper().makeUseOfNewLocation(location);
@@ -69,7 +42,6 @@ public abstract class LocationAwareActivity extends SherlockActivity implements 
 
 	/** Defines callbacks for service binding, passed to bindService() */
 	private ServiceConnection mConnection = new ServiceConnection() {
-
 		@Override
 		public void onServiceConnected(ComponentName className, IBinder service) {
 			// We've bound to LocalService, cast the IBinder and get LocalService instance
@@ -106,7 +78,7 @@ public abstract class LocationAwareActivity extends SherlockActivity implements 
 			}
 		}
 	};
-	
+
 	@Override
 	public void onCreate(Bundle bundle) {
 		super.onCreate(bundle);
@@ -145,39 +117,51 @@ public abstract class LocationAwareActivity extends SherlockActivity implements 
 			mBound = false;
 		}
 	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu)
-	{
-		MenuInflater inflater = getSupportMenuInflater();
-		inflater.inflate(R.layout.menu_main, menu);
-		return true;
-	}	
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle item selection
-		switch (item.getItemId()) {
-		case R.id.actionbar_outdoor:
-			startActivity(CommonIntents.startOutdoorActivity(this));
-			return true;
-		case R.id.actionbar_augmented:
-			startActivity(CommonIntents.startAugmentedActivity(this));
-			return true;
-		case R.id.actionbar_indoor:
-			startActivity(CommonIntents.startIndoorActivity(this));
-			return true;
-		case R.id.actionbar_poi_list:
-			startActivity(CommonIntents.startPoiListActivity(this));
-			return true;
-		case R.id.actionbar_settings:
-			startActivity(CommonIntents.startSettingsActivity(this));
-			return true;
-		case R.id.actionbar_search:
-			onSearchRequested();
-			return true;
-		default:
-			return super.onOptionsItemSelected(item);
+	
+	public LocationHelper getLocationHelper() {
+		if(mBound) {
+			return mService.getLocationHelper();
+		}
+		else {
+			return null;
 		}
 	}
+
+//	@Override
+//	public boolean onCreateOptionsMenu(Menu menu)
+//	{
+//		MenuInflater inflater = getSupportMenuInflater();
+//		inflater.inflate(R.layout.menu_main, menu);
+//		return true;
+//	}	
+//
+//	@Override
+//	public boolean onOptionsItemSelected(MenuItem item) {
+//		// Handle item selection
+//		switch (item.getItemId()) {
+//		case R.id.actionbar_outdoor:
+//			startActivity(CommonIntents.startOutdoorActivity(this));
+//			return true;
+//		case R.id.actionbar_augmented:
+//			if(mBound) {
+//				if(mService.getLocationHelper().getCurrentLocation() != null)
+//					startActivity(CommonIntents.startAugmentedActivity(this, mService.getLocationHelper().getCurrentLocation()));
+//			}
+//			return true;
+//		case R.id.actionbar_indoor:
+//			startActivity(CommonIntents.startIndoorActivity(this));
+//			return true;
+//		case R.id.actionbar_poi_list:
+//			startActivity(CommonIntents.startPoiListActivity(this));
+//			return true;
+//		case R.id.actionbar_settings:
+//			startActivity(CommonIntents.startSettingsActivity(this));
+//			return true;
+//		case R.id.actionbar_search:
+//			onSearchRequested();
+//			return true;
+//		default:
+//			return super.onOptionsItemSelected(item);
+//		}
+//	}
 }

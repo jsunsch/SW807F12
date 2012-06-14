@@ -5,7 +5,9 @@ import java.util.List;
 
 
 import edu.aau.utzon.R;
+import edu.aau.utzon.location.LocationAwareActivity;
 import edu.aau.utzon.location.LocationHelper;
+import edu.aau.utzon.utils.CommonIntents;
 import edu.aau.utzon.webservice.PointModel;
 import edu.aau.utzon.webservice.ProviderContract;
 
@@ -18,6 +20,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.Camera.Size;
 import android.hardware.SensorEvent;
 import android.hardware.SensorManager;
+import android.location.Location;
 import android.os.Bundle; 
 import android.util.Log;
 import android.view.SurfaceHolder; 
@@ -40,19 +43,20 @@ public class AugmentedActivity extends Activity implements SensorEventListener {
 	private SurfaceHolder mSurfaceHolder;
 	private AugmentedOverlay mDraw;
 
-	private LocationHelper mLocationHelper;
+	//private LocationHelper mLocationHelper;
 	private List<PointModel> mPois;
-	
-	
+	private Location mLocation;
 
 	@Override
 	public void onCreate(Bundle saved) {
 		super.onCreate(saved);
-
+		
+//		while(getLocationHelper() == null) {}
+		mLocation = getIntent().getParcelableExtra(CommonIntents.EXTRA_LOCATION);
 		mPois = PointModel.dbGetAll(this);
-
+		
 		// Initialize location helper
-		mLocationHelper = new LocationHelper(this);
+		//mLocationHelper = new LocationHelper(this);
 		//this.mLocationHelper.onCreate();
 		
 		// Fullscreen
@@ -103,7 +107,7 @@ public class AugmentedActivity extends Activity implements SensorEventListener {
 	public void onSensorChanged(SensorEvent e) {
 		// New data from gyro available
 		TextView tv = (TextView)findViewById(R.id.textViewDebug);
-		mDraw.updateOverlay(e, this.mLocationHelper.getCurrentLocation());
+		mDraw.updateOverlay(e, mLocation);
 		if(tv != null)
 		{
 			tv.setText("Azimuth: " + (int)e.values[0] + "\n" +

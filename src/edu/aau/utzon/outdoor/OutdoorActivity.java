@@ -5,6 +5,7 @@ import java.util.List;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
 
 import com.actionbarsherlock.view.Menu;
@@ -37,6 +38,7 @@ public class OutdoorActivity extends LocationAwareMapActivity {
 	//		}
 	//	}
 
+	private static final String TAG = "OutdoorActivity";
 	MyLocationOverlay mMyLocationOverlay = null;
 
 	
@@ -65,7 +67,6 @@ public class OutdoorActivity extends LocationAwareMapActivity {
 		super.serviceNewLocationBroadcast(location);
 
 		drawOutdoorPois();
-
 	}
 
 	private void drawOutdoorPois()
@@ -124,9 +125,17 @@ public class OutdoorActivity extends LocationAwareMapActivity {
 	public void onPause()
 	{
 		super.onPause();
+		Log.e(TAG, "onPause");
 		mMyLocationOverlay.disableMyLocation();
 	}
-
+	
+	@Override
+	public void onStop() {
+		super.onStop();
+		Log.e(TAG, "onStop");
+	}
+	
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
@@ -143,7 +152,9 @@ public class OutdoorActivity extends LocationAwareMapActivity {
 			startActivity(CommonIntents.startOutdoorActivity(this));
 			return true;
 		case R.id.actionbar_augmented:
-			startActivity(CommonIntents.startAugmentedActivity(this));
+			Location loc = getSampleService().getLocationHelper().getCurrentLocation();
+			if(loc != null)
+				startActivity(CommonIntents.startAugmentedActivity(this, getSampleService().getLocationHelper().getCurrentLocation()));
 			return true;
 		case R.id.actionbar_indoor:
 			startActivity(CommonIntents.startIndoorActivity(this));
