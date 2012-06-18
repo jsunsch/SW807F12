@@ -11,6 +11,14 @@
 
         <requestFocus />
     </EditText>
+    
+    <Spinner 
+        android:id="@+id/spinner"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:drawSelectorOnTop="true"
+        android:prompt="@string/spinner_prompt"
+    />
 
     <Button
         android:id="@+id/button1"
@@ -42,7 +50,22 @@
         android:id="@+id/editText3"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-		android:text="20">
+		android:text="10">
+        <requestFocus />
+    </EditText>
+    
+        
+                <TextView
+        android:id="@+id/textView1133"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Signal strength limit" />
+        
+        <EditText
+        android:id="@+id/editText8"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+		android:text="-100">
         <requestFocus />
     </EditText>
 

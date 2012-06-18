@@ -60,8 +60,8 @@ public class AugmentedOverlay extends View {
 
 		for(PointModel poi : mPois)
 		{
-			float poiLong = (float) (poi.getLong());
-			float poiLat = (float) (poi.getLat());
+			float poiLat = (float) (poi.getLong());
+			float poiLong = (float) (poi.getLat());
 
 
 			// Rectangle for the current view, what the user sees

@@ -19,7 +19,7 @@ public class WifiMeasure {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+
 	public WifiMeasure(String n, int s) {
 		name = n;
 		signal = s;

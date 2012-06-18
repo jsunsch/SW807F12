@@ -1,9 +1,10 @@
-package edu.aau.utzon.indoor.old;
+package edu.aau.utzon.indoor;
 
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
+
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -11,8 +12,8 @@ import android.content.DialogInterface;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 
-public class WifiHelper {
-	
+public class OldWifiHelper {
+
 	public static ArrayList<WifiMeasure> getWifiMeasures(Context context, WifiManager wifi, int seconds, int signalMax) throws InterruptedException {
 		if (wifi.startScan() == true)
 		{
@@ -20,7 +21,7 @@ public class WifiHelper {
 			Hashtable<String, Integer> measures = new Hashtable<String, Integer>();
 			// Contains the count of how many times an access point as been measured
 			Hashtable<String, Integer> wifiCounts = new Hashtable<String, Integer> ();
-			
+
 			for (int i = 0; i < 2*seconds; i++) {
 
 				// Raw list of WIFI access points
@@ -54,19 +55,19 @@ public class WifiHelper {
 				Thread.sleep(500);
 				wifi.startScan();
 			}
-			
+
 			ArrayList<WifiMeasure> realMeasures = new ArrayList<WifiMeasure>(); 
 
 		    Enumeration<String> keys = measures.keys();
-		    
+
 		    while(keys.hasMoreElements()) {
 		       String key = keys.nextElement();
 		       int value = (Integer)measures.get(key);
-		       
+
 		       WifiMeasure wm = new WifiMeasure(key, value / wifiCounts.get(key));
 		       realMeasures.add(wm);
 		    }
-		  
+
 			return realMeasures;
 		}
 		else

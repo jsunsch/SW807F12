@@ -100,6 +100,7 @@ public class RadioMap {
 
 		// Counts the number of times a point was the nearest
 		Hashtable<String, Integer> counts = new Hashtable<String, Integer>();
+
 		for (int i = 0; i < k; i++)
 		{
 			if (counts.containsKey(kpoints[i].name) == false)
@@ -144,6 +145,17 @@ public class RadioMap {
 			for(Point p : points) {
 				if (p.name.equals(bestKey) == true)
 				{
+					double dist = -1;
+					int counter = 0;
+					for (Point kp : kpoints)
+					{
+						if (kp.name.equals(bestKey)) {
+							dist = distances[counter];
+							break;
+						}
+						counter++;
+					}
+					p.dist = dist;
 					return p;
 				}
 			}
@@ -154,12 +166,13 @@ public class RadioMap {
 			{
 				for (String name : bestKeys) {
 					if (kpoints[i].name.equals(name)) {
+						kpoints[i].dist = distances[i];
 						return kpoints[i];
 					}
 				}
 			}
 		}
-		
+
 		return null;
 	}
 

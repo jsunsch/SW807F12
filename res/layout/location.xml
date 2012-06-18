@@ -47,5 +47,39 @@
 
         <requestFocus />
     </EditText>
+    
+                        
+    <TextView
+        android:id="@+id/textView11"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Activation distance (dBm)" />
+    
+    
+                        <EditText
+        android:id="@+id/editText6"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="10">
+
+        <requestFocus />
+    </EditText>
+    
+                                             
+    <TextView
+        android:id="@+id/textView12"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Out of range stop counter" />
+    
+    
+                        <EditText
+        android:id="@+id/editText7"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="2">
+
+        <requestFocus />
+    </EditText>   
 
 </LinearLayout>

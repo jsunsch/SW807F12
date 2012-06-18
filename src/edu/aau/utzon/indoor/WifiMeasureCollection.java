@@ -12,7 +12,7 @@ public class WifiMeasureCollection {
 	public void setMeasures(ArrayList<WifiMeasure> measures) {
 		this.measures = measures;
 	}
-	
+
 	public WifiMeasureCollection(ArrayList<WifiMeasure> measure) {
 		measures = measure;
 	}

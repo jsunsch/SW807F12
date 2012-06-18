@@ -13,14 +13,14 @@ import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 
 public class WifiHelper {
-	
+
 	public static ArrayList<WifiMeasureCollection> getWifiMeasures(Context context, WifiManager wifi, int seconds, int signalMax) throws InterruptedException {
 		if (wifi.startScan() == true)
 		{
 			ArrayList<WifiMeasureCollection> measureCollections = new ArrayList<WifiMeasureCollection>();
-			
+
 			for (int i = 0; i < seconds/2; i++) {
-				
+
 				ArrayList<WifiMeasure> measures = new ArrayList<WifiMeasure>();
 				// Raw list of WIFI access points
 				List<ScanResult> scanResults =  wifi.getScanResults();
@@ -30,13 +30,13 @@ public class WifiHelper {
 						measures.add(new WifiMeasure(res.BSSID, -res.level));
 					}
 				}
-				
+
 				measureCollections.add(new WifiMeasureCollection(measures));
 
 				Thread.sleep(2000);
 				wifi.startScan();
 			}
-		  
+
 			return measureCollections;
 		}
 		else
@@ -44,7 +44,7 @@ public class WifiHelper {
 			return null;
 		}
 	}
-	
+
 	public static ArrayList<WifiMeasure> getWifiMeasuresAvg(Context context, WifiManager wifi, int seconds, int signalMax) throws InterruptedException {
 		if (wifi.startScan() == true)
 		{
@@ -52,7 +52,7 @@ public class WifiHelper {
 			Hashtable<String, Integer> measures = new Hashtable<String, Integer>();
 			// Contains the count of how many times an access point as been measured
 			Hashtable<String, Integer> wifiCounts = new Hashtable<String, Integer> ();
-			
+
 			for (int i = 0; i < seconds/2; i++) {
 
 				// Raw list of WIFI access points
@@ -86,19 +86,19 @@ public class WifiHelper {
 				Thread.sleep(1500);
 				wifi.startScan();
 			}
-			
+
 			ArrayList<WifiMeasure> realMeasures = new ArrayList<WifiMeasure>(); 
 
 		    Enumeration<String> keys = measures.keys();
-		    
+
 		    while(keys.hasMoreElements()) {
 		       String key = keys.nextElement();
 		       int value = (Integer)measures.get(key);
-		       
+
 		       WifiMeasure wm = new WifiMeasure(key, value / wifiCounts.get(key));
 		       realMeasures.add(wm);
 		    }
-		  
+
 			return realMeasures;
 		}
 		else
@@ -106,5 +106,5 @@ public class WifiHelper {
 			return null;
 		}
 	}
-	
+
 }

@@ -1,15 +1,16 @@
-package edu.aau.utzon.indoor.old;
+package edu.aau.utzon.indoor;
 
 import java.util.ArrayList;
 import java.util.List;
 
+
 import android.util.Log;
 
-public class RadioMap {
+public class OldRadioMap {
 	static ArrayList<Point> points= new ArrayList<Point>();
 
 	public static void setPoints(ArrayList<Point> points) {
-		RadioMap.points = points;
+		OldRadioMap.points = points;
 	}
 
 	public static void deleteAllPoints() {
@@ -25,12 +26,12 @@ public class RadioMap {
 		return points;
 	}
 
-	private static double findDist(Point p1, Point p2, int minAccesPoints) {
+	private static double findDist(Point p1, ArrayList<WifiMeasure> measures, int minAccesPoints) {
 		Double value = (double) 0;
 		int accesPointsUsed = 0;
 
-		for (WifiMeasure m1 : p1.getMeasures()) {
-			for (WifiMeasure m2 : p2.getMeasures()) {
+		for (WifiMeasure m1 : p1.measuresOld) {
+			for (WifiMeasure m2 : measures) {
 				if (m1.getName().equals(m2.getName())) {
 					Double temp = (double)m1.getSignal() - (double)m2.getSignal();
 					value += temp * temp;
@@ -63,7 +64,7 @@ public class RadioMap {
 
 		for (Point p : points) {
 
-			double dist = findDist(p, new Point(measures, "Your mom"), minAccesPoints);
+			double dist = findDist(p, measures, minAccesPoints);
 
 			if (dist < smallestDistance) {
 				smallestDistance = dist;
@@ -73,12 +74,10 @@ public class RadioMap {
 			distances.add(dist);
 
 		}
-	
 
-	Point p2 = null;
-	if (closestPoint != null)
-		p2 = new Point(closestPoint.getMeasures(), closestPoint.getName() + " " + smallestDistance);
 
-	return p2;
+	closestPoint.dist = smallestDistance;
+
+	return closestPoint;
 }
 }

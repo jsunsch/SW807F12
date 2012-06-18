@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="planets">
+        <item>t34.mp3</item>
+        <item>tiger1.mp3</item>
+        <item>m26pershing.mp3</item>
+        <item>m4sherman.mp3</item>
+        <item>panther.mp3</item>
+    </string-array>
+    
+</resources>
